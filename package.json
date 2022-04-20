@@ -1,0 +1,29 @@
+{
+  "name": "cleancodeandcleanarchitecturecourse",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "main": "tsc && node ./dist/main",
+	  "test": "tsc && jest ./dist/test",
+	  "coverage": "tsc && jest ./dist/test --coverage"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/momeyer/cleanCodeAndCleanArchitectureCourse.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/momeyer/cleanCodeAndCleanArchitectureCourse/issues"
+  },
+  "homepage": "https://github.com/momeyer/cleanCodeAndCleanArchitectureCourse#readme",
+  "dependencies": {
+    "@types/jest": "^27.4.1",
+    "jest": "^27.5.1",
+    "ts-jest": "^27.1.4",
+    "ts-node": "^10.7.0",
+    "typescript": "^4.6.3"
+  }
+}
