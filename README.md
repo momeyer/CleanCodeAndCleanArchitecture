@@ -1,13 +1,17 @@
 # CleanCodeAndCleanArchitecture
 
-
-course description
-
+<br/><br/>
+<br/><br/>
+<br/><br/>
+<br/><br/>
+<br/><br/>
+<br/><br/>
 
 # Refactoring Exercise: [Original](https://github.com/rodrigobranas/cccat6_refactoring/blob/master/src/example1/before/calc.ts)
 
-
 ## Starting a project:
+
+<br/><br/>
 
 - install Nodejs
 
@@ -17,8 +21,12 @@ course description
         npm install typescript jest @types/jest ts-jest ts-node
         npx tsc --init (generate tsconfig.json)
 
+<br/><br/>
+<br/><br/>
 
-## First Example:
+# First Example:
+
+<br/><br/>
 
 - Original Code:
 ```typescript
@@ -72,7 +80,8 @@ export function calc (movArray) {
     }
 }
 ```
-
+<br/><br/>
+<br/><br/>
 
 - Refactored:
 
@@ -106,6 +115,9 @@ export default class Ride {
     }
 }
 ```
+
+<br/><br/>
+<br/><br/>
 
 
 - Tests
@@ -171,5 +183,40 @@ describe("CalculateRide", (): void => {
 
 });
 ```
+<br/><br/>
+<br/><br/>
+<br/><br/>
 
+
+# Project:
+
+We'll implement a e-commerce:
+- Orders with multiple items
+- Item quantity
+- Calculte shipping costs
+- Calculate taxes
+- Discount Code
+- Stock Management
+- Payment flow (checkout - cancel)
+
+<br/><br/>
+<br/><br/>
+
+
+## Tests
+
+  - Invalid ID [CPF validator algorithm](https://www.macoratti.net/alg_cpf.htm) ( CPF - brazilian ID )
+  - Orders with 3 itens (description, price e ammount)
+  -  Create an order with discount code
+
+<br/><br/>
+<br/><br/>
+
+
+## Consider
+
+- Refactor [CPF validator algorithm](https://github.com/rodrigobranas/cccat6_refactoring/blob/master/src/example2/cpf.js) - [How it works](https://www.macoratti.net/alg_cpf.htm)
+
+<br/><br/>
+<br/><br/>
 
