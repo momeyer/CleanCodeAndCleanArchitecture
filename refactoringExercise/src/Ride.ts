@@ -1,11 +1,11 @@
-import { FareCalculatorFactory } from "./FareCalculator";
-
+import FareCalculatorFactory from "./FareCalculatorFactory";
+import DateAndTime from "./DateAndTime";
 
 class Segment {
     OVERNIGHT_START = 22;
     OVERNIGHT_END = 6;
 
-    constructor(readonly dist: number, readonly date: Date) {
+    constructor(readonly dist: number, readonly date: DateAndTime) {
         if (!this.isValidDistance(dist)) throw new Error("Invalid Distance");
         if (!this.isValidDate(date)) throw new Error("Invalid Date");
     }
@@ -20,17 +20,17 @@ class Segment {
 }
 
 export default class Ride {
-    segments: Segment[];
     fareCalculatorFactory: FareCalculatorFactory;
+    segments: Segment[];
 
     MIN_FARE = 10;
 
     constructor(fareCalculatorFactory: FareCalculatorFactory) {
-        this.segments = [];
         this.fareCalculatorFactory = new FareCalculatorFactory;
+        this.segments = [];
     }
 
-    addSegment(dist: number, date: Date): void {
+    addSegment(dist: number, date: DateAndTime): void {
         this.segments.push(new Segment(dist, date));
     }
 
@@ -38,7 +38,7 @@ export default class Ride {
         let result = 0;
         for (const segment of this.segments) {
             let fareCalculator = this.fareCalculatorFactory.create(segment.dist, segment.date);
-            result += fareCalculator.calculate(segment.dist, segment.date);
+            result += fareCalculator.calculate(segment.dist);
         }
         return (result < this.MIN_FARE) ? this.MIN_FARE : result;
     }
