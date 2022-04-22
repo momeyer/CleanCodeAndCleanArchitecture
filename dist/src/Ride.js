@@ -1,59 +1,43 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-function isValidDistance(dist) {
-    return (dist != null && dist != undefined && typeof dist === "number" && dist > 0);
-}
-function isValidDate(date) {
-    return (date != null && date != undefined && date instanceof Date && date.toString() !== "Invalid Date");
-}
-function isOvernight(time) {
-    return (time >= 22 || time <= 6);
-}
-function isSunday(day) {
-    return (day === 0);
-}
+const FareCalculator_1 = require("./FareCalculator");
 class Segment {
-    constructor(distance, date) {
-        this.distance = distance;
+    constructor(dist, date) {
+        this.dist = dist;
         this.date = date;
         this.OVERNIGHT_START = 22;
         this.OVERNIGHT_END = 6;
+        if (!this.isValidDistance(dist))
+            throw new Error("Invalid Distance");
+        if (!this.isValidDate(date))
+            throw new Error("Invalid Date");
+    }
+    isValidDistance(dist) {
+        return (dist != null && dist != undefined && typeof dist === "number" && dist > 0);
+    }
+    isValidDate(date) {
+        return (date != null && date != undefined && date instanceof Date && date.toString() !== "Invalid Date");
     }
 }
 class Ride {
-    constructor() {
-        this.minFare = 10;
-        this.normalFare = 2.10;
-        this.nightFare = 3.90;
-        this.sundayFare = 2.90;
-        this.sundayNightFare = 5.0;
+    constructor(fareCalculatorFactory) {
+        this.MIN_FARE = 10;
         this.segments = [];
+        this.fareCalculatorFactory = new FareCalculator_1.FareCalculatorFactory;
     }
     addSegment(dist, date) {
         this.segments.push(new Segment(dist, date));
     }
-    finish() {
+    calculateTotal() {
         let result = 0;
         for (const segment of this.segments) {
-            if (!isValidDistance(segment.distance))
-                throw new Error("Invalid Distance");
-            if (!isValidDate(segment.date))
-                throw new Error("Invalid Date");
-            if (isOvernight(segment.date.getHours()) && !isSunday(segment.date.getDay())) {
-                result += segment.distance * this.nightFare;
-                continue;
-            }
-            if (isOvernight(segment.date.getHours()) && isSunday(segment.date.getDay())) {
-                result += segment.distance * this.sundayNightFare;
-                continue;
-            }
-            if (isSunday(segment.date.getDay())) {
-                result += segment.distance * this.sundayFare;
-                continue;
-            }
-            result += segment.distance * this.normalFare;
+            let fareCalculator = this.fareCalculatorFactory.create(segment.dist, segment.date);
+            result += fareCalculator.calculate(segment.dist, segment.date);
         }
-        return (result < this.minFare) ? this.minFare : result;
+        return (result < this.MIN_FARE) ? this.MIN_FARE : result;
+    }
+    finish() {
+        return this.calculateTotal();
     }
 }
 exports.default = Ride;
