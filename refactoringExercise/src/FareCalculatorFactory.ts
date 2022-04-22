@@ -6,7 +6,7 @@ import OvernightSundayFareCalculator from "./OvernightSundayFareCalculator";
 import SundayFareCalculator from "./SundayFareCalculator";
 
 export default class FareCalculatorFactory {
-    create(dist: number, date: DateAndTime): FareCalculator {
+    create(date: DateAndTime): FareCalculator {
         if (date.isOvernight() && !date.isSunday()) {
             return new OvernightFareCalculator();
         }

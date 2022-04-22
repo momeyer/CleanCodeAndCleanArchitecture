@@ -1,5 +1,5 @@
-import FareCalculatorFactory from "./FareCalculatorFactory";
 import DateAndTime from "./DateAndTime";
+import FareCalculatorFactory from "./FareCalculatorFactory";
 
 class Segment {
     OVERNIGHT_START = 22;
@@ -26,7 +26,7 @@ export default class Ride {
     MIN_FARE = 10;
 
     constructor(fareCalculatorFactory: FareCalculatorFactory) {
-        this.fareCalculatorFactory = new FareCalculatorFactory;
+        this.fareCalculatorFactory = fareCalculatorFactory;
         this.segments = [];
     }
 
@@ -37,7 +37,7 @@ export default class Ride {
     calculateTotal(): number {
         let result = 0;
         for (const segment of this.segments) {
-            let fareCalculator = this.fareCalculatorFactory.create(segment.dist, segment.date);
+            let fareCalculator = this.fareCalculatorFactory.create(segment.date);
             result += fareCalculator.calculate(segment.dist);
         }
         return (result < this.MIN_FARE) ? this.MIN_FARE : result;
