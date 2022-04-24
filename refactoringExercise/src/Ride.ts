@@ -14,8 +14,8 @@ class Segment {
         return (dist != null && dist != undefined && typeof dist === "number" && dist > 0);
     }
 
-    isValidDate(date: Date): boolean {
-        return (date != null && date != undefined && date instanceof Date && date.toString() !== "Invalid Date");
+    isValidDate(date: DateAndTime): boolean {
+        return (date != null && date != undefined && date instanceof DateAndTime && date.toString() !== "Invalid Date");
     }
 }
 

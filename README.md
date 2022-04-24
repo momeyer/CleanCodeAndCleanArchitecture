@@ -190,7 +190,7 @@ describe("CalculateRide", (): void => {
 
 # Project:
 
-We'll implement a e-commerce:
+We'll implement an e-commerce:
 - Orders with multiple items
 - Item quantity
 - Calculte shipping costs
