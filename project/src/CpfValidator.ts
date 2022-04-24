@@ -1,17 +1,69 @@
 
-
-
 export default class CpfValidator {
 
-    private computePartialSum(str: string): number[] {
-        let firstDigit = 0;
-        let secondDigit = 0;
+    validate(str: string): boolean | undefined {
+
+        if (!this.isValidInput(str)) { return false; }
+
+        str = this.replacePontuationWithSpace(str);
+
+        if (!this.isNumeric(str)) { return false; }
+
+        return this.isValidCpf(str);
+    }
+
+    private isValidInput(str: any): boolean {
+        if (str === undefined || str === null)
+            return false;
+        if (str.length < 11 || str.length > 14)
+            return false;
+        return true;
+    }
+
+    private isNumeric(str: string): boolean {
+        return !isNaN(parseInt(str));
+    }
+
+    private replacePontuationWithSpace(str: string): string {
+        return str
+            .replace('.', '')
+            .replace('.', '')
+            .replace('-', '')
+            .replace(" ", ""); // TODO check order
+    }
+
+    private isValidCpf(str: string): boolean {
+        const firstDigit = this.computeFirstDigit(str);
+        const secondDigit = this.computeSecondDigit(str, firstDigit);
+
+        return this.validateVerificationDigits(str, firstDigit, secondDigit);
+
+    }
+
+    private computeFirstDigit(str: string): number {
+        const offset = 11;
+        const sum = this.computePartialSum(str, offset);
+
+        return this.computeDigit(sum);
+    }
+
+    private computeSecondDigit(str: string, firstDigit: number): number {
+        const offset = 12;
+        let sum = this.computePartialSum(str, offset);
+
+        sum += 2 * firstDigit;
+
+        return this.computeDigit(sum);
+    }
+
+    private computePartialSum(str: string, offset: number): number {
+        let sum = 0;
+
         for (let i = 1; i < str.length - 1; ++i) {
-            const digito = parseInt(str.substring(i - 1, i));
-            firstDigit = firstDigit + (11 - i) * digito;
-            secondDigit = secondDigit + (12 - i) * digito;
+            const current = parseInt(str.substring(i - 1, i));
+            sum = sum + (offset - i) * current;
         };
-        return [firstDigit, secondDigit];
+        return sum;
     }
 
     private computeDigit(digit: number): number {
@@ -24,51 +76,5 @@ export default class CpfValidator {
         const calculatedDigits = "" + first + "" + second;
         return originalDigits === calculatedDigits;
 
-    }
-
-    check(str: string): boolean {
-
-        let [partialSumFirstDigit, partialSumSecondDigit] = this.computePartialSum(str);
-
-        const firstDigit = this.computeDigit(partialSumFirstDigit);
-
-        partialSumSecondDigit += 2 * firstDigit;
-
-        const secondDigit = this.computeDigit(partialSumSecondDigit);
-
-        return this.validateVerificationDigits(str, firstDigit, secondDigit);
-
-    }
-
-    validate(str: string): boolean | undefined {
-
-        if (!this.isValidInput(str)) { return false; }
-
-        str = this.replacePontuationWithSpace(str);
-
-        if (!this.isNumeric(str)) { return false; }
-
-        return this.check(str);
-
-    }
-
-    private isValidInput(str: any): boolean {
-        if (str === undefined || str === null)
-            return false;
-        if (str.length < 11 || str.length > 14)
-            return false;
-        return true;
-    }
-
-    private replacePontuationWithSpace(str: string): string {
-        return str
-            .replace('.', '')
-            .replace('.', '')
-            .replace('-', '')
-            .replace(" ", "");
-    }
-
-    private isNumeric(str: string): boolean {
-        return !isNaN(parseInt(str));
     }
 }
