@@ -1,59 +1,74 @@
-export function validate(str: string): boolean | undefined {
-    if (str === undefined || str === null) {
-        return false;
+
+
+
+export default class CpfValidator {
+
+    private computePartialSum(str: string): number[] {
+        let firstDigit = 0;
+        let secondDigit = 0;
+        for (let i = 1; i < str.length - 1; ++i) {
+            const digito = parseInt(str.substring(i - 1, i));
+            firstDigit = firstDigit + (11 - i) * digito;
+            secondDigit = secondDigit + (12 - i) * digito;
+        };
+        return [firstDigit, secondDigit];
     }
-    if (str.length < 11 || str.length > 14) {
-        return false;
+
+    private computeDigit(digit: number): number {
+        const rest = (digit % 11);
+        return (rest < 2) ? 0 : 11 - rest;
     }
 
-    str = str
-        .replace('.', '')
-        .replace('.', '')
-        .replace('-', '')
-        .replace(" ", "");
+    private validateVerificationDigits(inputCPF: string, first: number, second: number): boolean {
+        const originalDigits = inputCPF.substring(inputCPF.length - 2, inputCPF.length);
+        const calculatedDigits = "" + first + "" + second;
+        return originalDigits === calculatedDigits;
 
-    if (!str.split("").every(c => c === str[0])) {
+    }
 
-        try {
-            let d1, d2;
-            let dg1, dg2, rest;
-            let digito;
-            let nDigResult;
-            d1 = d2 = 0;
-            dg1 = dg2 = rest = 0;
+    check(str: string): boolean {
 
-            for (let nCount = 1; nCount < str.length - 1; nCount++) {
-                // if (isNaN(parseInt(str.substring(nCount -1, nCount)))) {
-                // 	return false;
-                // } else {
+        let [partialSumFirstDigit, partialSumSecondDigit] = this.computePartialSum(str);
 
-                digito = parseInt(str.substring(nCount - 1, nCount));
-                // DIGITO 1
-                d1 = d1 + (11 - nCount) * digito;
-                // DIGIOT 2
-                d2 = d2 + (12 - nCount) * digito;
-                // }
-            };
+        const firstDigit = this.computeDigit(partialSumFirstDigit);
 
-            rest = (d1 % 11);
+        partialSumSecondDigit += 2 * firstDigit;
 
-            dg1 = (rest < 2) ? dg1 = 0 : 11 - rest; // 0 or 11 - rest
-            d2 += 2 * dg1;
-            rest = (d2 % 11);
-            if (rest < 2)
-                dg2 = 0;
-            else
-                dg2 = 11 - rest;
-            // 0 or 11 - rest
+        const secondDigit = this.computeDigit(partialSumSecondDigit);
 
-            let nDigVerific = str.substring(str.length - 2, str.length);
-            nDigResult = "" + dg1 + "" + dg2;
-            return nDigVerific == nDigResult;
-        } catch (e) {
-            console.error("Erro !" + e);
+        return this.validateVerificationDigits(str, firstDigit, secondDigit);
 
+    }
+
+    validate(str: string): boolean | undefined {
+
+        if (!this.isValidInput(str)) { return false; }
+
+        str = this.replacePontuationWithSpace(str);
+
+        if (!this.isNumeric(str)) { return false; }
+
+        return this.check(str);
+
+    }
+
+    private isValidInput(str: any): boolean {
+        if (str === undefined || str === null)
             return false;
-        }
-    } else return false
+        if (str.length < 11 || str.length > 14)
+            return false;
+        return true;
+    }
 
+    private replacePontuationWithSpace(str: string): string {
+        return str
+            .replace('.', '')
+            .replace('.', '')
+            .replace('-', '')
+            .replace(" ", "");
+    }
+
+    private isNumeric(str: string): boolean {
+        return !isNaN(parseInt(str));
+    }
 }
