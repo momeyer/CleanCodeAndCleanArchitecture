@@ -6,14 +6,19 @@ export default class ShoppingFacade {
         this.eCommerce = eCommerce;
     }
 
-    addProductToShoppingCart(productId: number): void { };
-    removeProductToShoppingCart(productId: number): void { };
+    addProductToShoppingCart(productId: number, quantity: number): boolean {
+        return this.eCommerce.addProductToShoppingCart(productId, quantity);
+    };
+    removeProductToShoppingCart(productId: number): boolean {
+        return this.eCommerce.removeProductToShoppingCart(productId);
+    };
     updateProductQuantityFromShoppingCart(productId: number, quantity: number): void { };
 
     createOrderFromShoppingCart(): void { };
-    cancelPlacedOrder(orderID: number): boolean {
-        return this.eCommerce.cancelPlacedOrder(orderID);
+    cancelPlacedOrder(orderId: number): boolean {
+        return this.eCommerce.cancelPlacedOrder(orderId);
     };
     applyDiscountCodeToOrder(code: string): void { };
+    // placeOrder(): boolean { };
 
 }

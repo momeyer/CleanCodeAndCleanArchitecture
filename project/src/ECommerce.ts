@@ -1,15 +1,26 @@
 import { OrderStatus } from "./Order";
 import PlacedOrders from "./Orders";
+import { ProductInventory } from "./ProductInventory";
+import ShoppingCart from "./ShoppingCart";
 
 export default class ECommerce {
     placedOrders: PlacedOrders;
+    shoppingCart: ShoppingCart;
 
-    constructor(placedOrders: PlacedOrders) {
+    constructor(placedOrders: PlacedOrders, productInventory: ProductInventory) {
         this.placedOrders = placedOrders;
+        this.shoppingCart = new ShoppingCart(productInventory);
     }
 
     cancelPlacedOrder(orderID: number): boolean {
-
         return this.placedOrders.updateStatus(orderID, OrderStatus.CANCELLED);
     };
+
+    addProductToShoppingCart(productId: number, quantity: number): boolean {
+        return this.shoppingCart.addProduct(productId, quantity);
+    }
+
+    removeProductToShoppingCart(productId: number): boolean {
+        return this.shoppingCart.removeProduct(productId);
+    }
 }

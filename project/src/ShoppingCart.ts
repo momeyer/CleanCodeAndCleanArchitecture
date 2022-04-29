@@ -1,3 +1,4 @@
+import { ProductInventory } from "./ProductInventory";
 
 class ProductIdQuantity {
 
@@ -8,17 +9,32 @@ class ProductIdQuantity {
     }
 }
 
-
-
 export default class ShoppingCart {
 
-    products: ProductIdQuantity[];
+    private products: ProductIdQuantity[];
+    private productInventory: ProductInventory;
 
-    constructor() {
+    constructor(productInventory: ProductInventory) {
         this.products = [];
+        this.productInventory = productInventory;
     }
 
-    // addProduct()
-    // removeProduct()
+    addProduct(productId: number, quantity: number): boolean {
+        if (!this.productInventory.isValidProductId(productId)) {
+            return false;
+        }
+        let product = this.products.find(e => e.id === productId);
+        if (product == undefined) {
+            this.products.push(new ProductIdQuantity(productId, quantity));
+            return true;
+        }
+        product.quantity = quantity;
+        return true;
+    }
+
+    removeProduct(productId: number): boolean {
+        return (productId >= 1 && productId <= 10);
+    }
+
     // updateProduct()
 }
