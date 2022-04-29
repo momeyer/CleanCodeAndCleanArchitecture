@@ -3,12 +3,12 @@ import { ProductInventory, ProductQuantity } from "./ProductInventory";
 
 export default class ShoppingCart {
 
-    private productsAndQuantities: ProductQuantity[];
+    private productsAndQuantities: Map<number, ProductQuantity>;
     private productInventory: ProductInventory;
 
     constructor(productInventory: ProductInventory) {
-        this.productsAndQuantities = [];
         this.productInventory = productInventory;
+        this.productsAndQuantities = new Map<number, ProductQuantity>();
     }
 
     addProduct(productId: number, quantity: number): boolean {
@@ -17,9 +17,9 @@ export default class ShoppingCart {
             return false;
         }
 
-        let product = this.productsAndQuantities.find(e => e.product.id === productId);
-        if (product == undefined) {
-            this.productsAndQuantities.push({ ...productInInventory, quantity: quantity });
+        let product = this.productsAndQuantities.get(productId);
+        if (!product) {
+            this.productsAndQuantities.set(productId, { ...productInInventory, quantity: quantity });
             return true;
         }
         product.quantity += quantity;
@@ -27,18 +27,24 @@ export default class ShoppingCart {
     }
 
     removeProduct(productId: number): boolean {
-        let product = this.productsAndQuantities.find(e => e.product.id === productId);
-        if (!product) { return false; }
-        this.productsAndQuantities.splice(this.productsAndQuantities.indexOf(product), 1);
-        return true;
-
+        return this.productsAndQuantities.delete(productId);
     }
 
     createOrder(discountCode?: string): Order | undefined {
-        if (!this.productsAndQuantities.length) { return undefined; }
+        if (!this.productsAndQuantities.size) { return undefined; }
+        let productsList: ProductQuantity[] = [];
         this.productsAndQuantities.forEach((cur): void => {
             this.productInventory.getProduct(cur.product.id, cur.quantity);
+            productsList.push(cur);
         })
-        return new Order(this.productsAndQuantities, discountCode);
+        return new Order(productsList!, discountCode);
+    }
+
+    getProductQuantity(productId: number): number {
+        const product = this.productsAndQuantities.get(productId);
+        if (!product) {
+            return 0;
+        }
+        return product!.quantity;
     }
 }

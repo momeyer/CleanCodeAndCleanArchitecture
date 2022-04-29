@@ -18,7 +18,12 @@ export interface ProductInventory {
 }
 
 export class NonPersistentProductInventory implements ProductInventory {
-    private inventory = new Map<number, ProductQuantity>();
+
+    private inventory: Map<number, ProductQuantity>;
+
+    constructor() {
+        this.inventory = new Map<number, ProductQuantity>();
+    }
 
     addProduct(product: Product, quantity: number): boolean {
         const productInInventory = this.findProduct(product.id);

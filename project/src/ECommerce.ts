@@ -27,4 +27,7 @@ export default class ECommerce {
     createOrderFromShoppingCart(discountCode?: string): Order | undefined {
         return this.shoppingCart.createOrder(discountCode);
     }
+    getProductQuantityFromShoppingCart(productId: number): number {
+        return this.shoppingCart.getProductQuantity(productId);
+    }
 }

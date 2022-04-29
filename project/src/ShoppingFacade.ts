@@ -23,5 +23,8 @@ export default class ShoppingFacade {
         return this.eCommerce.cancelPlacedOrder(orderId);
     };
 
+    getProductQuantityFromShoppingCart(productId: number): number {
+        return this.eCommerce.getProductQuantityFromShoppingCart(productId);
+    }
     applyDiscountCodeToOrder(code: string): void { };
 }
