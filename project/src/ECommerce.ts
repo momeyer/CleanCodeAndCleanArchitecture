@@ -1,4 +1,4 @@
-import { OrderStatus } from "./Order";
+import { Order, OrderStatus } from "./Order";
 import PlacedOrders from "./Orders";
 import { ProductInventory } from "./ProductInventory";
 import ShoppingCart from "./ShoppingCart";
@@ -22,5 +22,9 @@ export default class ECommerce {
 
     removeProductToShoppingCart(productId: number): boolean {
         return this.shoppingCart.removeProduct(productId);
+    }
+
+    createOrderFromShoppingCart(discountCode?: string): Order | undefined {
+        return this.shoppingCart.createOrder(discountCode);
     }
 }

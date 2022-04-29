@@ -33,6 +33,7 @@ export class NonPersistentProductInventory implements ProductInventory {
     };
 
     isValidProductId(productId: number): boolean {
+        if (productId <= 0) { return false; }
         return this.inventory.has(productId);
     };
 

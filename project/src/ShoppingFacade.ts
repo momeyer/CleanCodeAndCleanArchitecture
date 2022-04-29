@@ -1,4 +1,5 @@
 import ECommerce from "./ECommerce";
+import { Order } from "./Order";
 
 export default class ShoppingFacade {
     eCommerce: ECommerce;
@@ -14,11 +15,13 @@ export default class ShoppingFacade {
     };
     updateProductQuantityFromShoppingCart(productId: number, quantity: number): void { };
 
-    createOrderFromShoppingCart(): void { };
+    createOrderFromShoppingCart(): Order | undefined { // should receive CPF
+        return this.eCommerce.createOrderFromShoppingCart();
+    };
+
     cancelPlacedOrder(orderId: number): boolean {
         return this.eCommerce.cancelPlacedOrder(orderId);
     };
-    applyDiscountCodeToOrder(code: string): void { };
-    // placeOrder(): boolean { };
 
+    applyDiscountCodeToOrder(code: string): void { };
 }
