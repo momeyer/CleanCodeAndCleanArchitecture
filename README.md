@@ -197,7 +197,7 @@ We'll implement an e-commerce:
 - Calculate taxes
 - Discount Code
 - Stock Management
-- Payment flow (checkout - cancel)
+- Calcel Order
 
 <br/><br/>
 <br/><br/>
@@ -206,7 +206,7 @@ We'll implement an e-commerce:
 ## Tests
 
   - Invalid ID [CPF validator algorithm](https://www.macoratti.net/alg_cpf.htm) ( CPF - brazilian ID )
-  - Orders with 3 itens (description, price e ammount)
+  - Orders with 3 items (description, price e ammount)
   -  Create an order with discount code
 
 <br/><br/>
