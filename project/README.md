@@ -1,4 +1,4 @@
-# E-Commerce
+# E-Commerce ![tests](https://github.com/momeyer/cleanCodeAndCleanArchitectureCourse/actions/workflows/ci.yml/badge.svg)
 
 <br/><br/>
 
