@@ -1,14 +1,8 @@
 import { Id, Product } from "./Product";
 
-export class ProductQuantity {
-
+export type ProductQuantity = {
     product: Product;
     quantity: number;
-
-    constructor(product: Product, quantity: number) {
-        this.product = product;
-        this.quantity = quantity;
-    }
 }
 export interface ProductInventory {
     addProduct(product: Product, quantity: number): boolean;
@@ -29,7 +23,7 @@ export class NonPersistentProductInventory implements ProductInventory {
         const productInInventory = this.findProduct(product.id);
         const quantityToAdd = productInInventory ? productInInventory.quantity + quantity : quantity;
 
-        this.inventory.set(product.id, new ProductQuantity(product, quantityToAdd));
+        this.inventory.set(product.id, { product: product, quantity: quantityToAdd });
         return true;
     };
 

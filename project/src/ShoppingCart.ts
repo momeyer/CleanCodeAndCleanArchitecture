@@ -1,15 +1,15 @@
-import { Order } from "./Order";
+import { Order, OrderItem } from "./Order";
 import { Id } from "./Product";
-import { ProductInventory, ProductQuantity } from "./ProductInventory";
+import { ProductInventory } from "./ProductInventory";
 
 export default class ShoppingCart {
 
-    private productsAndQuantities: Map<Id, ProductQuantity>;
+    private orderItems: Map<Id, OrderItem>;
     private productInventory: ProductInventory;
 
     constructor(productInventory: ProductInventory) {
         this.productInventory = productInventory;
-        this.productsAndQuantities = new Map<Id, ProductQuantity>();
+        this.orderItems = new Map<Id, OrderItem>();
     }
 
     addProduct(productId: Id, quantity: number): boolean {
@@ -18,9 +18,9 @@ export default class ShoppingCart {
             return false;
         }
 
-        let product = this.productsAndQuantities.get(productId);
+        let product = this.orderItems.get(productId);
         if (!product) {
-            this.productsAndQuantities.set(productId, { ...productInInventory, quantity: quantity });
+            this.orderItems.set(productId, { ...productInInventory, quantity: quantity });
             return true;
         }
         product.quantity += quantity;
@@ -28,13 +28,13 @@ export default class ShoppingCart {
     }
 
     removeProduct(productId: Id): boolean {
-        return this.productsAndQuantities.delete(productId);
+        return this.orderItems.delete(productId);
     }
 
     createOrder(discountCode?: string): Order | undefined {
-        if (!this.productsAndQuantities.size) { return undefined; }
-        let productsList: ProductQuantity[] = [];
-        this.productsAndQuantities.forEach((cur): void => {
+        if (!this.orderItems.size) { return undefined; }
+        let productsList: OrderItem[] = [];
+        this.orderItems.forEach((cur): void => {
             this.productInventory.getProduct(cur.product.id, cur.quantity);
             productsList.push(cur);
         })
@@ -42,7 +42,7 @@ export default class ShoppingCart {
     }
 
     getProductQuantity(productId: Id): number {
-        const product = this.productsAndQuantities.get(productId);
+        const product = this.orderItems.get(productId);
         if (!product) {
             return 0;
         }

@@ -1,4 +1,9 @@
-import { ProductQuantity } from "./ProductInventory";
+import { Product } from "./Product";
+
+export type OrderItem = {
+    product: Product;
+    quantity: number;
+}
 
 export enum OrderStatus {
     PENDING,
@@ -9,16 +14,16 @@ export enum OrderStatus {
 export class Order {
 
     status: OrderStatus;
-    private productsAndQuantity: ProductQuantity[];
+    private orderItems: OrderItem[];
 
-    constructor(productsAndQuantity: ProductQuantity[], discountCode?: string) {
-        this.productsAndQuantity = productsAndQuantity;
+    constructor(orderItems: OrderItem[], discountCode?: string) {
+        this.orderItems = orderItems;
         this.status = OrderStatus.PENDING;
     }
 
     calculateTotalPrice(): number {
         let total = 0;
-        this.productsAndQuantity.forEach((cur): void => {
+        this.orderItems.forEach((cur): void => {
             total += cur.quantity * cur.product.price;
         })
         return total;
