@@ -12,11 +12,11 @@ export enum OrderStatus {
 }
 
 export class Order {
-
     status: OrderStatus;
     private orderItems: OrderItem[];
 
     constructor(orderItems: OrderItem[], discountCode?: string) {
+
         this.orderItems = orderItems;
         this.status = OrderStatus.PENDING;
     }

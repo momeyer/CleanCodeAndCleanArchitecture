@@ -1,18 +1,18 @@
-import { Order, OrderItem } from "./Order";
-import { Id } from "./Product";
+import { OrderItem } from "./Order";
+import { ProductId } from "./Product";
 import { ProductInventory } from "./ProductInventory";
 
 export default class ShoppingCart {
 
-    private orderItems: Map<Id, OrderItem>;
+    private orderItems: Map<ProductId, OrderItem>;
     private productInventory: ProductInventory;
 
     constructor(productInventory: ProductInventory) {
         this.productInventory = productInventory;
-        this.orderItems = new Map<Id, OrderItem>();
+        this.orderItems = new Map<ProductId, OrderItem>();
     }
 
-    addProduct(productId: Id, quantity: number): boolean {
+    addProduct(productId: ProductId, quantity: number): boolean {
         const productInInventory = this.productInventory.findProduct(productId);
         if (!productInInventory || productInInventory.quantity == 0 || quantity <= 0) {
             return false;
@@ -27,21 +27,18 @@ export default class ShoppingCart {
         return true;
     }
 
-    removeProduct(productId: Id): boolean {
+    removeProduct(productId: ProductId): boolean {
         return this.orderItems.delete(productId);
     }
 
-    createOrder(discountCode?: string): Order | undefined {
-        if (!this.orderItems.size) { return undefined; }
-        let productsList: OrderItem[] = [];
-        this.orderItems.forEach((cur): void => {
-            this.productInventory.getProduct(cur.product.id, cur.quantity);
-            productsList.push(cur);
-        })
-        return new Order(productsList!, discountCode);
+    getAllItems(): OrderItem[] {
+        let listOfItems: OrderItem[] = [];
+        this.orderItems.forEach((cur) =>
+            listOfItems.push(cur));
+        return listOfItems;
     }
 
-    getProductQuantity(productId: Id): number {
+    getProductQuantity(productId: ProductId): number {
         const product = this.orderItems.get(productId);
         if (!product) {
             return 0;

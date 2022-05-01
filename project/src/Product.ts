@@ -1,11 +1,9 @@
 
-type Id = {
+export type ProductId = {
     value: number;
 }
 
-type Product = {
-    id: Id;
+export type Product = {
+    id: ProductId;
     price: number;
 };
-
-export { Product, Id };
