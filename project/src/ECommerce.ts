@@ -8,11 +8,15 @@ export default class ECommerce {
     placedOrders: PlacedOrders;
     shoppingCart: ShoppingCart;
     productInventory: ProductInventory;
+    discountCodes: Map<string, number>
 
     constructor(placedOrders: PlacedOrders, productInventory: ProductInventory) {
         this.placedOrders = placedOrders;
         this.shoppingCart = new ShoppingCart(productInventory);
         this.productInventory = productInventory;
+        this.discountCodes = new Map<string, number>();
+
+        this.discountCodes.set("Get20", 0.20);
     }
 
     cancelPlacedOrder(orderID: OrderId): boolean {
@@ -27,7 +31,7 @@ export default class ECommerce {
         return this.shoppingCart.removeProduct(productId);
     }
 
-    createOrderFromShoppingCart(cpf: string, discountCode?: string): Order | undefined {
+    createOrderFromShoppingCart(cpf: string): Order | undefined {
         if (this.shoppingCart.isEmpty()) { return undefined; }
 
         const orderItems = this.shoppingCart.getAllItems();
@@ -36,10 +40,16 @@ export default class ECommerce {
             this.shoppingCart.removeProduct(cur.product.id);
         })
 
-        let order: Order;
-        order = new Order(cpf, this.placedOrders.generateNextOrderId(), orderItems, discountCode);
+        const order = new Order(cpf, this.placedOrders.generateNextOrderId(), orderItems, this.shoppingCart.discount);
         this.placedOrders.add(order);
         return order;
+    }
+
+    applyDiscountCodeToShoppingCart(code: string): boolean {
+        const validDiscount = this.discountCodes.get(code);
+        if (!validDiscount) { return false; }
+        this.shoppingCart.applyDiscountCode(validDiscount);
+        return true;
     }
 
     getProductQuantityFromShoppingCart(productId: ProductId): number {

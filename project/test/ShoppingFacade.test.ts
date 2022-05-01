@@ -114,11 +114,16 @@ describe("Shopping Facade Acceptance", (): void => {
     // });
 
     test("Should fail to apply invalid discount code to order", (): void => {
-        // expect(shoppingFacade.createOrderFromShoppingCart()).toBeUndefined();
+        expect(shoppingFacade.applyDiscountCodeToShoppingCart("Get100")).toBeFalsy();
     });
 
     test("Should apply valid discount code to order", (): void => {
-        // expect(shoppingFacade.createOrderFromShoppingCart()).toBeUndefined();
+        shoppingFacade.addProductToShoppingCart(product1Id, 2);
+        shoppingFacade.addProductToShoppingCart(product2Id, 1);
+        shoppingFacade.applyDiscountCodeToShoppingCart("Get20");
+        const order = shoppingFacade.createOrderFromShoppingCart(validCPF);
+        console.log(order);
+        expect(order?.calculateTotalPrice()).toBe(32);
     });
 
     test("Should apply shipping cost to total price", (): void => {

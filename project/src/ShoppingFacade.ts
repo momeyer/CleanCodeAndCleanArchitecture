@@ -29,5 +29,8 @@ export default class ShoppingFacade {
     getProductQuantityFromShoppingCart(productId: ProductId): number {
         return this.eCommerce.getProductQuantityFromShoppingCart(productId);
     }
-    applyDiscountCodeToOrder(code: string): void { };
+
+    applyDiscountCodeToShoppingCart(code: string): boolean {
+        return this.eCommerce.applyDiscountCodeToShoppingCart(code);
+    };
 }

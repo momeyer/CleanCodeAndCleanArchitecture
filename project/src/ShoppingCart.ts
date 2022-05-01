@@ -6,6 +6,7 @@ export default class ShoppingCart {
 
     private orderItems: Map<ProductId, OrderItem>;
     private productInventory: ProductInventory;
+    discount: number | undefined;
 
     constructor(productInventory: ProductInventory) {
         this.productInventory = productInventory;
@@ -33,7 +34,7 @@ export default class ShoppingCart {
 
     getAllItems(): OrderItem[] {
         let listOfItems: OrderItem[] = [];
-        this.orderItems.forEach((cur) =>
+        this.orderItems.forEach((cur): number =>
             listOfItems.push(cur));
         return listOfItems;
     }
@@ -48,5 +49,8 @@ export default class ShoppingCart {
 
     isEmpty(): boolean {
         return !this.orderItems.size;
+    }
+    applyDiscountCode(code: number): void {
+        this.discount = code;
     }
 }
