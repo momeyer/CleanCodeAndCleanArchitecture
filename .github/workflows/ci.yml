@@ -1,4 +1,4 @@
-name: NodeJS
+name: NodeJS with Webpack
 
 on:
   push:
@@ -12,7 +12,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: 17.8.0
+        node-version: [17.x]
     
     steps:
     - uses: actions/checkout@v3
