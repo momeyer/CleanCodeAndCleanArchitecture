@@ -13,7 +13,7 @@ describe("Shopping Facade Acceptance", (): void => {
     let nonExistingProductId: ProductId = { value: 100 };
     let product1 = { id: product1Id, price: 10 };
     let product2 = { id: product2Id, price: 20 };
-
+    let validCPF = "111.444.777-35";
     let inventory: NonPersistentProductInventory;
 
     let ecommerce: ECommerce;
@@ -82,18 +82,24 @@ describe("Shopping Facade Acceptance", (): void => {
     });
 
     test("Should fail to create order from empty shopping cart", (): void => {
-        expect(shoppingFacade.createOrderFromShoppingCart()).toBeUndefined();
+        expect(shoppingFacade.createOrderFromShoppingCart(validCPF)).toBeUndefined();
+    });
+
+    test("Should fail to create order with invalid cpf", (): void => {
+        shoppingFacade.addProductToShoppingCart(product2Id, 2);
+        expect(() => shoppingFacade.createOrderFromShoppingCart("111.111")).toThrow(new Error("Invalid CPF"));
     });
 
     test("Should create order from shopping cart", (): void => {
         shoppingFacade.addProductToShoppingCart(product1Id, 2);
         shoppingFacade.addProductToShoppingCart(product2Id, 1);
-        const order = shoppingFacade.createOrderFromShoppingCart();
+        const order = shoppingFacade.createOrderFromShoppingCart(validCPF);
         expect(order).toBeDefined();
         expect(order?.calculateTotalPrice()).toBe(40);
         expect(order?.status).toBe(OrderStatus.PENDING);
         expect(inventory.findProduct(product1Id)?.quantity).toBe(98);
         expect(inventory.findProduct(product2Id)?.quantity).toBe(49);
+        expect(shoppingFacade.eCommerce.shoppingCart.isEmpty).toBeTruthy();
     });
 
     test("Should fail to cancel non-existing order", (): void => {

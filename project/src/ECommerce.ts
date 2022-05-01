@@ -27,15 +27,17 @@ export default class ECommerce {
         return this.shoppingCart.removeProduct(productId);
     }
 
-    createOrderFromShoppingCart(discountCode?: string): Order | undefined {
-        const orderItems = this.shoppingCart.getAllItems();
+    createOrderFromShoppingCart(cpf: string, discountCode?: string): Order | undefined {
+        if (this.shoppingCart.isEmpty()) { return undefined; }
 
-        if (!orderItems.length) { return undefined; }
+        const orderItems = this.shoppingCart.getAllItems();
         orderItems.forEach((cur): void => {
             this.productInventory.getProduct(cur.product.id, cur.quantity);
+            this.shoppingCart.removeProduct(cur.product.id);
         })
 
-        const order = new Order(this.placedOrders.generateNextOrderId(), orderItems, discountCode);
+        let order: Order;
+        order = new Order(cpf, this.placedOrders.generateNextOrderId(), orderItems, discountCode);
         this.placedOrders.add(order);
         return order;
     }

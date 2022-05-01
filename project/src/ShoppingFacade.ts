@@ -15,10 +15,11 @@ export default class ShoppingFacade {
     removeProductToShoppingCart(productId: ProductId): boolean {
         return this.eCommerce.removeProductToShoppingCart(productId);
     };
+
     updateProductQuantityFromShoppingCart(productId: ProductId, quantity: number): void { };
 
-    createOrderFromShoppingCart(): Order | undefined { // should receive CPF
-        return this.eCommerce.createOrderFromShoppingCart();
+    createOrderFromShoppingCart(cpf: string): Order | undefined { // should receive CPF
+        return this.eCommerce.createOrderFromShoppingCart(cpf);
     };
 
     cancelPlacedOrder(orderId: OrderId): boolean {

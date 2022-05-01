@@ -45,4 +45,8 @@ export default class ShoppingCart {
         }
         return product!.quantity;
     }
+
+    isEmpty(): boolean {
+        return !this.orderItems.size;
+    }
 }
