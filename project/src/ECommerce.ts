@@ -35,10 +35,9 @@ export default class ECommerce {
             this.productInventory.getProduct(cur.product.id, cur.quantity);
         })
 
-        const order = new Order(orderItems, discountCode);
+        const order = new Order(this.placedOrders.generateNextOrderId(), orderItems, discountCode);
         this.placedOrders.add(order);
         return order;
-
     }
 
     getProductQuantityFromShoppingCart(productId: ProductId): number {

@@ -1,3 +1,4 @@
+import { OrderId } from "./Orders";
 import { Product } from "./Product";
 
 export type OrderItem = {
@@ -12,11 +13,12 @@ export enum OrderStatus {
 }
 
 export class Order {
+    readonly id: OrderId;
     status: OrderStatus;
     private orderItems: OrderItem[];
 
-    constructor(orderItems: OrderItem[], discountCode?: string) {
-
+    constructor(orderId: OrderId, orderItems: OrderItem[], discountCode?: string) {
+        this.id = orderId;
         this.orderItems = orderItems;
         this.status = OrderStatus.PENDING;
     }

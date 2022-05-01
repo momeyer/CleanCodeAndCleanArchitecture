@@ -31,16 +31,6 @@ describe("Shopping Facade Acceptance", (): void => {
     })
 
 
-    // test("Should fail to cancel non-existing order", (): void => {
-    //     when(mockedPlacedOrders.updateStatus(anything(), anything())).thenReturn(false);
-    //     expect(shoppingFacade.cancelPlacedOrder({ value: 10 })).toBeFalsy();
-    // });
-
-    // test("Should cancel existing order", (): void => {
-    //     when(mockedPlacedOrders.updateStatus(anything(), anything())).thenReturn(true); // Palced Order ID should be passed
-    //     expect(shoppingFacade.cancelPlacedOrder({ value: 1 })).toBeTruthy(); // TODO check it this is testing correctly
-    // });
-
     test("Should fail to add non-existing product to shopping cart", (): void => {
         expect(shoppingFacade.addProductToShoppingCart(nonExistingProductId, 1)).toBeFalsy();
     });
@@ -105,6 +95,17 @@ describe("Shopping Facade Acceptance", (): void => {
         expect(inventory.findProduct(product1Id)?.quantity).toBe(98);
         expect(inventory.findProduct(product2Id)?.quantity).toBe(49);
     });
+
+    test("Should fail to cancel non-existing order", (): void => {
+        expect(shoppingFacade.cancelPlacedOrder({ value: 10 })).toBeFalsy();
+    });
+
+    // test("Should cancel existing order", (): void => {
+    //     shoppingFacade.addProductToShoppingCart(product2Id, 1);
+    //     const order = shoppingFacade.createOrderFromShoppingCart();
+    //     console.log(order);// Palced Order ID should be passed
+    //     expect(shoppingFacade.cancelPlacedOrder({ value: 1 })).toBeTruthy(); // TODO check it this is testing correctly
+    // });
 
     test("Should fail to apply invalid discount code to order", (): void => {
         // expect(shoppingFacade.createOrderFromShoppingCart()).toBeUndefined();
