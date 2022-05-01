@@ -1,16 +1,15 @@
-import Product from "../src/Product";
 import { NonPersistentProductInventory, ProductInventory } from "../src/ProductInventory";
 
 describe("Non Persistent Product Inventory", (): void => {
     let inventory: ProductInventory | undefined = undefined;
-    const product1 = new Product(1, 10);
+    const product1 = { id: { value: 1 }, price: 10 };
 
     beforeEach((): void => {
         inventory = new NonPersistentProductInventory();
     });
 
     test("invalid product", (): void => {
-        expect(inventory!.isValidProductId(10)).toBeFalsy();
+        expect(inventory!.isValidProductId({ value: 10 })).toBeFalsy();
     });
 
     test("valid product", (): void => {
@@ -40,7 +39,7 @@ describe("Non Persistent Product Inventory", (): void => {
     });
 
     test("try to get invalid product", (): void => {
-        expect(inventory!.getProduct(15, 1)).toBeUndefined();
+        expect(inventory!.getProduct({ value: 15 }, 1)).toBeUndefined();
     });
 
     test("get product product valid id and valid quantity", (): void => {

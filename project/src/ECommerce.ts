@@ -1,5 +1,6 @@
 import { Order, OrderStatus } from "./Order";
 import PlacedOrders from "./Orders";
+import { Id } from "./Product";
 import { ProductInventory } from "./ProductInventory";
 import ShoppingCart from "./ShoppingCart";
 
@@ -16,18 +17,18 @@ export default class ECommerce {
         return this.placedOrders.updateStatus(orderID, OrderStatus.CANCELLED);
     };
 
-    addProductToShoppingCart(productId: number, quantity: number): boolean {
+    addProductToShoppingCart(productId: Id, quantity: number): boolean {
         return this.shoppingCart.addProduct(productId, quantity);
     }
 
-    removeProductToShoppingCart(productId: number): boolean {
+    removeProductToShoppingCart(productId: Id): boolean {
         return this.shoppingCart.removeProduct(productId);
     }
 
     createOrderFromShoppingCart(discountCode?: string): Order | undefined {
         return this.shoppingCart.createOrder(discountCode);
     }
-    getProductQuantityFromShoppingCart(productId: number): number {
+    getProductQuantityFromShoppingCart(productId: Id): number {
         return this.shoppingCart.getProductQuantity(productId);
     }
 }

@@ -1,4 +1,11 @@
 
-export default class Product {
-    constructor(readonly id: number, readonly price: number) { }
+type Id = {
+    value: number;
 }
+
+type Product = {
+    id: Id;
+    price: number;
+};
+
+export { Product, Id };

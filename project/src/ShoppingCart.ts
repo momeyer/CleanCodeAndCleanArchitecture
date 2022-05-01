@@ -1,17 +1,18 @@
 import { Order } from "./Order";
+import { Id } from "./Product";
 import { ProductInventory, ProductQuantity } from "./ProductInventory";
 
 export default class ShoppingCart {
 
-    private productsAndQuantities: Map<number, ProductQuantity>;
+    private productsAndQuantities: Map<Id, ProductQuantity>;
     private productInventory: ProductInventory;
 
     constructor(productInventory: ProductInventory) {
         this.productInventory = productInventory;
-        this.productsAndQuantities = new Map<number, ProductQuantity>();
+        this.productsAndQuantities = new Map<Id, ProductQuantity>();
     }
 
-    addProduct(productId: number, quantity: number): boolean {
+    addProduct(productId: Id, quantity: number): boolean {
         const productInInventory = this.productInventory.findProduct(productId);
         if (!productInInventory || productInInventory.quantity == 0 || quantity <= 0) {
             return false;
@@ -26,7 +27,7 @@ export default class ShoppingCart {
         return true;
     }
 
-    removeProduct(productId: number): boolean {
+    removeProduct(productId: Id): boolean {
         return this.productsAndQuantities.delete(productId);
     }
 
@@ -40,7 +41,7 @@ export default class ShoppingCart {
         return new Order(productsList!, discountCode);
     }
 
-    getProductQuantity(productId: number): number {
+    getProductQuantity(productId: Id): number {
         const product = this.productsAndQuantities.get(productId);
         if (!product) {
             return 0;

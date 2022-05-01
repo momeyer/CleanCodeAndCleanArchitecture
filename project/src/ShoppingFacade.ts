@@ -1,5 +1,6 @@
 import ECommerce from "./ECommerce";
 import { Order } from "./Order";
+import { Id } from "./Product";
 
 export default class ShoppingFacade {
     eCommerce: ECommerce;
@@ -7,13 +8,13 @@ export default class ShoppingFacade {
         this.eCommerce = eCommerce;
     }
 
-    addProductToShoppingCart(productId: number, quantity: number): boolean {
+    addProductToShoppingCart(productId: Id, quantity: number): boolean {
         return this.eCommerce.addProductToShoppingCart(productId, quantity);
     };
-    removeProductToShoppingCart(productId: number): boolean {
+    removeProductToShoppingCart(productId: Id): boolean {
         return this.eCommerce.removeProductToShoppingCart(productId);
     };
-    updateProductQuantityFromShoppingCart(productId: number, quantity: number): void { };
+    updateProductQuantityFromShoppingCart(productId: Id, quantity: number): void { };
 
     createOrderFromShoppingCart(): Order | undefined { // should receive CPF
         return this.eCommerce.createOrderFromShoppingCart();
@@ -23,7 +24,7 @@ export default class ShoppingFacade {
         return this.eCommerce.cancelPlacedOrder(orderId);
     };
 
-    getProductQuantityFromShoppingCart(productId: number): number {
+    getProductQuantityFromShoppingCart(productId: Id): number {
         return this.eCommerce.getProductQuantityFromShoppingCart(productId);
     }
     applyDiscountCodeToOrder(code: string): void { };

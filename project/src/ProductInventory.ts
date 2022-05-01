@@ -1,4 +1,4 @@
-import Product from "./Product";
+import { Id, Product } from "./Product";
 
 export class ProductQuantity {
 
@@ -12,17 +12,17 @@ export class ProductQuantity {
 }
 export interface ProductInventory {
     addProduct(product: Product, quantity: number): boolean;
-    findProduct(productId: number): ProductQuantity | undefined;
-    isValidProductId(productId: number): boolean;
-    getProduct(productId: number, quantity: number): ProductQuantity | undefined;
+    findProduct(productId: Id): ProductQuantity | undefined;
+    isValidProductId(productId: Id): boolean;
+    getProduct(productId: Id, quantity: number): ProductQuantity | undefined;
 }
 
 export class NonPersistentProductInventory implements ProductInventory {
 
-    private inventory: Map<number, ProductQuantity>;
+    private inventory: Map<Id, ProductQuantity>;
 
     constructor() {
-        this.inventory = new Map<number, ProductQuantity>();
+        this.inventory = new Map<Id, ProductQuantity>();
     }
 
     addProduct(product: Product, quantity: number): boolean {
@@ -33,16 +33,16 @@ export class NonPersistentProductInventory implements ProductInventory {
         return true;
     };
 
-    findProduct(productId: number): ProductQuantity | undefined {
+    findProduct(productId: Id): ProductQuantity | undefined {
         return this.inventory.get(productId);
     };
 
-    isValidProductId(productId: number): boolean {
-        if (productId <= 0) { return false; }
+    isValidProductId(productId: Id): boolean {
+        if (productId.value <= 0) { return false; }
         return this.inventory.has(productId);
     };
 
-    getProduct(productId: number, quantityToGet: number): ProductQuantity | undefined {
+    getProduct(productId: Id, quantityToGet: number): ProductQuantity | undefined {
         const productInInventory = this.findProduct(productId);
         if (!productInInventory || productInInventory.quantity < quantityToGet) { return undefined; }
 

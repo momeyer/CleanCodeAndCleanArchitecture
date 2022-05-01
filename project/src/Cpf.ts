@@ -1,19 +1,26 @@
 
-export default class CpfValidator {
 
-    validate(str: string): boolean | undefined {
+export default class Cpf {
+    readonly value: string;
 
-        if (!this.isValidInput(str)) { return false; }
+    constructor(readonly cpf: string) {
+        if (!this.isValid(cpf)) { throw new Error("Invalid CPF"); }
+        this.value = cpf;
+    }
 
-        str = this.replacePontuationWithSpace(str);
+    private isValid(rawCpf: string): boolean | undefined {
 
-        if (!this.isNumeric(str)) { return false; }
+        if (!this.isValidInput(rawCpf)) { return false; }
 
-        return this.isValidCpf(str);
+        rawCpf = this.replacePontuationWithSpace(rawCpf);
+
+        if (!this.isNumeric(rawCpf)) { return false; }
+
+        return this.isValidCpf(rawCpf);
     }
 
     private isValidInput(str: any): boolean {
-        if (str === undefined || str === null)
+        if (!str)
             return false;
         if (str.length < 11 || str.length > 14)
             return false;
@@ -29,7 +36,7 @@ export default class CpfValidator {
             .replace('.', '')
             .replace('.', '')
             .replace('-', '')
-            .replace(" ", ""); // TODO check order
+            .replace(" ", "");
     }
 
     private isValidCpf(str: string): boolean {

@@ -2,18 +2,18 @@ import { anything, instance, mock, when } from "ts-mockito";
 import ECommerce from "../src/ECommerce";
 import { OrderStatus } from "../src/Order";
 import PlacedOrders from "../src/Orders";
-import Product from "../src/Product";
+import { Id } from "../src/Product";
 import { NonPersistentProductInventory } from "../src/ProductInventory";
 import ShoppingFacade from "../src/ShoppingFacade";
 
 describe("Shopping Facade Acceptance", (): void => {
     let mockedPlacedOrders: PlacedOrders;
     let placedOrders: PlacedOrders;
-    let product1Id = 1;
-    let product2Id = 2;
-    let nonExistingProductId = 100;
-    let product1 = new Product(product1Id, 10);
-    let product2 = new Product(product2Id, 20);
+    let product1Id: Id = { value: 1 };
+    let product2Id: Id = { value: 2 };
+    let nonExistingProductId: Id = { value: 100 };
+    let product1 = { id: product1Id, price: 10 };
+    let product2 = { id: product2Id, price: 20 };
 
     let inventory: NonPersistentProductInventory;
 
@@ -39,8 +39,8 @@ describe("Shopping Facade Acceptance", (): void => {
     });
 
     test("Should cancel existing order", (): void => {
-        when(mockedPlacedOrders.updateStatus(product1Id, anything())).thenReturn(true);
-        expect(shoppingFacade.cancelPlacedOrder(product1Id)).toBeTruthy();
+        when(mockedPlacedOrders.updateStatus(1, anything())).thenReturn(true); // Palced Order ID should be passed
+        expect(shoppingFacade.cancelPlacedOrder(1)).toBeTruthy();
     });
 
     test("Should fail to add non-existing product to shopping cart", (): void => {
@@ -48,8 +48,8 @@ describe("Shopping Facade Acceptance", (): void => {
     });
 
     test("Should fail to add invalid product Id to shopping cart", (): void => {
-        expect(shoppingFacade.addProductToShoppingCart(0, 1)).toBeFalsy();
-        expect(shoppingFacade.addProductToShoppingCart(-1, 1)).toBeFalsy();
+        expect(shoppingFacade.addProductToShoppingCart({ value: 0 }, 1)).toBeFalsy();
+        expect(shoppingFacade.addProductToShoppingCart({ value: -1 }, 1)).toBeFalsy();
     });
 
     test("Should fail to add negative quantity of product to shopping cart", (): void => {
