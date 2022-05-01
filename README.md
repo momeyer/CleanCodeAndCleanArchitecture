@@ -1,6 +1,6 @@
 # CleanCodeAndCleanArchitecture
 
-![tests](github.com/momeyer/cleanCodeAndCleanArchitectureCourse/actions/workflows/ci.yml/badge.svg)
+![tests](https://github.com/momeyer/cleanCodeAndCleanArchitectureCourse/actions/workflows/ci.yml/badge.svg)
 <br/><br/>
 <br/><br/>
 <br/><br/>
