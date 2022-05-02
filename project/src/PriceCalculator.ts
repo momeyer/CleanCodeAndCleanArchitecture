@@ -7,15 +7,10 @@ export default class PriceCalculator {
     total: number = 0;
 
     calculate(order: Order): number {
-        console.log("beging: ", this.total);
         this.calculateProductsCost(order);
-        console.log("prices: ", this.total);
         this.applyDiscount(order.discount);
-        console.log("after discount: ", this.total);
         this.applyTax();
-        console.log("after tax: ", this.total);
         this.applyShippingCost(order);
-        console.log("after shipping: ", this.total);
 
         return this.total;
     }

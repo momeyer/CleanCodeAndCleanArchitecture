@@ -1,3 +1,4 @@
+import { DiscountCodes } from "./DiscountCodes";
 import { Order, OrderStatus } from "./Order";
 import { OrderId, PlacedOrders } from "./Orders";
 import { ProductId } from "./Product";
@@ -8,15 +9,17 @@ export default class ECommerce {
     placedOrders: PlacedOrders;
     shoppingCart: ShoppingCart;
     productInventory: ProductInventory;
-    discountCodes: Map<string, number>
+    discountCodes: DiscountCodes;
 
     constructor(placedOrders: PlacedOrders, productInventory: ProductInventory) {
         this.placedOrders = placedOrders;
         this.shoppingCart = new ShoppingCart(productInventory);
         this.productInventory = productInventory;
-        this.discountCodes = new Map<string, number>();
+        this.discountCodes = new DiscountCodes();
 
-        this.discountCodes.set("Get20", 0.20);
+        this.discountCodes.addDiscountCode({
+            code: "Get20", amount: 0.20, expireDate: new Date("2030-01-01")
+        });
     }
 
     cancelPlacedOrder(orderID: OrderId): boolean {
@@ -49,7 +52,7 @@ export default class ECommerce {
     }
 
     applyDiscountCodeToShoppingCart(code: string): boolean {
-        const validDiscount = this.discountCodes.get(code);
+        const validDiscount = this.discountCodes.getDiscount(code);
         if (!validDiscount) { return false; }
         this.shoppingCart.applyDiscountCode(validDiscount);
         return true;
