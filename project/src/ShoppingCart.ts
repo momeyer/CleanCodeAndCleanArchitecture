@@ -48,7 +48,7 @@ export default class ShoppingCart {
     }
 
     isEmpty(): boolean {
-        return !this.orderItems.size;
+        return this.orderItems.size == 0;
     }
     applyDiscountCode(code: number): void {
         this.discount = code;

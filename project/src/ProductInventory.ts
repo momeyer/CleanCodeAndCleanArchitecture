@@ -8,7 +8,7 @@ export interface ProductInventory {
     addProduct(product: Product, quantity: number): boolean;
     findProduct(productId: ProductId): ProductQuantity | undefined;
     isValidProductId(productId: ProductId): boolean;
-    getProduct(productId: ProductId, quantity: number): ProductQuantity | undefined;
+    removeProduct(productId: ProductId, quantity: number): boolean;
 }
 
 export class NonPersistentProductInventory implements ProductInventory {
@@ -36,12 +36,12 @@ export class NonPersistentProductInventory implements ProductInventory {
         return this.inventory.has(productId);
     };
 
-    getProduct(productId: ProductId, quantityToGet: number): ProductQuantity | undefined {
+    removeProduct(productId: ProductId, quantityToGet: number): boolean {
         const productInInventory = this.findProduct(productId);
-        if (!productInInventory || productInInventory.quantity < quantityToGet) { return undefined; }
+        if (!productInInventory || productInInventory.quantity < quantityToGet) { return false; }
 
         const updatedQuantity = productInInventory.quantity - quantityToGet;
         this.inventory.set(productId, { ...productInInventory, quantity: updatedQuantity });
-        return { ...productInInventory, quantity: quantityToGet };
+        return true;
     };
 }

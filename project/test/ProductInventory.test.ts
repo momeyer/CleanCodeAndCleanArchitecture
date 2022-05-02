@@ -39,18 +39,18 @@ describe("Non Persistent Product Inventory", (): void => {
     });
 
     test("try to get invalid product", (): void => {
-        expect(inventory!.getProduct({ value: 15 }, 1)).toBeUndefined();
+        expect(inventory!.removeProduct({ value: 15 }, 1)).toBeFalsy();
     });
 
     test("get product product valid id and valid quantity", (): void => {
         inventory?.addProduct(product1, 5);
-        expect(inventory!.getProduct(product1.id, 3)?.quantity).toBe(3);
+        inventory?.removeProduct(product1.id, 3);
         expect(inventory!.findProduct(product1.id)?.quantity).toBe(2); // products left on inventory
     });
 
-    test("try to get invalid product", (): void => {
+    test("try to get invalid product quantity", (): void => {
         inventory?.addProduct(product1, 2);
-        expect(inventory!.getProduct(product1.id, 3)).toBeUndefined();
+        expect(inventory!.removeProduct(product1.id, 3)).toBeFalsy();
     });
 
 

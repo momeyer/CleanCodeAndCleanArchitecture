@@ -32,11 +32,13 @@ export default class ECommerce {
     }
 
     createOrderFromShoppingCart(cpf: string): Order | undefined {
-        if (this.shoppingCart.isEmpty()) { return undefined; }
+        if (this.shoppingCart.isEmpty()) {
+            return undefined;
+        }
 
         const orderItems = this.shoppingCart.getAllItems();
         orderItems.forEach((cur): void => {
-            this.productInventory.getProduct(cur.product.id, cur.quantity);
+            this.productInventory.removeProduct(cur.product.id, cur.quantity);
             this.shoppingCart.removeProduct(cur.product.id);
         })
 

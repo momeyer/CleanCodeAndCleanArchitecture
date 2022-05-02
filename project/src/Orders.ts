@@ -30,8 +30,14 @@ export class NonPersistentPlacedOrder implements PlacedOrders {
             return false;
         }
         order.status = status;
+        this.placeOrders.set(orderId, order);
         return true;
     }
+
+    getOrder(orderId: OrderId): Order | undefined {
+        return this.placeOrders.get(orderId);
+    }
+
     getAllPlacedOrder(): Map<OrderId, Order> {
         return this.placeOrders;
     }

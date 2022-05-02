@@ -1,5 +1,6 @@
 import Cpf from "./Cpf";
 import { OrderId } from "./Orders";
+import PriceCalculator from "./PriceCalculator";
 import { Product } from "./Product";
 
 export type OrderItem = {
@@ -17,27 +18,24 @@ export class Order {
     readonly id: OrderId;
     readonly cpf: Cpf;
     readonly discount: number | undefined;
-    status: OrderStatus;
-    private orderItems: OrderItem[];
+    readonly items: OrderItem[];
 
-    constructor(cpf: string, orderId: OrderId, orderItems: OrderItem[], disocunt?: number | undefined) {
+    status: OrderStatus;
+    private priceCalculator: PriceCalculator;
+
+    constructor(cpf: string, orderId: OrderId, orderItems: OrderItem[], disocunt?: number) {
         this.id = orderId;
-        this.status = OrderStatus.PENDING;
         this.cpf = new Cpf(cpf);
         this.discount = disocunt;
-        this.orderItems = orderItems;
+        this.items = orderItems;
+
+        this.status = OrderStatus.PENDING;
+        this.priceCalculator = new PriceCalculator();
     }
 
     calculateTotalPrice(): number {
-        let total = 0;
-        this.orderItems.forEach((cur): void => {
-            total += cur.quantity * cur.product.price;
-        })
-
-        return this.applyDiscount(total);
+        return this.priceCalculator.calculate(this);
     }
 
-    private applyDiscount(price: number): number {
-        return this.discount ? price * (1.0 - this.discount) : price;
-    }
+
 }

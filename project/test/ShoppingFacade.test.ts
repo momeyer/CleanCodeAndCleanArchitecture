@@ -1,6 +1,6 @@
 import ECommerce from "../src/ECommerce";
 import { OrderStatus } from "../src/Order";
-import { NonPersistentPlacedOrder } from "../src/Orders";
+import { NonPersistentPlacedOrder, OrderId } from "../src/Orders";
 import { ProductId } from "../src/Product";
 import { NonPersistentProductInventory } from "../src/ProductInventory";
 import ShoppingFacade from "../src/ShoppingFacade";
@@ -95,7 +95,7 @@ describe("Shopping Facade Acceptance", (): void => {
         shoppingFacade.addProductToShoppingCart(product2Id, 1);
         const order = shoppingFacade.createOrderFromShoppingCart(validCPF);
         expect(order).toBeDefined();
-        expect(order?.calculateTotalPrice()).toBe(40);
+        expect(order?.calculateTotalPrice()).toBe(52); //  + 0.05 tax and 10$ shipping cost
         expect(order?.status).toBe(OrderStatus.PENDING);
         expect(inventory.findProduct(product1Id)?.quantity).toBe(98);
         expect(inventory.findProduct(product2Id)?.quantity).toBe(49);
@@ -106,12 +106,13 @@ describe("Shopping Facade Acceptance", (): void => {
         expect(shoppingFacade.cancelPlacedOrder({ value: 10 })).toBeFalsy();
     });
 
-    // test("Should cancel existing order", (): void => {
-    //     shoppingFacade.addProductToShoppingCart(product2Id, 1);
-    //     const order = shoppingFacade.createOrderFromShoppingCart();
-    //     console.log(order);// Palced Order ID should be passed
-    //     expect(shoppingFacade.cancelPlacedOrder({ value: 1 })).toBeTruthy(); // TODO check it this is testing correctly
-    // });
+    test("Should cancel existing order", (): void => {
+        shoppingFacade.addProductToShoppingCart(product1Id, 1);
+        shoppingFacade.addProductToShoppingCart(product2Id, 1);
+        const order = shoppingFacade.createOrderFromShoppingCart(validCPF);
+        expect(shoppingFacade.cancelPlacedOrder(order!.id)).toBeTruthy(); // TODO check it this is testing correctly
+        expect(placedOrders.getOrder(order!.id)?.status).toBe(OrderStatus.CANCELLED); // Palced Order ID should be passed
+    });
 
     test("Should fail to apply invalid discount code to order", (): void => {
         expect(shoppingFacade.applyDiscountCodeToShoppingCart("Get100")).toBeFalsy();
@@ -122,15 +123,7 @@ describe("Shopping Facade Acceptance", (): void => {
         shoppingFacade.addProductToShoppingCart(product2Id, 1);
         shoppingFacade.applyDiscountCodeToShoppingCart("Get20");
         const order = shoppingFacade.createOrderFromShoppingCart(validCPF);
-        console.log(order);
-        expect(order?.calculateTotalPrice()).toBe(32);
+        expect(order?.calculateTotalPrice()).toBe(43.60); //  + 0.05 tax and 10$ shipping cost
     });
 
-    test("Should apply shipping cost to total price", (): void => {
-        // expect(shoppingFacade.createOrderFromShoppingCart()).toBeUndefined();
-    });
-
-    test("Should apply tax to total price", (): void => {
-        // expect(shoppingFacade.createOrderFromShoppingCart()).toBeUndefined();
-    });
 })
