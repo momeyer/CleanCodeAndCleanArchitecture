@@ -28,7 +28,7 @@ export default class ECommerce {
     }
 
     removeProductToShoppingCart(productId: ProductId): boolean {
-        return this.shoppingCart.removeProduct(productId);
+        return this.shoppingCart.removeItem(productId);
     }
 
     createOrderFromShoppingCart(cpf: string): Order | undefined {
@@ -39,8 +39,9 @@ export default class ECommerce {
         const orderItems = this.shoppingCart.getAllItems();
         orderItems.forEach((cur): void => {
             this.productInventory.removeProduct(cur.product.id, cur.quantity);
-            this.shoppingCart.removeProduct(cur.product.id);
         })
+
+        this.shoppingCart.clear();
 
         const order = new Order(cpf, this.placedOrders.generateNextOrderId(), orderItems, this.shoppingCart.discount);
         this.placedOrders.add(order);

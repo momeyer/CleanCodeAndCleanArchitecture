@@ -1,18 +1,16 @@
 import ECommerce from "../src/ECommerce";
 import { OrderStatus } from "../src/Order";
-import { NonPersistentPlacedOrder, OrderId } from "../src/Orders";
+import { NonPersistentPlacedOrder } from "../src/Orders";
 import { ProductId } from "../src/Product";
 import { NonPersistentProductInventory } from "../src/ProductInventory";
 import ShoppingFacade from "../src/ShoppingFacade";
+import { camera, guitar } from "./ProductSamples";
 
 describe("Shopping Facade Acceptance", (): void => {
     let mockedPlacedOrders: NonPersistentPlacedOrder;
     let placedOrders: NonPersistentPlacedOrder;
-    let product1Id: ProductId = { value: 1 };
-    let product2Id: ProductId = { value: 2 };
     let nonExistingProductId: ProductId = { value: 100 };
-    let product1 = { id: product1Id, price: 10 };
-    let product2 = { id: product2Id, price: 20 };
+
     let validCPF = "111.444.777-35";
     let inventory: NonPersistentProductInventory;
 
@@ -26,8 +24,8 @@ describe("Shopping Facade Acceptance", (): void => {
 
         ecommerce = new ECommerce(placedOrders, inventory);
         shoppingFacade = new ShoppingFacade(ecommerce);
-        inventory.addProduct(product1, 100);
-        inventory.addProduct(product2, 50);
+        inventory.addProduct(camera, 100);
+        inventory.addProduct(guitar, 50);
     })
 
 
@@ -41,28 +39,28 @@ describe("Shopping Facade Acceptance", (): void => {
     });
 
     test("Should fail to add negative quantity of product to shopping cart", (): void => {
-        expect(shoppingFacade.addProductToShoppingCart(product1Id, -10)).toBeFalsy();
+        expect(shoppingFacade.addProductToShoppingCart(camera.id, -10)).toBeFalsy();
     });
 
     test("Should fail to add zero quantity of product to shopping cart", (): void => {
-        expect(shoppingFacade.addProductToShoppingCart(product1Id, 0)).toBeFalsy();
+        expect(shoppingFacade.addProductToShoppingCart(camera.id, 0)).toBeFalsy();
     });
 
     test("Should add product to shopping cart", (): void => {
-        expect(shoppingFacade.addProductToShoppingCart(product1Id, 1)).toBeTruthy();
+        expect(shoppingFacade.addProductToShoppingCart(camera.id, 1)).toBeTruthy();
     });
 
     test("Should add different products to shopping cart", (): void => {
-        expect(shoppingFacade.addProductToShoppingCart(product1Id, 1)).toBeTruthy();
-        expect(shoppingFacade.addProductToShoppingCart(product2Id, 1)).toBeTruthy();
-        expect(shoppingFacade.getProductQuantityFromShoppingCart(product1Id)).toBe(1);
-        expect(shoppingFacade.getProductQuantityFromShoppingCart(product2Id)).toBe(1);
+        expect(shoppingFacade.addProductToShoppingCart(camera.id, 1)).toBeTruthy();
+        expect(shoppingFacade.addProductToShoppingCart(guitar.id, 1)).toBeTruthy();
+        expect(shoppingFacade.getProductQuantityFromShoppingCart(camera.id)).toBe(1);
+        expect(shoppingFacade.getProductQuantityFromShoppingCart(guitar.id)).toBe(1);
     });
 
     test("Should add more of same product to shopping cart", (): void => {
-        expect(shoppingFacade.addProductToShoppingCart(product1Id, 1)).toBeTruthy();
-        expect(shoppingFacade.addProductToShoppingCart(product1Id, 1)).toBeTruthy();
-        expect(shoppingFacade.getProductQuantityFromShoppingCart(product1Id)).toBe(2);
+        expect(shoppingFacade.addProductToShoppingCart(camera.id, 1)).toBeTruthy();
+        expect(shoppingFacade.addProductToShoppingCart(camera.id, 1)).toBeTruthy();
+        expect(shoppingFacade.getProductQuantityFromShoppingCart(camera.id)).toBe(2);
     });
 
     test("Should fail to remove invalid product to shopping cart", (): void => {
@@ -70,15 +68,15 @@ describe("Shopping Facade Acceptance", (): void => {
     });
 
     test("Should fail to remove product from empty shopping cart", (): void => {
-        expect(shoppingFacade.removeProductToShoppingCart(product1Id)).toBeFalsy();
+        expect(shoppingFacade.removeProductToShoppingCart(camera.id)).toBeFalsy();
     });
 
     test("Should remove product from shopping cart", (): void => {
-        shoppingFacade.addProductToShoppingCart(product1Id, 2);
-        shoppingFacade.addProductToShoppingCart(product2Id, 2);
-        expect(shoppingFacade.removeProductToShoppingCart(product1Id)).toBeTruthy();
-        expect(shoppingFacade.getProductQuantityFromShoppingCart(product1Id)).toBe(0);
-        expect(shoppingFacade.getProductQuantityFromShoppingCart(product2Id)).toBe(2);
+        shoppingFacade.addProductToShoppingCart(camera.id, 2);
+        shoppingFacade.addProductToShoppingCart(guitar.id, 2);
+        expect(shoppingFacade.removeProductToShoppingCart(camera.id)).toBeTruthy();
+        expect(shoppingFacade.getProductQuantityFromShoppingCart(camera.id)).toBe(0);
+        expect(shoppingFacade.getProductQuantityFromShoppingCart(guitar.id)).toBe(2);
     });
 
     test("Should fail to create order from empty shopping cart", (): void => {
@@ -86,19 +84,19 @@ describe("Shopping Facade Acceptance", (): void => {
     });
 
     test("Should fail to create order with invalid cpf", (): void => {
-        shoppingFacade.addProductToShoppingCart(product2Id, 2);
+        shoppingFacade.addProductToShoppingCart(guitar.id, 2);
         expect(() => shoppingFacade.createOrderFromShoppingCart("111.111")).toThrow(new Error("Invalid CPF"));
     });
 
     test("Should create order from shopping cart", (): void => {
-        shoppingFacade.addProductToShoppingCart(product1Id, 2);
-        shoppingFacade.addProductToShoppingCart(product2Id, 1);
+        shoppingFacade.addProductToShoppingCart(camera.id, 2);
+        shoppingFacade.addProductToShoppingCart(guitar.id, 1);
         const order = shoppingFacade.createOrderFromShoppingCart(validCPF);
         expect(order).toBeDefined();
-        expect(order?.calculateTotalPrice()).toBe(52); //  + 0.05 tax and 10$ shipping cost
+        expect(order?.calculateTotalPrice()).toBe(92); //  + 0.05 tax and 10$ shipping cost
         expect(order?.status).toBe(OrderStatus.PENDING);
-        expect(inventory.findProduct(product1Id)?.quantity).toBe(98);
-        expect(inventory.findProduct(product2Id)?.quantity).toBe(49);
+        expect(inventory.findProduct(camera.id)?.quantity).toBe(98);
+        expect(inventory.findProduct(guitar.id)?.quantity).toBe(49);
         expect(shoppingFacade.eCommerce.shoppingCart.isEmpty).toBeTruthy();
     });
 
@@ -107,8 +105,8 @@ describe("Shopping Facade Acceptance", (): void => {
     });
 
     test("Should cancel existing order", (): void => {
-        shoppingFacade.addProductToShoppingCart(product1Id, 1);
-        shoppingFacade.addProductToShoppingCart(product2Id, 1);
+        shoppingFacade.addProductToShoppingCart(camera.id, 1);
+        shoppingFacade.addProductToShoppingCart(guitar.id, 1);
         const order = shoppingFacade.createOrderFromShoppingCart(validCPF);
         expect(shoppingFacade.cancelPlacedOrder(order!.id)).toBeTruthy(); // TODO check it this is testing correctly
         expect(placedOrders.getOrder(order!.id)?.status).toBe(OrderStatus.CANCELLED); // Palced Order ID should be passed
@@ -118,12 +116,18 @@ describe("Shopping Facade Acceptance", (): void => {
         expect(shoppingFacade.applyDiscountCodeToShoppingCart("Get100")).toBeFalsy();
     });
 
+    test("Should apply correct shipping cost", (): void => {
+        shoppingFacade.addProductToShoppingCart(guitar.id, 1);
+        const order = shoppingFacade.createOrderFromShoppingCart(validCPF);
+        expect(order?.calculateTotalPrice()).toBe(51); //  + 0.05 tax and 30$ shipping cost
+    });
+
     test("Should apply valid discount code to order", (): void => {
-        shoppingFacade.addProductToShoppingCart(product1Id, 2);
-        shoppingFacade.addProductToShoppingCart(product2Id, 1);
+        shoppingFacade.addProductToShoppingCart(camera.id, 2);
+        shoppingFacade.addProductToShoppingCart(guitar.id, 1);
         shoppingFacade.applyDiscountCodeToShoppingCart("Get20");
         const order = shoppingFacade.createOrderFromShoppingCart(validCPF);
-        expect(order?.calculateTotalPrice()).toBe(43.60); //  + 0.05 tax and 10$ shipping cost
+        expect(order?.calculateTotalPrice()).toBe(83.60);
     });
 
 })

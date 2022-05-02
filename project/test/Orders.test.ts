@@ -1,10 +1,12 @@
 import { Order, OrderItem, OrderStatus } from "../src/Order";
 import { NonPersistentPlacedOrder, OrderId } from "../src/Orders";
 import { Product } from "../src/Product";
+import { camera } from "./ProductSamples";
 
 test("order should persist", (): void => {
     const orders = new NonPersistentPlacedOrder();
-    let product: Product = { id: { value: 15 }, price: 10 };
+    let product: Product = camera;
+
     let item: OrderItem = { product, quantity: 2 };
     let items: OrderItem[] = [item];
     let id: OrderId = { value: 1 };

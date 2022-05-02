@@ -28,7 +28,7 @@ export default class ShoppingCart {
         return true;
     }
 
-    removeProduct(productId: ProductId): boolean {
+    removeItem(productId: ProductId): boolean {
         return this.orderItems.delete(productId);
     }
 
@@ -37,6 +37,10 @@ export default class ShoppingCart {
         this.orderItems.forEach((cur): number =>
             listOfItems.push(cur));
         return listOfItems;
+    }
+
+    clear(): void {
+        this.orderItems.clear();
     }
 
     getProductQuantity(productId: ProductId): number {
@@ -50,6 +54,7 @@ export default class ShoppingCart {
     isEmpty(): boolean {
         return this.orderItems.size == 0;
     }
+
     applyDiscountCode(code: number): void {
         this.discount = code;
     }
