@@ -19,6 +19,7 @@ export class Order {
     readonly cpf: Cpf;
     readonly discount: number | undefined;
     readonly items: OrderItem[];
+    readonly time: Date;
 
     status: OrderStatus;
     private priceCalculator: PriceCalculator;
@@ -31,6 +32,7 @@ export class Order {
 
         this.status = OrderStatus.PENDING;
         this.priceCalculator = new PriceCalculator();
+        this.time = new Date();
     }
 
     calculateTotalPrice(): number {

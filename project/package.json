@@ -4,21 +4,44 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "tsc && jest ./dist/test ",
+    "build": "tsc",
+    "test": "npm run build & jest",
     "coverage": "tsc && jest ./dist/test --coverage"
   },
-  "keywords": [],
+  "keywords": [
+    "jest",
+    "cucumber"
+  ],
   "author": "",
   "license": "ISC",
   "dependencies": {
     "@types/jest": "^27.4.1",
     "jest": "^27.5.1",
-    "ts-jest": "^27.1.4",
-    "ts-node": "^10.7.0",
-    "typescript": "^4.6.3"
+    "ts-jest": "^27.1.4"
   },
   "devDependencies": {
+    "@types/cucumber": "^7.0.0",
+    "cucumber": "^6.0.7",
+    "cucumber-pretty": "^6.0.1",
+    "cucumber-tsflow": "^4.0.0-preview.7",
+    "jest-cucumber": "^3.0.1",
     "ts-auto-mock": "^3.5.1",
-    "ts-mockito": "^2.6.1"
+    "ts-mockito": "^2.6.1",
+    "ts-node": "^10.7.0",
+    "typescript": "^4.6.4"
+  },
+  "jest": {
+    "transform": {
+      "^.+\\.tsx?$": "ts-jest"
+    },
+    "testMatch": [
+      "**/*.steps.ts",
+      "**/*.*.ts"
+    ],
+    "moduleFileExtensions": [
+      "js",
+      "ts",
+      "tsx"
+    ]
   }
 }

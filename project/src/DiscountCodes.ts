@@ -12,18 +12,17 @@ export class DiscountCodes {
         this.discountCodes.set(discountCode.code, discountCode);
     }
 
-    getDiscount(code: string): number {
+    getDiscount(code: string, curDate: Date): number {
         let discountCode = this.discountCodes.get(code);
 
-        if (!discountCode || this.isExpired(discountCode)) { return 0; }
+        if (!discountCode || this.isExpired(discountCode, curDate)) { return 0; }
 
         return discountCode.amount;
     }
 
-    isExpired(code: DiscountCode): boolean {
-        let today = new Date();
+    isExpired(code: DiscountCode, curDate: Date): boolean {
 
-        if (code.expireDate < today) { return true; }
+        if (code.expireDate < curDate) { return true; }
 
         return false;
     }

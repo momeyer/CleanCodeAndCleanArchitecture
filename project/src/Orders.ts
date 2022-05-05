@@ -1,7 +1,7 @@
 import { Order, OrderStatus } from "./Order";
 
 export type OrderId = {
-    value: number
+    value: string
 }
 
 export interface PlacedOrders {
@@ -43,7 +43,10 @@ export class NonPersistentPlacedOrder implements PlacedOrders {
     }
 
     generateNextOrderId(): OrderId {
-        return { value: this.placeOrders.size + 1 };
-
+        const year = new Date().getFullYear();
+        const minDigits = 8;
+        let sequencial = (this.placeOrders.size + 1).toString().padStart(minDigits, "0");
+        let id = year.toString() + sequencial;
+        return { value: id };
     }
 }

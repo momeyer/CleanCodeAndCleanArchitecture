@@ -1,4 +1,4 @@
-import { DiscountCodes } from "./DiscountCodes";
+import { DiscountCode, DiscountCodes } from "./DiscountCodes";
 import { Order, OrderStatus } from "./Order";
 import { OrderId, PlacedOrders } from "./Orders";
 import { ProductId } from "./Product";
@@ -16,10 +16,6 @@ export default class ECommerce {
         this.shoppingCart = new ShoppingCart(productInventory);
         this.productInventory = productInventory;
         this.discountCodes = new DiscountCodes();
-
-        this.discountCodes.addDiscountCode({
-            code: "Get20", amount: 0.20, expireDate: new Date("2030-01-01")
-        });
     }
 
     cancelPlacedOrder(orderID: OrderId): boolean {
@@ -50,9 +46,12 @@ export default class ECommerce {
         this.placedOrders.add(order);
         return order;
     }
+    addDiscountCode(discountCode: DiscountCode) {
+        this.discountCodes.addDiscountCode(discountCode);
+    }
 
-    applyDiscountCodeToShoppingCart(code: string): boolean {
-        const validDiscount = this.discountCodes.getDiscount(code);
+    applyDiscountCodeToShoppingCart(code: string, curTime: Date): boolean {
+        const validDiscount = this.discountCodes.getDiscount(code, curTime);
         if (!validDiscount) { return false; }
         this.shoppingCart.applyDiscountCode(validDiscount);
         return true;

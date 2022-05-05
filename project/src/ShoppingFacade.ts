@@ -30,7 +30,7 @@ export default class ShoppingFacade {
         return this.eCommerce.getProductQuantityFromShoppingCart(productId);
     }
 
-    applyDiscountCodeToShoppingCart(code: string): boolean {
-        return this.eCommerce.applyDiscountCodeToShoppingCart(code);
+    applyDiscountCodeToShoppingCart(code: string, curTime: Date): boolean {
+        return this.eCommerce.applyDiscountCodeToShoppingCart(code, curTime);
     };
 }

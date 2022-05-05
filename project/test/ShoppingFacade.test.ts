@@ -26,6 +26,11 @@ describe("Shopping Facade Acceptance", (): void => {
         shoppingFacade = new ShoppingFacade(ecommerce);
         inventory.addProduct(camera, 100);
         inventory.addProduct(guitar, 50);
+
+
+        ecommerce.addDiscountCode({
+            code: "Get20", amount: 0.20, expireDate: new Date("2030-01-01")
+        });
     })
 
 
@@ -101,19 +106,19 @@ describe("Shopping Facade Acceptance", (): void => {
     });
 
     test("Should fail to cancel non-existing order", (): void => {
-        expect(shoppingFacade.cancelPlacedOrder({ value: 10 })).toBeFalsy();
+        expect(shoppingFacade.cancelPlacedOrder({ value: "203000000010" })).toBeFalsy();
     });
 
     test("Should cancel existing order", (): void => {
         shoppingFacade.addProductToShoppingCart(camera.id, 1);
         shoppingFacade.addProductToShoppingCart(guitar.id, 1);
         const order = shoppingFacade.createOrderFromShoppingCart(validCPF);
-        expect(shoppingFacade.cancelPlacedOrder(order!.id)).toBeTruthy(); // TODO check it this is testing correctly
-        expect(placedOrders.getOrder(order!.id)?.status).toBe(OrderStatus.CANCELLED); // Palced Order ID should be passed
+        expect(shoppingFacade.cancelPlacedOrder(order!.id)).toBeTruthy();
+        expect(placedOrders.getOrder(order!.id)?.status).toBe(OrderStatus.CANCELLED);
     });
 
     test("Should fail to apply invalid discount code to order", (): void => {
-        expect(shoppingFacade.applyDiscountCodeToShoppingCart("Get100")).toBeFalsy();
+        expect(shoppingFacade.applyDiscountCodeToShoppingCart("Get100", new Date("2022-05-05"))).toBeFalsy();
     });
 
     test("Should apply correct shipping cost", (): void => {
@@ -125,9 +130,19 @@ describe("Shopping Facade Acceptance", (): void => {
     test("Should apply valid discount code to order", (): void => {
         shoppingFacade.addProductToShoppingCart(camera.id, 2);
         shoppingFacade.addProductToShoppingCart(guitar.id, 1);
-        shoppingFacade.applyDiscountCodeToShoppingCart("Get20");
+        shoppingFacade.applyDiscountCodeToShoppingCart("Get20", new Date("2022-05-05"));
         const order = shoppingFacade.createOrderFromShoppingCart(validCPF);
         expect(order?.calculateTotalPrice()).toBe(83.60);
     });
 
+    test("Should fail to apply expired discount code to order", (): void => {
+
+        ecommerce.addDiscountCode({ code: "Get30", amount: 0.30, expireDate: new Date("2022-04-05") })
+
+        shoppingFacade.addProductToShoppingCart(camera.id, 2);
+        shoppingFacade.addProductToShoppingCart(guitar.id, 1);
+        shoppingFacade.applyDiscountCodeToShoppingCart("Get30", new Date("2022-05-05"));
+        const order1 = shoppingFacade.createOrderFromShoppingCart(validCPF);
+        expect(order1?.calculateTotalPrice()).toBe(92);
+    });
 })
