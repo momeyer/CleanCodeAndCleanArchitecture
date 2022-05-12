@@ -1,5 +1,5 @@
 import { Product, ProductId } from "./domain/Product";
-import { ProductRepository, ProductQuantity } from "./domain/ProductRepository";
+import { ProductQuantity, ProductRepository } from "./domain/ProductRepository";
 
 export class NonPersistentProductRepository implements ProductRepository {
 
