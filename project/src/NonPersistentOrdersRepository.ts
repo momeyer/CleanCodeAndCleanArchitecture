@@ -1,5 +1,5 @@
 import { Order, OrderStatus } from "./domain/Order";
-import { OrdersRepository, OrderId } from "./OrdersRepository";
+import { OrdersRepository, OrderId } from "./domain/OrdersRepository";
 
 
 export class NonPersistentOrdersRepository implements OrdersRepository {

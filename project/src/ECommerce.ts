@@ -1,9 +1,9 @@
 import { DiscountCodeRepository } from "./DiscountCodeRepository";
 import { DiscountCode } from "./domain/DiscountCode";
 import { Order, OrderStatus } from "./domain/Order";
-import { OrderId, OrdersRepository } from "./OrdersRepository";
+import { OrderId, OrdersRepository } from "./domain/OrdersRepository";
 import { ProductId } from "./domain/Product";
-import { ProductInventory } from "./ProductInventory";
+import { ProductInventory } from "./domain/ProductInventory";
 import ShoppingCart from "./domain/ShoppingCart";
 
 export default class ECommerce {

@@ -1,7 +1,7 @@
 import { Order } from "./domain/Order";
+import { OrderId } from "./domain/OrdersRepository";
 import { ProductId } from "./domain/Product";
 import ECommerce from "./ECommerce";
-import { OrderId } from "./OrdersRepository";
 
 export default class ShoppingFacade {
     eCommerce: ECommerce;

@@ -1,17 +1,7 @@
 import { Product, ProductId } from "./domain/Product";
+import { ProductInventory, ProductQuantity } from "./domain/ProductInventory";
 
-export type ProductQuantity = {
-    product: Product;
-    quantity: number;
-}
-export interface ProductInventory {
-    addProduct(product: Product, quantity: number): boolean;
-    findProduct(productId: ProductId): ProductQuantity | undefined;
-    isValidProductId(productId: ProductId): boolean;
-    removeProduct(productId: ProductId, quantity: number): boolean;
-}
-
-export class NonPersistentProductInventory implements ProductInventory {
+export class NonPersistentProductRepository implements ProductInventory {
 
     private inventory: Map<ProductId, ProductQuantity>;
 

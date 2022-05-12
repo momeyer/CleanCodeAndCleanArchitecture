@@ -1,4 +1,4 @@
-import { Order, OrderStatus } from "./domain/Order";
+import { Order, OrderStatus } from "./Order";
 
 export type OrderId = {
     value: string

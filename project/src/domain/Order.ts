@@ -1,5 +1,5 @@
-import { OrderId } from "../OrdersRepository";
 import Cpf from "./Cpf";
+import { OrderId } from "./OrdersRepository";
 import PriceCalculator from "./PriceCalculator";
 import { Product } from "./Product";
 import { ShippingCalculator } from "./ShippingCalculator";

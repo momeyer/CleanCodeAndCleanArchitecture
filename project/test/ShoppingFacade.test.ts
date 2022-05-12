@@ -2,7 +2,7 @@ import { OrderStatus } from "../src/domain/Order";
 import { ProductId } from "../src/domain/Product";
 import ECommerce from "../src/ECommerce";
 import { NonPersistentOrdersRepository } from "../src/NonPersistentOrdersRepository";
-import { NonPersistentProductInventory } from "../src/ProductInventory";
+import { NonPersistentProductRepository } from "../src/NonPersistentProductRepository";
 import ShoppingFacade from "../src/ShoppingFacade";
 import { camera, guitar } from "./ProductSamples";
 
@@ -12,7 +12,7 @@ describe("Shopping Facade Acceptance", (): void => {
     let nonExistingProductId: ProductId = { value: 100 };
 
     let validCPF = "111.444.777-35";
-    let inventory: NonPersistentProductInventory;
+    let inventory: NonPersistentProductRepository;
 
     let ecommerce: ECommerce;
     let shoppingFacade: ShoppingFacade;
@@ -20,7 +20,7 @@ describe("Shopping Facade Acceptance", (): void => {
     beforeEach((): void => {
         placedOrders = new NonPersistentOrdersRepository();
 
-        inventory = new NonPersistentProductInventory();
+        inventory = new NonPersistentProductRepository();
 
         ecommerce = new ECommerce(placedOrders, inventory);
         shoppingFacade = new ShoppingFacade(ecommerce);

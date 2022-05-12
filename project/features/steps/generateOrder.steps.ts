@@ -1,17 +1,17 @@
 import { defineFeature, loadFeature } from 'jest-cucumber';
 import ShoppingCart from "../../src/domain/ShoppingCart";
-import { NonPersistentProductInventory } from '../../src/ProductInventory';
+import { NonPersistentProductRepository } from "../../src/NonPersistentProductRepository";
 import { camera } from "../../test/ProductSamples";
 
 const feature = loadFeature('features/generateOrder.feature');
 
 defineFeature(feature, (test) => {
 
-    let inventory: NonPersistentProductInventory;
+    let inventory: NonPersistentProductRepository;
     let shoppingCart: ShoppingCart;
 
     beforeEach(() => {
-        inventory = new NonPersistentProductInventory();
+        inventory = new NonPersistentProductRepository();
         inventory.addProduct(camera, 1);
     });
 

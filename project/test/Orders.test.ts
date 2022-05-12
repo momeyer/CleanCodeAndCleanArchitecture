@@ -1,7 +1,7 @@
 import { Order, OrderItem, OrderStatus } from "../src/domain/Order";
+import { OrderId } from "../src/domain/OrdersRepository";
 import { Product } from "../src/domain/Product";
 import { NonPersistentOrdersRepository } from "../src/NonPersistentOrdersRepository";
-import { OrderId } from "../src/OrdersRepository";
 import { camera } from "./ProductSamples";
 
 test("order should persist", (): void => {

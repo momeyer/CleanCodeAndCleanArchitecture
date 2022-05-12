@@ -1,11 +1,12 @@
-import { NonPersistentProductInventory, ProductInventory } from "../src/ProductInventory";
+import { ProductInventory } from "../src/domain/ProductInventory";
+import { NonPersistentProductRepository } from "../src/NonPersistentProductRepository";
 import { camera } from "./ProductSamples";
 
 describe("Non Persistent Product Inventory", (): void => {
-    let inventory: ProductInventory = new NonPersistentProductInventory();
+    let inventory: ProductInventory = new NonPersistentProductRepository();
 
     beforeEach((): void => {
-        inventory = new NonPersistentProductInventory();
+        inventory = new NonPersistentProductRepository();
     });
 
     test("invalid product", (): void => {
