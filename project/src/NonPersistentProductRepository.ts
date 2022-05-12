@@ -1,7 +1,7 @@
 import { Product, ProductId } from "./domain/Product";
-import { ProductInventory, ProductQuantity } from "./domain/ProductInventory";
+import { ProductRepository, ProductQuantity } from "./domain/ProductRepository";
 
-export class NonPersistentProductRepository implements ProductInventory {
+export class NonPersistentProductRepository implements ProductRepository {
 
     private inventory: Map<ProductId, ProductQuantity>;
 

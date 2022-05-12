@@ -3,16 +3,16 @@ import { DiscountCode } from "./domain/DiscountCode";
 import { Order, OrderStatus } from "./domain/Order";
 import { OrderId, OrdersRepository } from "./domain/OrdersRepository";
 import { ProductId } from "./domain/Product";
-import { ProductInventory } from "./domain/ProductInventory";
+import { ProductRepository } from "./domain/ProductRepository";
 import ShoppingCart from "./domain/ShoppingCart";
 
 export default class ECommerce {
     placedOrders: OrdersRepository;
     shoppingCart: ShoppingCart;
-    productInventory: ProductInventory;
+    productInventory: ProductRepository;
     discountCodes: NonPersistenDiscountCodeRepository;
 
-    constructor(placedOrders: OrdersRepository, productInventory: ProductInventory) {
+    constructor(placedOrders: OrdersRepository, productInventory: ProductRepository) {
         this.placedOrders = placedOrders;
         this.shoppingCart = new ShoppingCart(productInventory);
         this.productInventory = productInventory;

@@ -5,7 +5,7 @@ export type ProductQuantity = {
     quantity: number;
 };
 
-export interface ProductInventory {
+export interface ProductRepository {
     addProduct(product: Product, quantity: number): boolean;
     findProduct(productId: ProductId): ProductQuantity | undefined;
     isValidProductId(productId: ProductId): boolean;

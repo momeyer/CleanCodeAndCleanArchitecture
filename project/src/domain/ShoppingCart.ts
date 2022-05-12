@@ -1,14 +1,14 @@
 import { OrderItem } from "./Order";
 import { ProductId } from "./Product";
-import { ProductInventory } from "./ProductInventory";
+import { ProductRepository } from "./ProductRepository";
 
 export default class ShoppingCart {
 
     private orderItems: Map<ProductId, OrderItem>;
-    private productInventory: ProductInventory;
+    private productInventory: ProductRepository;
     discount?: number;
 
-    constructor(productInventory: ProductInventory) {
+    constructor(productInventory: ProductRepository) {
         this.productInventory = productInventory;
         this.orderItems = new Map<ProductId, OrderItem>();
     }
