@@ -1,6 +1,6 @@
 import { OrderItem } from "./Order";
 import { ProductId } from "./Product";
-import { ProductInventory } from "./ProductInventory";
+import { ProductInventory } from "../ProductInventory";
 
 export default class ShoppingCart {
 

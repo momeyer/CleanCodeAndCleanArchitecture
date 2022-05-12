@@ -1,4 +1,4 @@
-import { ShippingCalculator } from "../src/ShippingCalculator";
+import { ShippingCalculator } from "../src/domain/ShippingCalculator";
 import { camera, guitar, rubberDuck } from "./ProductSamples";
 
 describe("Shipping Calculator", (): void => {

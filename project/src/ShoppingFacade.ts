@@ -1,7 +1,7 @@
+import { Order } from "./domain/Order";
+import { ProductId } from "./domain/Product";
 import ECommerce from "./ECommerce";
-import { Order } from "./Order";
-import { OrderId } from "./Orders";
-import { ProductId } from "./Product";
+import { OrderId } from "./OrdersRepository";
 
 export default class ShoppingFacade {
     eCommerce: ECommerce;
@@ -18,7 +18,7 @@ export default class ShoppingFacade {
 
     updateProductQuantityFromShoppingCart(productId: ProductId, quantity: number): void { };
 
-    createOrderFromShoppingCart(cpf: string): Order | undefined { // should receive CPF
+    createOrderFromShoppingCart(cpf: string): Order | undefined {
         return this.eCommerce.createOrderFromShoppingCart(cpf);
     };
 
@@ -33,4 +33,7 @@ export default class ShoppingFacade {
     applyDiscountCodeToShoppingCart(code: string, curTime: Date): boolean {
         return this.eCommerce.applyDiscountCodeToShoppingCart(code, curTime);
     };
+
+    // simulate shipping costs
+    // get order sumary
 }

@@ -1,6 +1,6 @@
 import { defineFeature, loadFeature } from 'jest-cucumber';
+import ShoppingCart from "../../src/domain/ShoppingCart";
 import { NonPersistentProductInventory } from '../../src/ProductInventory';
-import ShoppingCart from "../../src/ShoppingCart";
 import { camera } from "../../test/ProductSamples";
 
 const feature = loadFeature('features/generateOrder.feature');

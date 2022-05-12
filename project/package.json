@@ -6,7 +6,7 @@
   "scripts": {
     "build": "tsc",
     "test": "npm run build & jest",
-    "coverage": "tsc && jest ./dist/test --coverage"
+    "coverage": "tsc && jest --coverage"
   },
   "keywords": [
     "jest",

@@ -1,10 +1,11 @@
-import { Order, OrderItem, OrderStatus } from "../src/Order";
-import { NonPersistentPlacedOrder, OrderId } from "../src/Orders";
-import { Product } from "../src/Product";
+import { Order, OrderItem, OrderStatus } from "../src/domain/Order";
+import { Product } from "../src/domain/Product";
+import { NonPersistentOrdersRepository } from "../src/NonPersistentOrdersRepository";
+import { OrderId } from "../src/OrdersRepository";
 import { camera } from "./ProductSamples";
 
 test("order should persist", (): void => {
-    const orders = new NonPersistentPlacedOrder();
+    const orders = new NonPersistentOrdersRepository();
     let product: Product = camera;
 
     let item: OrderItem = { product, quantity: 2 };
@@ -24,7 +25,7 @@ test("generateNext", () => {
     let items: OrderItem[] = [item];
     let id: OrderId = { value: "202200000001" };
 
-    const orders = new NonPersistentPlacedOrder();
+    const orders = new NonPersistentOrdersRepository();
     orders.add(new Order("111.444.777-35", orders.generateNextOrderId(), items));
     orders.add(new Order("111.444.777-35", orders.generateNextOrderId(), items));
     orders.add(new Order("111.444.777-35", orders.generateNextOrderId(), items));

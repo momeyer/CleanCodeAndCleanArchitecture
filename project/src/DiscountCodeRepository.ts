@@ -1,11 +1,6 @@
+import { DiscountCode } from "./domain/DiscountCode";
 
-export type DiscountCode = {
-    code: string,
-    amount: number,
-    expireDate: Date;
-}
-
-export class DiscountCodes {
+export class DiscountCodeRepository {
     discountCodes = new Map<string, DiscountCode>();
 
     addDiscountCode(discountCode: DiscountCode): void {

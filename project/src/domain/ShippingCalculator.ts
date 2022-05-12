@@ -1,4 +1,4 @@
-import { DimensionsAndWeight } from "./Product";
+import { DimensionsAndWeight } from "./DimensionsAndWeight";
 
 type ProductDetails = {
     dimensionsAndWeight: DimensionsAndWeight;

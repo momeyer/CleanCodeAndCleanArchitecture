@@ -1,14 +1,14 @@
+import { OrderStatus } from "../src/domain/Order";
+import { ProductId } from "../src/domain/Product";
 import ECommerce from "../src/ECommerce";
-import { OrderStatus } from "../src/Order";
-import { NonPersistentPlacedOrder } from "../src/Orders";
-import { ProductId } from "../src/Product";
+import { NonPersistentOrdersRepository } from "../src/NonPersistentOrdersRepository";
 import { NonPersistentProductInventory } from "../src/ProductInventory";
 import ShoppingFacade from "../src/ShoppingFacade";
 import { camera, guitar } from "./ProductSamples";
 
 describe("Shopping Facade Acceptance", (): void => {
-    let mockedPlacedOrders: NonPersistentPlacedOrder;
-    let placedOrders: NonPersistentPlacedOrder;
+    let mockedPlacedOrders: NonPersistentOrdersRepository;
+    let placedOrders: NonPersistentOrdersRepository;
     let nonExistingProductId: ProductId = { value: 100 };
 
     let validCPF = "111.444.777-35";
@@ -18,7 +18,7 @@ describe("Shopping Facade Acceptance", (): void => {
     let shoppingFacade: ShoppingFacade;
 
     beforeEach((): void => {
-        placedOrders = new NonPersistentPlacedOrder();
+        placedOrders = new NonPersistentOrdersRepository();
 
         inventory = new NonPersistentProductInventory();
 
@@ -98,7 +98,8 @@ describe("Shopping Facade Acceptance", (): void => {
         shoppingFacade.addProductToShoppingCart(guitar.id, 1);
         const order = shoppingFacade.createOrderFromShoppingCart(validCPF);
         expect(order).toBeDefined();
-        expect(order?.calculateTotalPrice()).toBe(92); //  + 0.05 tax and 10$ shipping cost
+        expect(order?.calculateTotalPrice()).toBe(42); //  + 0.05 tax
+        expect(order?.calculateShippingCost()).toBe(50);
         expect(order?.status).toBe(OrderStatus.PENDING);
         expect(inventory.findProduct(camera.id)?.quantity).toBe(98);
         expect(inventory.findProduct(guitar.id)?.quantity).toBe(49);
@@ -124,7 +125,8 @@ describe("Shopping Facade Acceptance", (): void => {
     test("Should apply correct shipping cost", (): void => {
         shoppingFacade.addProductToShoppingCart(guitar.id, 1);
         const order = shoppingFacade.createOrderFromShoppingCart(validCPF);
-        expect(order?.calculateTotalPrice()).toBe(51); //  + 0.05 tax and 30$ shipping cost
+        expect(order?.calculateTotalPrice()).toBe(21); //  + 0.05 tax
+        expect(order?.calculateShippingCost()).toBe(30); //  + 0.05 tax
     });
 
     test("Should apply valid discount code to order", (): void => {
@@ -132,7 +134,7 @@ describe("Shopping Facade Acceptance", (): void => {
         shoppingFacade.addProductToShoppingCart(guitar.id, 1);
         shoppingFacade.applyDiscountCodeToShoppingCart("Get20", new Date("2022-05-05"));
         const order = shoppingFacade.createOrderFromShoppingCart(validCPF);
-        expect(order?.calculateTotalPrice()).toBe(83.60);
+        expect(order?.calculateTotalPrice()).toBe(33.60);
     });
 
     test("Should fail to apply expired discount code to order", (): void => {
@@ -143,6 +145,7 @@ describe("Shopping Facade Acceptance", (): void => {
         shoppingFacade.addProductToShoppingCart(guitar.id, 1);
         shoppingFacade.applyDiscountCodeToShoppingCart("Get30", new Date("2022-05-05"));
         const order1 = shoppingFacade.createOrderFromShoppingCart(validCPF);
-        expect(order1?.calculateTotalPrice()).toBe(92);
+        expect(order1?.calculateTotalPrice()).toBe(42); //  + 0.05 tax
+        expect(order1?.calculateShippingCost()).toBe(50);
     });
 })

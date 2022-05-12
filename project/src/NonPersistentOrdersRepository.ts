@@ -1,17 +1,8 @@
-import { Order, OrderStatus } from "./Order";
+import { Order, OrderStatus } from "./domain/Order";
+import { OrdersRepository, OrderId } from "./OrdersRepository";
 
-export type OrderId = {
-    value: string
-}
 
-export interface PlacedOrders {
-    add(order: Order): boolean;
-    updateStatus(orderId: OrderId, status: OrderStatus): boolean;
-    getAllPlacedOrder(): Map<OrderId, Order>;
-    generateNextOrderId(): OrderId;
-}
-
-export class NonPersistentPlacedOrder implements PlacedOrders {
+export class NonPersistentOrdersRepository implements OrdersRepository {
 
     placeOrders: Map<OrderId, Order>;
 

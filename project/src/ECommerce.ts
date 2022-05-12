@@ -1,21 +1,22 @@
-import { DiscountCode, DiscountCodes } from "./DiscountCodes";
-import { Order, OrderStatus } from "./Order";
-import { OrderId, PlacedOrders } from "./Orders";
-import { ProductId } from "./Product";
+import { DiscountCodeRepository } from "./DiscountCodeRepository";
+import { DiscountCode } from "./domain/DiscountCode";
+import { Order, OrderStatus } from "./domain/Order";
+import { OrderId, OrdersRepository } from "./OrdersRepository";
+import { ProductId } from "./domain/Product";
 import { ProductInventory } from "./ProductInventory";
-import ShoppingCart from "./ShoppingCart";
+import ShoppingCart from "./domain/ShoppingCart";
 
 export default class ECommerce {
-    placedOrders: PlacedOrders;
+    placedOrders: OrdersRepository;
     shoppingCart: ShoppingCart;
     productInventory: ProductInventory;
-    discountCodes: DiscountCodes;
+    discountCodes: DiscountCodeRepository;
 
-    constructor(placedOrders: PlacedOrders, productInventory: ProductInventory) {
+    constructor(placedOrders: OrdersRepository, productInventory: ProductInventory) {
         this.placedOrders = placedOrders;
         this.shoppingCart = new ShoppingCart(productInventory);
         this.productInventory = productInventory;
-        this.discountCodes = new DiscountCodes();
+        this.discountCodes = new DiscountCodeRepository();
     }
 
     cancelPlacedOrder(orderID: OrderId): boolean {
@@ -46,7 +47,7 @@ export default class ECommerce {
         this.placedOrders.add(order);
         return order;
     }
-    addDiscountCode(discountCode: DiscountCode) {
+    addDiscountCode(discountCode: DiscountCode): void {
         this.discountCodes.addDiscountCode(discountCode);
     }
 

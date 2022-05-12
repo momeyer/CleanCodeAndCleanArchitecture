@@ -1,4 +1,4 @@
-import { Product, ProductId } from "./Product";
+import { Product, ProductId } from "./domain/Product";
 
 export type ProductQuantity = {
     product: Product;
