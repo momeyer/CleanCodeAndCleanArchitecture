@@ -1,5 +1,4 @@
 import { Order } from "./Order";
-import { ShippingCalculator } from "./ShippingCalculator";
 
 
 
@@ -26,7 +25,7 @@ export default class PriceCalculator {
     private calculateProductsCost(order: Order): void {
         this.total = 0;
         order.items.forEach((cur): void => {
-            this.total += cur.quantity * cur.product.price;
+            this.total += cur.quantity * cur.price;
         })
     }
 }

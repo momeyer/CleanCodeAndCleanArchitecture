@@ -22,7 +22,7 @@ defineFeature(feature, (test) => {
         });
 
         when('add camera to shopping cart', () => {
-            shoppingCart.addProduct(camera.id, 1);
+            shoppingCart.addItem(camera.id, 1);
         });
 
         then('shopping cart should have one camera', () => {

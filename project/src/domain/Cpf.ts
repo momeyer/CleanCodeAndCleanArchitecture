@@ -8,7 +8,7 @@ export default class Cpf {
         this.value = cpf;
     }
 
-    private isValid(rawCpf: string): boolean | undefined {
+    private isValid(rawCpf: string): boolean {
 
         if (!this.isValidInput(rawCpf)) { return false; }
 

@@ -6,22 +6,28 @@ export default class ShoppingCart {
 
     private orderItems: Map<ProductId, OrderItem>;
     private productInventory: ProductInventory;
-    discount: number | undefined;
+    discount?: number;
 
     constructor(productInventory: ProductInventory) {
         this.productInventory = productInventory;
         this.orderItems = new Map<ProductId, OrderItem>();
     }
 
-    addProduct(productId: ProductId, quantity: number): boolean {
+    addItem(productId: ProductId, quantity: number): boolean {
         const productInInventory = this.productInventory.findProduct(productId);
         if (!productInInventory || productInInventory.quantity == 0 || quantity <= 0) {
             return false;
         }
 
-        let product = this.orderItems.get(productId);
+        const product = this.orderItems.get(productId);
         if (!product) {
-            this.orderItems.set(productId, { ...productInInventory, quantity: quantity });
+            const orderItem: OrderItem = {
+                productId: productInInventory.product.id,
+                productDetails: productInInventory.product.dimensionsAndWeight,
+                quantity: quantity,
+                price: productInInventory.product.price
+            }
+            this.orderItems.set(productId, orderItem);
             return true;
         }
         product.quantity += quantity;
@@ -43,7 +49,7 @@ export default class ShoppingCart {
         this.orderItems.clear();
     }
 
-    getProductQuantity(productId: ProductId): number {
+    getItemQuantity(productId: ProductId): number {
         const product = this.orderItems.get(productId);
         if (!product) {
             return 0;
@@ -55,7 +61,7 @@ export default class ShoppingCart {
         return this.orderItems.size == 0;
     }
 
-    applyDiscountCode(code: number): void {
-        this.discount = code;
+    applyDiscountCode(discount: number): void {
+        this.discount = discount;
     }
 }

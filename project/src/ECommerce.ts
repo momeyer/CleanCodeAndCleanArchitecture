@@ -1,4 +1,4 @@
-import { DiscountCodeRepository } from "./DiscountCodeRepository";
+import { NonPersistenDiscountCodeRepository } from "./NonPersistenDiscountCodeRepository";
 import { DiscountCode } from "./domain/DiscountCode";
 import { Order, OrderStatus } from "./domain/Order";
 import { OrderId, OrdersRepository } from "./domain/OrdersRepository";
@@ -10,13 +10,13 @@ export default class ECommerce {
     placedOrders: OrdersRepository;
     shoppingCart: ShoppingCart;
     productInventory: ProductInventory;
-    discountCodes: DiscountCodeRepository;
+    discountCodes: NonPersistenDiscountCodeRepository;
 
     constructor(placedOrders: OrdersRepository, productInventory: ProductInventory) {
         this.placedOrders = placedOrders;
         this.shoppingCart = new ShoppingCart(productInventory);
         this.productInventory = productInventory;
-        this.discountCodes = new DiscountCodeRepository();
+        this.discountCodes = new NonPersistenDiscountCodeRepository();
     }
 
     cancelPlacedOrder(orderID: OrderId): boolean {
@@ -24,7 +24,7 @@ export default class ECommerce {
     };
 
     addProductToShoppingCart(productId: ProductId, quantity: number): boolean {
-        return this.shoppingCart.addProduct(productId, quantity);
+        return this.shoppingCart.addItem(productId, quantity);
     }
 
     removeProductToShoppingCart(productId: ProductId): boolean {
@@ -38,7 +38,7 @@ export default class ECommerce {
 
         const orderItems = this.shoppingCart.getAllItems();
         orderItems.forEach((cur): void => {
-            this.productInventory.removeProduct(cur.product.id, cur.quantity);
+            this.productInventory.removeProduct(cur.productId, cur.quantity);
         })
 
         this.shoppingCart.clear();
@@ -47,6 +47,7 @@ export default class ECommerce {
         this.placedOrders.add(order);
         return order;
     }
+
     addDiscountCode(discountCode: DiscountCode): void {
         this.discountCodes.addDiscountCode(discountCode);
     }
@@ -59,7 +60,7 @@ export default class ECommerce {
     }
 
     getProductQuantityFromShoppingCart(productId: ProductId): number {
-        return this.shoppingCart.getProductQuantity(productId);
+        return this.shoppingCart.getItemQuantity(productId);
     }
 
     getAllPalcedOrders(): Map<OrderId, Order> {

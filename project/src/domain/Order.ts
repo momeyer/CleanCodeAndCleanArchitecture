@@ -1,12 +1,15 @@
 import Cpf from "./Cpf";
+import { DimensionsAndWeight } from "./DimensionsAndWeight";
 import { OrderId } from "./OrdersRepository";
 import PriceCalculator from "./PriceCalculator";
-import { Product } from "./Product";
+import { ProductId } from "./Product";
 import { ShippingCalculator } from "./ShippingCalculator";
 
 export type OrderItem = {
-    product: Product; // productID, price
+    productId: ProductId;
+    productDetails: DimensionsAndWeight;
     quantity: number;
+    price: number
 }
 
 export enum OrderStatus {
@@ -16,26 +19,21 @@ export enum OrderStatus {
 }
 
 export class Order {
-    readonly id: OrderId;
     readonly cpf: Cpf;
-    readonly discount?: number;
     readonly items: OrderItem[];
 
     status: OrderStatus;
     private priceCalculator: PriceCalculator;
     private shippingCalculator: ShippingCalculator;
 
-    constructor(cpf: string, orderId: OrderId, orderItems: OrderItem[], discount?: number, readonly time: Date = new Date()) {
-        this.id = orderId;
+    constructor(cpf: string, readonly id: OrderId, orderItems: OrderItem[], readonly discount?: number, readonly time: Date = new Date()) {
         this.cpf = new Cpf(cpf);
-        this.discount = discount;
         this.items = orderItems;
 
         this.status = OrderStatus.PENDING;
         this.priceCalculator = new PriceCalculator();
         this.shippingCalculator = new ShippingCalculator();
     }
-    // TODO addItem()
     // TODO addDiscountCode()
     calculateTotalPrice(): number {
         return this.priceCalculator.calculate(this);
@@ -43,7 +41,7 @@ export class Order {
 
     calculateShippingCost(): number {
         this.items.forEach((cur): void => {
-            this.shippingCalculator.addProductDetails(cur.product.dimensionsAndWeight, cur.quantity);
+            this.shippingCalculator.addProductDetails(cur.productDetails, cur.quantity);
         })
 
         return this.shippingCalculator.calculate();

@@ -33,7 +33,7 @@ export default class ShoppingFacade {
     applyDiscountCodeToShoppingCart(code: string, curTime: Date): boolean {
         return this.eCommerce.applyDiscountCodeToShoppingCart(code, curTime);
     };
-
     // simulate shipping costs
     // get order sumary
+    // input and output types
 }
