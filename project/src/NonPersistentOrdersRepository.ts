@@ -1,6 +1,6 @@
 import { Order, OrderStatus } from "./domain/Order";
-import { OrdersRepository, OrderId } from "./domain/OrdersRepository";
-
+import { OrderId } from "./domain/OrderIdGenerator";
+import { OrdersRepository } from "./domain/OrdersRepository";
 
 export class NonPersistentOrdersRepository implements OrdersRepository {
 
@@ -31,13 +31,5 @@ export class NonPersistentOrdersRepository implements OrdersRepository {
 
     getAllPlacedOrder(): Map<OrderId, Order> {
         return this.placeOrders;
-    }
-
-    generateNextOrderId(): OrderId {
-        const year = new Date().getFullYear();
-        const minDigits = 8;
-        let sequencial = (this.placeOrders.size + 1).toString().padStart(minDigits, "0");
-        let id = year.toString() + sequencial;
-        return { value: id };
     }
 }

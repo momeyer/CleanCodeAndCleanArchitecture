@@ -14,7 +14,7 @@ export default class ShoppingCart {
     }
 
     addItem(productId: ProductId, quantity: number): boolean {
-        const productInInventory = this.productInventory.findProduct(productId);
+        const productInInventory = this.productInventory.find(productId);
         if (!productInInventory || productInInventory.quantity == 0 || quantity <= 0) {
             return false;
         }

@@ -1,5 +1,5 @@
 import { Order, OrderItem, OrderStatus } from "../src/domain/Order";
-import { OrderId } from "../src/domain/OrdersRepository";
+import { OrderId } from "../src/domain/OrderIdGenerator";
 import { Product } from "../src/domain/Product";
 import { NonPersistentOrdersRepository } from "../src/NonPersistentOrdersRepository";
 import { camera } from "./ProductSamples";
@@ -18,15 +18,14 @@ test("order should persist", (): void => {
     let items: OrderItem[] = [item];
     let id: OrderId = { value: "202200000001" };
 
-    let newOrder = new Order(cpf, id, items);
+    let newOrder = new Order(cpf, id);
 
     expect(orders.add(newOrder)).toBeTruthy();
-    expect(orders.updateStatus(id, OrderStatus.CONFIRMED)).toBeTruthy();
 })
 
-test("generateNext", () => {
+test("order should update order status", (): void => {
+    const orders = new NonPersistentOrdersRepository();
     let product: Product = camera;
-
     let item: OrderItem = {
         productId: product.id,
         productDetails: product.dimensionsAndWeight,
@@ -36,18 +35,9 @@ test("generateNext", () => {
     let items: OrderItem[] = [item];
     let id: OrderId = { value: "202200000001" };
 
-    const orders = new NonPersistentOrdersRepository();
-    orders.add(new Order(cpf, orders.generateNextOrderId(), items));
-    orders.add(new Order(cpf, orders.generateNextOrderId(), items));
-    orders.add(new Order(cpf, orders.generateNextOrderId(), items));
-    orders.add(new Order(cpf, orders.generateNextOrderId(), items));
-    orders.add(new Order(cpf, orders.generateNextOrderId(), items));
-    orders.add(new Order(cpf, orders.generateNextOrderId(), items));
-    orders.add(new Order(cpf, orders.generateNextOrderId(), items));
-    orders.add(new Order(cpf, orders.generateNextOrderId(), items));
-    orders.add(new Order(cpf, orders.generateNextOrderId(), items));
-    orders.add(new Order(cpf, orders.generateNextOrderId(), items));
-    orders.add(new Order(cpf, orders.generateNextOrderId(), items));
-    orders.add(new Order(cpf, orders.generateNextOrderId(), items));
-    expect(orders.generateNextOrderId().value).toBe("202200000013");
+    let newOrder = new Order(cpf, id);
+    expect(orders.add(newOrder)).toBeTruthy();
+    expect(orders.getOrder(id)?.status).toBe(OrderStatus.PENDING);
+    expect(orders.updateStatus(id, OrderStatus.CONFIRMED)).toBeTruthy();
+    expect(orders.getOrder(id)?.status).toBe(OrderStatus.CONFIRMED);
 })

@@ -1,6 +1,6 @@
 import Cpf from "./Cpf";
 import { DimensionsAndWeight } from "./DimensionsAndWeight";
-import { OrderId } from "./OrdersRepository";
+import { OrderId } from "./OrderIdGenerator";
 import PriceCalculator from "./PriceCalculator";
 import { ProductId } from "./Product";
 import { ShippingCalculator } from "./ShippingCalculator";
@@ -26,15 +26,19 @@ export class Order {
     private priceCalculator: PriceCalculator;
     private shippingCalculator: ShippingCalculator;
 
-    constructor(cpf: string, readonly id: OrderId, orderItems: OrderItem[], readonly discount?: number, readonly time: Date = new Date()) {
+    constructor(cpf: string, readonly id: OrderId, readonly discount?: number, readonly time: Date = new Date()) {
         this.cpf = new Cpf(cpf);
-        this.items = orderItems;
+        this.items = [];
 
         this.status = OrderStatus.PENDING;
         this.priceCalculator = new PriceCalculator();
         this.shippingCalculator = new ShippingCalculator();
     }
-    // TODO addDiscountCode()
+
+    addItem(item: OrderItem): void {
+        this.items.push(item);
+    }
+
     calculateTotalPrice(): number {
         return this.priceCalculator.calculate(this);
     }

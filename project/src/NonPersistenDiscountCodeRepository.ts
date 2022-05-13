@@ -1,5 +1,5 @@
-import { DiscountCodeRepository } from "./domain/DiscountCodeRepository";
 import { DiscountCode } from "./domain/DiscountCode";
+import { DiscountCodeRepository } from "./domain/DiscountCodeRepository";
 
 export class NonPersistenDiscountCodeRepository implements DiscountCodeRepository {
     discountCodes = new Map<string, DiscountCode>();

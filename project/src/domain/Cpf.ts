@@ -1,5 +1,4 @@
 
-
 export default class Cpf {
     readonly value: string;
 

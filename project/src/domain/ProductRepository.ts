@@ -6,8 +6,9 @@ export type ProductQuantity = {
 };
 
 export interface ProductRepository {
-    addProduct(product: Product, quantity: number): boolean;
-    findProduct(productId: ProductId): ProductQuantity | undefined;
+    add(product: Product, quantity: number): boolean;
+    find(productId: ProductId): ProductQuantity | undefined;
     isValidProductId(productId: ProductId): boolean;
-    removeProduct(productId: ProductId, quantity: number): boolean;
+    remove(productId: ProductId, quantity: number): boolean;
+    list(): ProductQuantity[];
 }
