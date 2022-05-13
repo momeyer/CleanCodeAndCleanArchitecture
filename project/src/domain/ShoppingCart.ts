@@ -10,7 +10,14 @@ export default class ShoppingCart {
         this.orderItems = new Map<number, OrderItem>();
     }
 
-    async addItem(product: Product, quantity: number): Promise<boolean> {
+    getContent(): OrderItem[] {
+        let listOfItems: OrderItem[] = [];
+        this.orderItems.forEach((cur): number =>
+            listOfItems.push(cur));
+        return listOfItems;
+    }
+
+    addItem(product: Product, quantity: number): boolean {
 
         const existingProduct = this.orderItems.get(product.id);
         if (!existingProduct) {
@@ -31,13 +38,6 @@ export default class ShoppingCart {
         return this.orderItems.delete(productId);
     }
 
-    getAllItems(): OrderItem[] {
-        let listOfItems: OrderItem[] = [];
-        this.orderItems.forEach((cur): number =>
-            listOfItems.push(cur));
-        return listOfItems;
-    }
-
     clear(): void {
         this.orderItems.clear();
     }
@@ -47,7 +47,7 @@ export default class ShoppingCart {
         if (!product) {
             return 0;
         }
-        return product!.quantity;
+        return product.quantity;
     }
 
     isEmpty(): boolean {
@@ -57,4 +57,7 @@ export default class ShoppingCart {
     applyDiscountCode(discount: number): void {
         this.discount = discount;
     }
+
+    //generate order sumary
+    //simulate shipping cost
 }
