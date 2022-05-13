@@ -1,40 +1,33 @@
 import { OrderItem } from "./Order";
-import { ProductId } from "./Product";
-import { ProductRepository } from "./ProductRepository";
+import { Product } from "./Product";
 
 export default class ShoppingCart {
 
-    private orderItems: Map<ProductId, OrderItem>;
-    private productInventory: ProductRepository;
+    private orderItems: Map<number, OrderItem>;
     discount?: number;
 
-    constructor(productInventory: ProductRepository) {
-        this.productInventory = productInventory;
-        this.orderItems = new Map<ProductId, OrderItem>();
+    constructor() {
+        this.orderItems = new Map<number, OrderItem>();
     }
 
-    addItem(productId: ProductId, quantity: number): boolean {
-        const productInInventory = this.productInventory.find(productId);
-        if (!productInInventory || productInInventory.quantity == 0 || quantity <= 0) {
-            return false;
-        }
+    async addItem(product: Product, quantity: number): Promise<boolean> {
 
-        const product = this.orderItems.get(productId);
-        if (!product) {
+        const existingProduct = this.orderItems.get(product.id);
+        if (!existingProduct) {
             const orderItem: OrderItem = {
-                productId: productInInventory.product.id,
-                productDetails: productInInventory.product.dimensionsAndWeight,
+                productId: product.id,
+                productDetails: product.dimensionsAndWeight,
                 quantity: quantity,
-                price: productInInventory.product.price
+                price: product.price
             }
-            this.orderItems.set(productId, orderItem);
+            this.orderItems.set(product.id, orderItem);
             return true;
         }
-        product.quantity += quantity;
+        existingProduct.quantity += quantity;
         return true;
     }
 
-    removeItem(productId: ProductId): boolean {
+    removeItem(productId: number): boolean {
         return this.orderItems.delete(productId);
     }
 
@@ -49,7 +42,7 @@ export default class ShoppingCart {
         this.orderItems.clear();
     }
 
-    getItemQuantity(productId: ProductId): number {
+    getItemQuantity(productId: number): number {
         const product = this.orderItems.get(productId);
         if (!product) {
             return 0;

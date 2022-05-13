@@ -1,7 +1,7 @@
 import { Product } from "../src/domain/Product";
 
 export const camera: Product = {
-    id: { value: 1 },
+    id: 1,
     description: "Camera",
     dimensionsAndWeight: {
         height_cm: 20,
@@ -13,7 +13,7 @@ export const camera: Product = {
 };
 
 export const guitar: Product = {
-    id: { value: 2 },
+    id: 2,
     description: "Guitar",
     dimensionsAndWeight: {
         height_cm: 100,
@@ -26,7 +26,7 @@ export const guitar: Product = {
 
 
 export const rubberDuck: Product = {
-    id: { value: 3 },
+    id: 3,
     description: "Rubber Duck",
     dimensionsAndWeight: {
         height_cm: 5,

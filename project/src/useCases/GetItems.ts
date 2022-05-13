@@ -12,7 +12,7 @@ export class GetItems {
         const output: Output[] = [];
         for (const item of productQuantityList) {
             output.push({
-                id: item.product.id.value,
+                id: item.product.id,
                 description: item.product.description,
                 price: item.product.price,
                 quantity: item.quantity

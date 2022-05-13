@@ -2,11 +2,10 @@ import Cpf from "./Cpf";
 import { DimensionsAndWeight } from "./DimensionsAndWeight";
 import { OrderId } from "./OrderIdGenerator";
 import PriceCalculator from "./PriceCalculator";
-import { ProductId } from "./Product";
 import { ShippingCalculator } from "./ShippingCalculator";
 
 export type OrderItem = {
-    productId: ProductId;
+    productId: number;
     productDetails: DimensionsAndWeight;
     quantity: number;
     price: number

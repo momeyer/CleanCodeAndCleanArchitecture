@@ -1,11 +1,7 @@
 import { DimensionsAndWeight } from "./DimensionsAndWeight";
 
-export type ProductId = {
-    value: number;
-}
-
 export type Product = {
-    id: ProductId;
+    id: number;
     description: string;
     dimensionsAndWeight: DimensionsAndWeight;
     price: number;

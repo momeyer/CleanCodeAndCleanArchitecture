@@ -1,4 +1,4 @@
-import { Product, ProductId } from "./Product";
+import { Product } from "./Product";
 
 export type ProductQuantity = {
     product: Product;
@@ -6,9 +6,9 @@ export type ProductQuantity = {
 };
 
 export interface ProductRepository {
-    add(product: Product, quantity: number): boolean;
-    find(productId: ProductId): ProductQuantity | undefined;
-    isValidProductId(productId: ProductId): boolean;
-    remove(productId: ProductId, quantity: number): boolean;
-    list(): ProductQuantity[];
+    add(product: Product, quantity: number): Promise<boolean>;
+    find(productId: number): Promise<ProductQuantity | undefined>;
+    isValidProductId(productId: number): Promise<boolean>;
+    remove(productId: number, quantity: number): Promise<boolean>;
+    list(): Promise<ProductQuantity[]>;
 }
