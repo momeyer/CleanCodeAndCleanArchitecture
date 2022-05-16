@@ -1,8 +1,8 @@
 import { DimensionsAndWeight } from "./DimensionsAndWeight";
 
-export type Product = {
-    id: number;
-    description: string;
-    dimensionsAndWeight: DimensionsAndWeight;
-    price: number;
+export class Product {
+    constructor(readonly id: number,
+        readonly description: string,
+        readonly dimensionsAndWeight: DimensionsAndWeight,
+        readonly price: number) { }
 };

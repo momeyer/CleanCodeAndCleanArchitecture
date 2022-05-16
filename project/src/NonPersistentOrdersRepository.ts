@@ -10,12 +10,12 @@ export class NonPersistentOrdersRepository implements OrdersRepository {
         this.placeOrders = new Map<OrderId, Order>();
     }
 
-    add(order: Order): boolean {
+    async add(order: Order): Promise<boolean> {
         this.placeOrders.set(order.id, order);
         return true;
     };
 
-    updateStatus(orderId: OrderId, status: OrderStatus): boolean {
+    async updateStatus(orderId: OrderId, status: OrderStatus): Promise<boolean> {
         let order = this.placeOrders.get(orderId);
         if (!order) {
             return false;
@@ -25,11 +25,11 @@ export class NonPersistentOrdersRepository implements OrdersRepository {
         return true;
     }
 
-    getOrder(orderId: OrderId): Order | undefined {
+    async getOrder(orderId: OrderId): Promise<Order | undefined> {
         return this.placeOrders.get(orderId);
     }
 
-    getAllPlacedOrder(): Map<OrderId, Order> {
+    async getAllPlacedOrder(): Promise<Map<OrderId, Order>> {
         return this.placeOrders;
     }
 }

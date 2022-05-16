@@ -7,7 +7,7 @@ export const camera: Product = {
         height_cm: 20,
         width_cm: 15,
         depth_cm: 10,
-        weight: { value: 1 },
+        weight_kg: 1,
     },
     price: 10
 };
@@ -19,7 +19,7 @@ export const guitar: Product = {
         height_cm: 100,
         width_cm: 30,
         depth_cm: 10,
-        weight: { value: 3 },
+        weight_kg: 3,
     },
     price: 20
 };
@@ -32,7 +32,7 @@ export const rubberDuck: Product = {
         height_cm: 5,
         width_cm: 5,
         depth_cm: 5,
-        weight: { value: 0.05 },
+        weight_kg: 0.05,
     },
     price: 1
 };

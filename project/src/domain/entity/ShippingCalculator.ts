@@ -41,6 +41,6 @@ export class ShippingCalculator {
     }
 
     private calculateItemDensityInKgPerM3(product: ProductDetails): number {
-        return product.dimensionsAndWeight.weight.value / this.calculateItemVolumeInM3(product);
+        return product.dimensionsAndWeight.weight_kg / this.calculateItemVolumeInM3(product);
     }
 }

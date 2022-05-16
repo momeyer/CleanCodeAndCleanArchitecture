@@ -11,4 +11,5 @@ export interface ProductRepository {
     isValidProductId(productId: number): Promise<boolean>;
     remove(productId: number, quantity: number): Promise<boolean>;
     list(): Promise<ProductQuantity[]>;
+    nextId(): Promise<number>;
 }

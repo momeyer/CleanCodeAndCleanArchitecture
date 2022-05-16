@@ -20,10 +20,10 @@ test("order should persist", (): void => {
 
     let newOrder = new Order(cpf, id);
 
-    expect(orders.add(newOrder)).toBeTruthy();
+    expect(orders.add(newOrder)).resolves.toBeTruthy();
 })
 
-test("order should update order status", (): void => {
+test("order should update order status", async (): Promise<void> => {
     const orders = new NonPersistentOrdersRepository();
     let product: Product = camera;
     let item: OrderItem = {
@@ -36,8 +36,13 @@ test("order should update order status", (): void => {
     let id: OrderId = { value: "202200000001" };
 
     let newOrder = new Order(cpf, id);
-    expect(orders.add(newOrder)).toBeTruthy();
-    expect(orders.getOrder(id)?.status).toBe(OrderStatus.PENDING);
-    expect(orders.updateStatus(id, OrderStatus.CONFIRMED)).toBeTruthy();
-    expect(orders.getOrder(id)?.status).toBe(OrderStatus.CONFIRMED);
+    let output = await orders.add(newOrder);
+    expect(output).toBeTruthy();
+
+
+    let order = await orders.getOrder(id);
+    expect(order?.status).toBe(OrderStatus.PENDING);
+    expect(orders.updateStatus(id, OrderStatus.CONFIRMED)).resolves.toBeTruthy();
+    order = await orders.getOrder(id);
+    expect(order?.status).toBe(OrderStatus.CONFIRMED);
 })
