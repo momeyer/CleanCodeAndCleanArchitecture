@@ -1,5 +1,5 @@
-import { Order } from "../src/domain/Order";
-import { OrderIdGenerator } from "../src/domain/OrderIdGenerator";
+import { Order } from "../src/domain/entity/Order";
+import { OrderIdGenerator } from "../src/domain/entity/OrderIdGenerator";
 import { NonPersistentOrdersRepository } from "../src/NonPersistentOrdersRepository";
 
 test("should incrise sequencial", () => {

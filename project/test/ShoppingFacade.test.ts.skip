@@ -1,5 +1,5 @@
-// import { OrderStatus } from "../src/domain/Order";
-// import { ProductId } from "../src/domain/Product";
+// import { OrderStatus } from "../src/domain/entity/Order";
+// import { ProductId } from "../src/domain/entity/Product";
 // import ECommerce from "../src/ECommerce";
 // import { NonPersistentOrdersRepository } from "../src/NonPersistentOrdersRepository";
 // import { NonPersistentProductRepository } from "../src/NonPersistentProductRepository";

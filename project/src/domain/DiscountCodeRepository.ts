@@ -1,8 +1,9 @@
-import { DiscountCode } from "./DiscountCode";
+import { DiscountCode } from "./entity/DiscountCode";
+
 
 export interface DiscountCodeRepository {
-    addDiscountCode(discountCode: DiscountCode): void;
-    getDiscount(code: string, curDate: Date): number;
-    isExpired(code: DiscountCode, curDate: Date): boolean;
+    addDiscountCode(discountCode: DiscountCode): Promise<void>;
+    getDiscount(code: string, curDate: Date): Promise<number>;
+    isExpired(code: DiscountCode, curDate: Date): Promise<boolean>;
 }
 

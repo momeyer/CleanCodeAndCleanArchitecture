@@ -1,5 +1,5 @@
-import { Order, OrderStatus } from "./Order";
-import { OrderId } from "./OrderIdGenerator";
+import { Order, OrderStatus } from "./entity/Order";
+import { OrderId } from "./entity/OrderIdGenerator";
 
 export interface OrdersRepository {
 

@@ -1,9 +1,9 @@
 import { DiscountCodeRepository } from "../domain/DiscountCodeRepository";
-import { OrderItem } from "../domain/Order";
-import PriceCalculator from "../domain/PriceCalculator";
+import { OrderItem } from "../domain/entity/Order";
+import PriceCalculator from "../domain/entity/PriceCalculator";
+import { ShippingCalculator } from "../domain/entity/ShippingCalculator";
+import ShoppingCart from "../domain/entity/ShoppingCart";
 import { ProductRepository } from "../domain/ProductRepository";
-import { ShippingCalculator } from "../domain/ShippingCalculator";
-import ShoppingCart from "../domain/ShoppingCart";
 
 
 export class ShoppingCartUseCases {

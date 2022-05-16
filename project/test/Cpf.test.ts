@@ -1,4 +1,4 @@
-import Cpf from "../src/domain/Cpf";
+import Cpf from "../src/domain/entity/Cpf";
 
 describe("CPF validator", (): void => {
 

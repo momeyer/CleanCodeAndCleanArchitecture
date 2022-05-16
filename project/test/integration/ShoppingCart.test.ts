@@ -1,4 +1,4 @@
-import { DiscountCode } from "../../src/domain/DiscountCode";
+import { DiscountCode } from "../../src/domain/entity/DiscountCode";
 import { NonPersistenDiscountCodeRepository } from "../../src/NonPersistentDiscountCodeRepository";
 import { NonPersistentProductRepository } from "../../src/NonPersistentProductRepository";
 import { ShoppingCartUseCases } from "../../src/useCases/ShoppingCartUseCases";

@@ -1,4 +1,4 @@
-import { Product } from "../src/domain/Product";
+import { Product } from "../src/domain/entity/Product";
 
 export const camera: Product = {
     id: 1,

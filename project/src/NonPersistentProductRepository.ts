@@ -1,4 +1,4 @@
-import { Product } from "./domain/Product";
+import { Product } from "./domain/entity/Product";
 import { ProductQuantity, ProductRepository } from "./domain/ProductRepository";
 
 export class NonPersistentProductRepository implements ProductRepository {

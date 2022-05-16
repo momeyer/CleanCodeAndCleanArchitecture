@@ -1,6 +1,6 @@
-import { Order, OrderItem, OrderStatus } from "../src/domain/Order";
-import { OrderId } from "../src/domain/OrderIdGenerator";
-import { Product } from "../src/domain/Product";
+import { Order, OrderItem, OrderStatus } from "../src/domain/entity/Order";
+import { OrderId } from "../src/domain/entity/OrderIdGenerator";
+import { Product } from "../src/domain/entity/Product";
 import { NonPersistentOrdersRepository } from "../src/NonPersistentOrdersRepository";
 import { camera } from "./ProductSamples";
 
