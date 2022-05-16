@@ -15,6 +15,19 @@ export class ProductUseCases {
             return false;
         }
     }
+
+    async list(): Promise<OutputList> {
+        let listOfProducts = await this.productRepository.list();
+        let output: OutputList = {
+            list: []
+        };
+
+        listOfProducts.forEach(productQuantity => {
+            output.list.push({ id: productQuantity.product.id, description: productQuantity.product.description, price: productQuantity.product.price })
+        })
+
+        return output;
+    }
 }
 
 
@@ -27,3 +40,7 @@ type AddInput = {
     price: number;
     quantity: number;
 };
+
+type OutputList = {
+    list: { id: number, description: string, price: number }[];
+}

@@ -5,4 +5,5 @@ export class Product {
         readonly description: string,
         readonly dimensionsAndWeight: DimensionsAndWeight,
         readonly price: number) { }
-};
+}
+
