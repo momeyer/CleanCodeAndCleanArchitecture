@@ -50,6 +50,21 @@ describe("ShoppingCart Use Cases", (): void => {
         expect(output.length).toBe(0)
     })
 
+    test("Should fail to add invalid quantity item", async (): Promise<void> => {
+        const shoppingCartUseCases = new ShoppingCartUseCases(productRepository, discountCodeRepository);
+        expect(await shoppingCartUseCases.addItem({ productId: 1, quantity: 0 })).toBeFalsy();
+        expect(await shoppingCartUseCases.addItem({ productId: 1, quantity: -1 })).toBeFalsy();
+        const output = shoppingCartUseCases.getContent();
+        expect(output.length).toBe(0)
+    })
+
+    test("Should fail to add more items than available in stock", async (): Promise<void> => {
+        const shoppingCartUseCases = new ShoppingCartUseCases(productRepository, discountCodeRepository);
+        expect(await shoppingCartUseCases.addItem({ productId: 1, quantity: 11 })).toBeFalsy();
+        const output = shoppingCartUseCases.getContent();
+        expect(output.length).toBe(0)
+    })
+
     test("Should fail to remove non-existenting item", async (): Promise<void> => {
         const shoppingCartUseCases = new ShoppingCartUseCases(productRepository, discountCodeRepository);
         const removed = shoppingCartUseCases.removeItem(400);
@@ -122,6 +137,34 @@ describe("ShoppingCart Use Cases", (): void => {
         await shoppingCartUseCases.addItem({ productId: 1, quantity: 3 });
         const output = await shoppingCartUseCases.applyDiscountCode("Vale20", new Date("2020-01-01"));
         expect(output).toBeTruthy();
+    })
+
+    test("Should generate order summary from shipping cart without discount", async (): Promise<void> => {
+        const shoppingCartUseCases = new ShoppingCartUseCases(productRepository, discountCodeRepository);
+        await shoppingCartUseCases.addItem({ productId: 1, quantity: 1 });
+        await shoppingCartUseCases.addItem({ productId: 2, quantity: 1 });
+        const output = shoppingCartUseCases.generateSummary();
+        expect(output.items.length).toBe(2);
+        expect(output.shippingCost).toBe(40);
+        expect(output.total).toBe(71.5);
+    })
+
+
+    test("Should generate order summary from shipping cart with discount", async (): Promise<void> => {
+        const discountCode: DiscountCode = {
+            code: "Vale20",
+            amount: 0.20,
+            expireDate: new Date("2021-01-01")
+        }
+        discountCodeRepository.addDiscountCode(discountCode);
+        const shoppingCartUseCases = new ShoppingCartUseCases(productRepository, discountCodeRepository);
+        await shoppingCartUseCases.addItem({ productId: 1, quantity: 1 });
+        await shoppingCartUseCases.addItem({ productId: 2, quantity: 1 });
+        const hasDiscount = await shoppingCartUseCases.applyDiscountCode("Vale20", new Date("2020-01-01"));
+        expect(hasDiscount).toBeTruthy();
+        const output = shoppingCartUseCases.generateSummary();
+        expect(output.shippingCost).toBe(40);
+        expect(output.total).toBe(65.2);
     })
 
 })

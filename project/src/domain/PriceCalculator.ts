@@ -1,17 +1,23 @@
-import { Order } from "./Order";
-
-
 
 export default class PriceCalculator {
+    readonly priceAndQuantity: { price: number, quantity: number }[];
     readonly tax: number = 0.05
     total: number = 0;
 
-    calculate(order: Order): number {
-        this.calculateProductsCost(order);
-        this.applyDiscount(order.discount);
+    constructor() {
+        this.priceAndQuantity = [];
+    }
+
+    calculate(discount?: number): number {
+        this.calculateProductsCost();
+        this.applyDiscount(discount);
         this.applyTax();
 
         return this.total;
+    }
+
+    add(price: number, quantity: number): void {
+        this.priceAndQuantity.push({ price: price, quantity: quantity });
     }
 
     private applyTax(): void {
@@ -22,10 +28,10 @@ export default class PriceCalculator {
         this.total = discount ? this.total * (1.0 - discount) : this.total;
     }
 
-    private calculateProductsCost(order: Order): void {
+    private calculateProductsCost(): void {
         this.total = 0;
-        order.items.forEach((cur): void => {
-            this.total += cur.quantity * cur.price;
+        this.priceAndQuantity.forEach((cur): void => {
+            this.total += cur.price * cur.quantity;
         })
     }
 }

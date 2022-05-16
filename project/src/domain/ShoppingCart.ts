@@ -58,6 +58,5 @@ export default class ShoppingCart {
         this.discount = discount;
     }
 
-    //generate order sumary
     //simulate shipping cost
 }

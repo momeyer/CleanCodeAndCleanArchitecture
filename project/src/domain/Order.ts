@@ -39,7 +39,10 @@ export class Order {
     }
 
     calculateTotalPrice(): number {
-        return this.priceCalculator.calculate(this);
+        this.items.forEach(item => {
+            this.priceCalculator.add(item.price, item.quantity);
+        })
+        return this.priceCalculator.calculate();
     }
 
     calculateShippingCost(): number {
