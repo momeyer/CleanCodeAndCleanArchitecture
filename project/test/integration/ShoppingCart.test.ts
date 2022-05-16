@@ -145,10 +145,10 @@ describe("ShoppingCart Use Cases", (): void => {
         await shoppingCartUseCases.addItem({ productId: 2, quantity: 1 });
         const output = shoppingCartUseCases.generateSummary();
         expect(output.items.length).toBe(2);
+        expect(output.subtotal).toBe(31.5);
         expect(output.shippingCost).toBe(40);
         expect(output.total).toBe(71.5);
     })
-
 
     test("Should generate order summary from shipping cart with discount", async (): Promise<void> => {
         const discountCode: DiscountCode = {
@@ -163,8 +163,8 @@ describe("ShoppingCart Use Cases", (): void => {
         const hasDiscount = await shoppingCartUseCases.applyDiscountCode("Vale20", new Date("2020-01-01"));
         expect(hasDiscount).toBeTruthy();
         const output = shoppingCartUseCases.generateSummary();
+        expect(output.subtotal).toBe(25.2);
         expect(output.shippingCost).toBe(40);
         expect(output.total).toBe(65.2);
     })
-
 })

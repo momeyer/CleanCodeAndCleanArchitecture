@@ -1,4 +1,5 @@
 import { DiscountCodeRepository } from "../domain/DiscountCodeRepository";
+import { OrderItem } from "../domain/Order";
 import PriceCalculator from "../domain/PriceCalculator";
 import { ProductRepository } from "../domain/ProductRepository";
 import { ShippingCalculator } from "../domain/ShippingCalculator";
@@ -11,8 +12,9 @@ export class ShoppingCartUseCases {
     constructor(readonly productRepository: ProductRepository, readonly discountCodeRepository: DiscountCodeRepository) {
         this.shoppingCart = new ShoppingCart();
     }
-    getContent(): Output[] {
-        const output: Output[] = [];
+
+    getContent(): AddItemOutput[] {
+        const output: AddItemOutput[] = [];
         const content = this.shoppingCart.getContent();
         content.forEach(item => {
             output.push({
@@ -23,8 +25,9 @@ export class ShoppingCartUseCases {
         return output;
     }
 
-    async addItem(input: Input): Promise<boolean> {
+    async addItem(input: AddItemInput): Promise<boolean> {
         const productInRepository = await this.productRepository.find(input.productId);
+        // TODO improve error handling
         if (!productInRepository || productInRepository.quantity == 0 || input.quantity <= 0 || input.quantity > productInRepository.quantity) {
             return false;
         }
@@ -32,9 +35,6 @@ export class ShoppingCartUseCases {
     }
 
     removeItem(idToRemove: number): boolean {
-        if (!this.shoppingCart.getItemQuantity(idToRemove)) {
-            return false;
-        }
         return this.shoppingCart.removeItem(idToRemove);
     }
 
@@ -55,74 +55,63 @@ export class ShoppingCartUseCases {
         return true;
     }
 
-    generateSummary(): Summary {
-        let summary = new Summary();
+    private populateSummary(summary: Summary, items: OrderItem[]): Summary {
         let shippingCalculator = new ShippingCalculator();
         let priceCalculator = new PriceCalculator();
+
+        items.forEach(item => {
+            summary.items.push({ id: item.productId, price: item.price, quantity: item.quantity });
+            shippingCalculator.addProductDetails(item.productDetails, item.quantity);
+            priceCalculator.add(item.price, item.quantity);
+        })
+
+        summary.discount = this.shoppingCart.discount;
+        summary.shippingCost = shippingCalculator.calculate();
+        summary.subtotal = priceCalculator.calculate(summary.discount);
+        summary.total = summary.subtotal + summary.shippingCost;
+        return summary;
+    }
+
+    generateSummary(): Summary {
+        let summary: Summary = {
+            items: [],
+            subtotal: 0,
+            total: 0,
+            shippingCost: 0,
+        };
 
         const items = this.shoppingCart.getContent();
         if (!items.length) {
             return summary;
         }
 
-        items.forEach(item => {
-            summary.addItem(item.productId, item.price, item.quantity);
-            shippingCalculator.addProductDetails(item.productDetails, item.quantity);
-            priceCalculator.add(item.price, item.quantity);
-        })
-
-        if (this.shoppingCart.discount) {
-            summary.addDiscount(this.shoppingCart.discount);
-        }
-        summary.addShippingCost(shippingCalculator.calculate());
-        summary.total = priceCalculator.calculate(summary.discount) + summary.shippingCost;
-        return summary;
+        return this.populateSummary(summary, items);
     }
+
+
 }
 
-type Input = {
+type AddItemInput = {
     productId: number;
     quantity: number;
 }
 
-type Output = {
+type AddItemOutput = {
     productId: number;
     quantity: number;
 }
 
-type Item = {
+type SummaryItem = {
     id: number;
     price: number;
     quantity: number
 }
 
-class Summary {
+type Summary = {
 
-    items: Item[];
+    items: SummaryItem[];
     discount?: number;
+    subtotal: number;
     shippingCost: number;
     total: number;
-
-    constructor() {
-        this.items = [];
-        this.shippingCost = 0;
-        this.total = 0;
-    }
-
-    addItem(id: number, price: number, quantity: number): void {
-        let item = {
-            id: id,
-            price: price,
-            quantity: quantity
-        }
-        this.items.push(item);
-    }
-
-    addDiscount(discount: number): void {
-        this.discount = discount;
-    }
-
-    addShippingCost(shippingCost: number): void {
-        this.shippingCost = shippingCost;
-    }
 }
