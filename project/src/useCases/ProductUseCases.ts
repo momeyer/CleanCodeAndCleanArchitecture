@@ -28,6 +28,17 @@ export class ProductUseCases {
 
         return output;
     }
+    async search(input: searchInput): Promise<searchOutput | undefined> {
+
+        let product = await this.productRepository.find(input.id);
+        if (!product) {
+            return undefined;
+        }
+        return {
+            description: product.product.description,
+            price: product.product.price
+        };
+    }
 }
 
 
@@ -44,3 +55,12 @@ type AddInput = {
 type OutputList = {
     list: { id: number, description: string, price: number }[];
 }
+
+type searchInput = {
+    id: number
+}
+
+type searchOutput = {
+    description: string;
+    price: number;
+};
