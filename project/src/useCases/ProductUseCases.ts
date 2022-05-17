@@ -36,9 +36,16 @@ export class ProductUseCases {
         }
         return {
             description: product.product.description,
-            price: product.product.price
+            price: product.product.price,
+            inStock: product.quantity
         };
     }
+
+    async remove(input: removeInput): Promise<boolean> {
+        return this.productRepository.remove(input.id, input.quantity);
+    }
+
+
 }
 
 
@@ -63,4 +70,11 @@ type searchInput = {
 type searchOutput = {
     description: string;
     price: number;
+    inStock: number
 };
+
+type removeInput = {
+    id: number
+    quantity: number
+}
+
