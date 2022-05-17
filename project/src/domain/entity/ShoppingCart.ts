@@ -1,11 +1,12 @@
 import { OrderItem } from "./Order";
 import { Product } from "./Product";
+import { ShoppingCartId } from "./ShoppingCartIdGenerator";
 
 export default class ShoppingCart {
     private orderItems: Map<number, OrderItem>;
     discount?: number;
 
-    constructor() {
+    constructor(readonly id: ShoppingCartId) {
         this.orderItems = new Map<number, OrderItem>();
     }
 

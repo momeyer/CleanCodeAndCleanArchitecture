@@ -1,12 +1,16 @@
 import { DiscountCode } from "../../src/domain/entity/DiscountCode";
+import { ShoppingCartIdGenerator } from "../../src/domain/entity/ShoppingCartIdGenerator";
 import { NonPersistenDiscountCodeRepository } from "../../src/NonPersistentDiscountCodeRepository";
 import { NonPersistentProductRepository } from "../../src/NonPersistentProductRepository";
+import { NonPersistentShoppingCartRepository } from "../../src/NonPersistentShoppingCartRepository";
 import { ShoppingCartUseCases } from "../../src/useCases/ShoppingCartUseCases";
 import { camera, guitar, rubberDuck } from "../ProductSamples";
 
 describe("ShoppingCart Use Cases", (): void => {
     let productRepository = new NonPersistentProductRepository();
     let discountCodeRepository = new NonPersistenDiscountCodeRepository();
+    let shoppingCartRepository = new NonPersistentShoppingCartRepository();
+    let shoppingCartIdGenerator = new ShoppingCartIdGenerator(0);
 
     beforeEach(async (): Promise<void> => {
         productRepository = new NonPersistentProductRepository();
@@ -18,98 +22,114 @@ describe("ShoppingCart Use Cases", (): void => {
     })
 
     test("Should get content from empty cart", async (): Promise<void> => {
-        const shoppingCartUseCases = new ShoppingCartUseCases(productRepository, discountCodeRepository);
-        const output = shoppingCartUseCases.getContent();
+        const shoppingCartUseCases = new ShoppingCartUseCases(productRepository, discountCodeRepository, shoppingCartRepository, shoppingCartIdGenerator);
+        const output = await shoppingCartUseCases.getContent({ value: "SC1" });
 
         expect(output.length).toBe(0)
     })
 
     test("Should get content from cart", async (): Promise<void> => {
 
-        const shoppingCartUseCases = new ShoppingCartUseCases(productRepository, discountCodeRepository);
-        const added = await shoppingCartUseCases.addItem({ productId: 1, quantity: 1 });
+        const shoppingCartUseCases = new ShoppingCartUseCases(productRepository, discountCodeRepository, shoppingCartRepository, shoppingCartIdGenerator);
+        const shoppingCart = await shoppingCartUseCases.create();
+
+        const added = await shoppingCartUseCases.addItem({ shoppingCartId: shoppingCart.id, productId: 1, quantity: 1 });
         expect(added).toBeTruthy();
-        const output = shoppingCartUseCases.getContent();
+        const output = await shoppingCartUseCases.getContent(shoppingCart.id);
         expect(output.length).toBe(1)
     })
 
     test("Should get content from cart with more than one item", async (): Promise<void> => {
-        const shoppingCartUseCases = new ShoppingCartUseCases(productRepository, discountCodeRepository);
+        const shoppingCartUseCases = new ShoppingCartUseCases(productRepository, discountCodeRepository, shoppingCartRepository, shoppingCartIdGenerator);
+        const shoppingCart = await shoppingCartUseCases.create();
 
-        await shoppingCartUseCases.addItem({ productId: 1, quantity: 1 });
-        await shoppingCartUseCases.addItem({ productId: 2, quantity: 3 });
-        const output = shoppingCartUseCases.getContent();
+        await shoppingCartUseCases.addItem({ shoppingCartId: shoppingCart.id, productId: 1, quantity: 1 });
+        await shoppingCartUseCases.addItem({ shoppingCartId: shoppingCart.id, productId: 2, quantity: 3 });
+        const output = await shoppingCartUseCases.getContent(shoppingCart.id);
         expect(output.length).toBe(2)
     })
 
     test("Should fail to add invalid item", async (): Promise<void> => {
-        const shoppingCartUseCases = new ShoppingCartUseCases(productRepository, discountCodeRepository);
-        const added = await shoppingCartUseCases.addItem({ productId: 400, quantity: 1 });
+        const shoppingCartUseCases = new ShoppingCartUseCases(productRepository, discountCodeRepository, shoppingCartRepository, shoppingCartIdGenerator);
+        const shoppingCart = await shoppingCartUseCases.create();
+
+        const added = await shoppingCartUseCases.addItem({ shoppingCartId: shoppingCart.id, productId: 400, quantity: 1 });
         expect(added).toBeFalsy();
-        const output = shoppingCartUseCases.getContent();
+        const output = await shoppingCartUseCases.getContent(shoppingCart.id);;
         expect(output.length).toBe(0)
     })
 
     test("Should fail to add invalid quantity item", async (): Promise<void> => {
-        const shoppingCartUseCases = new ShoppingCartUseCases(productRepository, discountCodeRepository);
-        expect(await shoppingCartUseCases.addItem({ productId: 1, quantity: 0 })).toBeFalsy();
-        expect(await shoppingCartUseCases.addItem({ productId: 1, quantity: -1 })).toBeFalsy();
-        const output = shoppingCartUseCases.getContent();
+        const shoppingCartUseCases = new ShoppingCartUseCases(productRepository, discountCodeRepository, shoppingCartRepository, shoppingCartIdGenerator);
+        const shoppingCart = await shoppingCartUseCases.create();
+
+        expect(await shoppingCartUseCases.addItem({ shoppingCartId: shoppingCart.id, productId: 1, quantity: 0 })).toBeFalsy();
+        expect(await shoppingCartUseCases.addItem({ shoppingCartId: shoppingCart.id, productId: 1, quantity: -1 })).toBeFalsy();
+        const output = await shoppingCartUseCases.getContent(shoppingCart.id);
         expect(output.length).toBe(0)
     })
 
     test("Should fail to add more items than available in stock", async (): Promise<void> => {
-        const shoppingCartUseCases = new ShoppingCartUseCases(productRepository, discountCodeRepository);
-        expect(await shoppingCartUseCases.addItem({ productId: 1, quantity: 11 })).toBeFalsy();
-        const output = shoppingCartUseCases.getContent();
+        const shoppingCartUseCases = new ShoppingCartUseCases(productRepository, discountCodeRepository, shoppingCartRepository, shoppingCartIdGenerator);
+        const shoppingCart = await shoppingCartUseCases.create();
+
+        expect(await shoppingCartUseCases.addItem({ shoppingCartId: shoppingCart.id, productId: 1, quantity: 11 })).toBeFalsy();
+        const output = await shoppingCartUseCases.getContent(shoppingCart.id);
         expect(output.length).toBe(0)
     })
 
-    test("Should fail to remove non-existenting item", async (): Promise<void> => {
-        const shoppingCartUseCases = new ShoppingCartUseCases(productRepository, discountCodeRepository);
-        const removed = shoppingCartUseCases.removeItem(400);
-        expect(removed).toBeFalsy();
-        const output = shoppingCartUseCases.getContent();
+    test("Shouldn't fail to remove non-existenting item", async (): Promise<void> => {
+        const shoppingCartUseCases = new ShoppingCartUseCases(productRepository, discountCodeRepository, shoppingCartRepository, shoppingCartIdGenerator);
+        const shoppingCart = await shoppingCartUseCases.create();
+
+        await shoppingCartUseCases.removeItem(shoppingCart.id, 400);
+        const output = await shoppingCartUseCases.getContent(shoppingCart.id);
         expect(output.length).toBe(0)
     })
 
-    test("Should fail to remove existenting item", async (): Promise<void> => {
-        const shoppingCartUseCases = new ShoppingCartUseCases(productRepository, discountCodeRepository);
-        await shoppingCartUseCases.addItem({ productId: 2, quantity: 3 });
-        const removed = shoppingCartUseCases.removeItem(2);
+    test("Shouldn't fail to remove existenting item", async (): Promise<void> => {
+        const shoppingCartUseCases = new ShoppingCartUseCases(productRepository, discountCodeRepository, shoppingCartRepository, shoppingCartIdGenerator);
+        const shoppingCart = await shoppingCartUseCases.create();
+
+        await shoppingCartUseCases.addItem({ shoppingCartId: shoppingCart.id, productId: 2, quantity: 3 });
+        const removed = await shoppingCartUseCases.removeItem(shoppingCart.id, 2);
         expect(removed).toBeTruthy();
-        const output = shoppingCartUseCases.getContent();
+        const output = await shoppingCartUseCases.getContent(shoppingCart.id);
         expect(output.length).toBe(0)
     })
 
 
     test("Should clear shopping cart", async (): Promise<void> => {
-        const shoppingCartUseCases = new ShoppingCartUseCases(productRepository, discountCodeRepository);
-        await shoppingCartUseCases.addItem({ productId: 1, quantity: 3 });
-        await shoppingCartUseCases.addItem({ productId: 2, quantity: 3 });
-        await shoppingCartUseCases.addItem({ productId: 3, quantity: 3 });
-        shoppingCartUseCases.clear();
-        const output = shoppingCartUseCases.getContent();
+        const shoppingCartUseCases = new ShoppingCartUseCases(productRepository, discountCodeRepository, shoppingCartRepository, shoppingCartIdGenerator);
+        const shoppingCart = await shoppingCartUseCases.create();
+        await shoppingCartUseCases.addItem({ shoppingCartId: shoppingCart.id, productId: 1, quantity: 3 });
+        await shoppingCartUseCases.addItem({ shoppingCartId: shoppingCart.id, productId: 2, quantity: 3 });
+        await shoppingCartUseCases.addItem({ shoppingCartId: shoppingCart.id, productId: 3, quantity: 3 });
+        await shoppingCartUseCases.clear(shoppingCart.id);
+        const output = await shoppingCartUseCases.getContent(shoppingCart.id);
         expect(output.length).toBe(0)
     })
 
     test("Should return 0 when product isn't in the cart", async (): Promise<void> => {
-        const shoppingCartUseCases = new ShoppingCartUseCases(productRepository, discountCodeRepository);
-        const output = shoppingCartUseCases.getItemQuantity(1);
+        const shoppingCartUseCases = new ShoppingCartUseCases(productRepository, discountCodeRepository, shoppingCartRepository, shoppingCartIdGenerator);
+        const shoppingCart = await shoppingCartUseCases.create();
+        const output = await shoppingCartUseCases.getItemQuantity(shoppingCart.id, 1);
         expect(output).toBe(0)
     })
 
     test("Should return item quantity", async (): Promise<void> => {
-        const shoppingCartUseCases = new ShoppingCartUseCases(productRepository, discountCodeRepository);
-        await shoppingCartUseCases.addItem({ productId: 1, quantity: 3 });
-        const output = shoppingCartUseCases.getItemQuantity(1);
+        const shoppingCartUseCases = new ShoppingCartUseCases(productRepository, discountCodeRepository, shoppingCartRepository, shoppingCartIdGenerator);
+        const shoppingCart = await shoppingCartUseCases.create();
+        await shoppingCartUseCases.addItem({ shoppingCartId: shoppingCart.id, productId: 1, quantity: 3 });
+        const output = await shoppingCartUseCases.getItemQuantity(shoppingCart.id, 1);
         expect(output).toBe(3)
     })
 
     test("Should fail apply invalid discount code to shopping cart", async (): Promise<void> => {
-        const shoppingCartUseCases = new ShoppingCartUseCases(productRepository, discountCodeRepository);
-        await shoppingCartUseCases.addItem({ productId: 1, quantity: 3 });
-        const output = await shoppingCartUseCases.applyDiscountCode("Vale100", new Date("2021-01-01"));
+        const shoppingCartUseCases = new ShoppingCartUseCases(productRepository, discountCodeRepository, shoppingCartRepository, shoppingCartIdGenerator);
+        const shoppingCart = await shoppingCartUseCases.create();
+        await shoppingCartUseCases.addItem({ shoppingCartId: shoppingCart.id, productId: 1, quantity: 3 });
+        const output = await shoppingCartUseCases.applyDiscountCode(shoppingCart.id, "Vale100", new Date("2021-01-01"));
         expect(output).toBeFalsy();
     })
 
@@ -120,9 +140,10 @@ describe("ShoppingCart Use Cases", (): void => {
             expireDate: new Date("2021-01-01")
         }
         discountCodeRepository.addDiscountCode(discountCode);
-        const shoppingCartUseCases = new ShoppingCartUseCases(productRepository, discountCodeRepository);
-        await shoppingCartUseCases.addItem({ productId: 1, quantity: 3 });
-        const output = await shoppingCartUseCases.applyDiscountCode("Vale20", new Date("2022-01-01"));
+        const shoppingCartUseCases = new ShoppingCartUseCases(productRepository, discountCodeRepository, shoppingCartRepository, shoppingCartIdGenerator);
+        const shoppingCart = await shoppingCartUseCases.create();
+        await shoppingCartUseCases.addItem({ shoppingCartId: shoppingCart.id, productId: 1, quantity: 3 });
+        const output = await shoppingCartUseCases.applyDiscountCode(shoppingCart.id, "Vale20", new Date("2022-01-01"));
         expect(output).toBeFalsy();
     })
 
@@ -133,17 +154,19 @@ describe("ShoppingCart Use Cases", (): void => {
             expireDate: new Date("2021-01-01")
         }
         discountCodeRepository.addDiscountCode(discountCode);
-        const shoppingCartUseCases = new ShoppingCartUseCases(productRepository, discountCodeRepository);
-        await shoppingCartUseCases.addItem({ productId: 1, quantity: 3 });
-        const output = await shoppingCartUseCases.applyDiscountCode("Vale20", new Date("2020-01-01"));
+        const shoppingCartUseCases = new ShoppingCartUseCases(productRepository, discountCodeRepository, shoppingCartRepository, shoppingCartIdGenerator);
+        const shoppingCart = await shoppingCartUseCases.create();
+        await shoppingCartUseCases.addItem({ shoppingCartId: shoppingCart.id, productId: 1, quantity: 3 });
+        const output = await shoppingCartUseCases.applyDiscountCode(shoppingCart.id, "Vale20", new Date("2020-01-01"));
         expect(output).toBeTruthy();
     })
 
     test("Should generate order summary from shipping cart without discount", async (): Promise<void> => {
-        const shoppingCartUseCases = new ShoppingCartUseCases(productRepository, discountCodeRepository);
-        await shoppingCartUseCases.addItem({ productId: 1, quantity: 1 });
-        await shoppingCartUseCases.addItem({ productId: 2, quantity: 1 });
-        const output = shoppingCartUseCases.generateSummary();
+        const shoppingCartUseCases = new ShoppingCartUseCases(productRepository, discountCodeRepository, shoppingCartRepository, shoppingCartIdGenerator);
+        const shoppingCart = await shoppingCartUseCases.create();
+        await shoppingCartUseCases.addItem({ shoppingCartId: shoppingCart.id, productId: 1, quantity: 1 });
+        await shoppingCartUseCases.addItem({ shoppingCartId: shoppingCart.id, productId: 2, quantity: 1 });
+        const output = await shoppingCartUseCases.generateSummary(shoppingCart.id);
         expect(output.items.length).toBe(2);
         expect(output.subtotal).toBe(31.5);
         expect(output.shippingCost).toBe(40);
@@ -157,12 +180,13 @@ describe("ShoppingCart Use Cases", (): void => {
             expireDate: new Date("2021-01-01")
         }
         discountCodeRepository.addDiscountCode(discountCode);
-        const shoppingCartUseCases = new ShoppingCartUseCases(productRepository, discountCodeRepository);
-        await shoppingCartUseCases.addItem({ productId: 1, quantity: 1 });
-        await shoppingCartUseCases.addItem({ productId: 2, quantity: 1 });
-        const hasDiscount = await shoppingCartUseCases.applyDiscountCode("Vale20", new Date("2020-01-01"));
+        const shoppingCartUseCases = new ShoppingCartUseCases(productRepository, discountCodeRepository, shoppingCartRepository, shoppingCartIdGenerator);
+        const shoppingCart = await shoppingCartUseCases.create();
+        await shoppingCartUseCases.addItem({ shoppingCartId: shoppingCart.id, productId: 1, quantity: 1 });
+        await shoppingCartUseCases.addItem({ shoppingCartId: shoppingCart.id, productId: 2, quantity: 1 });
+        const hasDiscount = await shoppingCartUseCases.applyDiscountCode(shoppingCart.id, "Vale20", new Date("2020-01-01"));
         expect(hasDiscount).toBeTruthy();
-        const output = shoppingCartUseCases.generateSummary();
+        const output = await shoppingCartUseCases.generateSummary(shoppingCart.id);
         expect(output.subtotal).toBe(25.2);
         expect(output.shippingCost).toBe(40);
         expect(output.total).toBe(65.2);

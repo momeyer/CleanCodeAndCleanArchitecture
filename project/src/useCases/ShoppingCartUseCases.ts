@@ -3,19 +3,30 @@ import { OrderItem } from "../domain/entity/Order";
 import PriceCalculator from "../domain/entity/PriceCalculator";
 import { ShippingCalculator } from "../domain/entity/ShippingCalculator";
 import ShoppingCart from "../domain/entity/ShoppingCart";
+import { ShoppingCartId, ShoppingCartIdGenerator } from "../domain/entity/ShoppingCartIdGenerator";
 import { ProductRepository } from "../domain/ProductRepository";
+import { ShoppingCartRepository } from "../domain/ShoppingCartRepository";
 
 
 export class ShoppingCartUseCases {
-    private shoppingCart: ShoppingCart;
 
-    constructor(readonly productRepository: ProductRepository, readonly discountCodeRepository: DiscountCodeRepository) {
-        this.shoppingCart = new ShoppingCart();
+    constructor(readonly productRepository: ProductRepository, readonly discountCodeRepository: DiscountCodeRepository, readonly shoppingCartRepository: ShoppingCartRepository, readonly shoppingCartidGenerator: ShoppingCartIdGenerator) {
     }
 
-    getContent(): AddItemOutput[] {
+    async create(): Promise<ShoppingCart> {
+        const newId = this.shoppingCartidGenerator.generate();
+        const shoppingCart = new ShoppingCart(newId);
+        await this.shoppingCartRepository.add(shoppingCart);
+        return shoppingCart;
+    }
+
+    async getContent(shoppingCartId: ShoppingCartId): Promise<AddItemOutput[]> {
         const output: AddItemOutput[] = [];
-        const content = this.shoppingCart.getContent();
+        let cart = await this.shoppingCartRepository.get(shoppingCartId);
+        if (!cart) {
+            return []; // throe Invalid id ?
+        }
+        const content = cart.getContent();
         content.forEach(item => {
             output.push({
                 productId: item.productId,
@@ -27,35 +38,57 @@ export class ShoppingCartUseCases {
 
     async addItem(input: AddItemInput): Promise<boolean> {
         const productInRepository = await this.productRepository.find(input.productId);
+        let cart = await this.shoppingCartRepository.get(input.shoppingCartId);
         // TODO improve error handling
+        if (!cart) {
+            return false;
+        }
         if (!productInRepository || productInRepository.quantity == 0 || input.quantity <= 0 || input.quantity > productInRepository.quantity) {
             return false;
         }
-        return this.shoppingCart.addItem(productInRepository.product, input.quantity);
-    }
-
-    removeItem(idToRemove: number): boolean {
-        return this.shoppingCart.removeItem(idToRemove);
-    }
-
-    clear(): void {
-        this.shoppingCart.clear();
-    }
-
-    getItemQuantity(productId: number): number {
-        return this.shoppingCart.getItemQuantity(productId);
-    }
-
-    async applyDiscountCode(code: string, curDate: Date = new Date): Promise<boolean> {
-        const discount = await this.discountCodeRepository.getDiscount(code, curDate);
-        if (!discount) {
-            return false;
-        }
-        this.shoppingCart.applyDiscountCode(discount);
+        cart.addItem(productInRepository.product, input.quantity);
+        this.shoppingCartRepository.add(cart);
         return true;
     }
 
-    private populateSummary(summary: Summary, items: OrderItem[]): Summary {
+    async removeItem(shoppingCartId: ShoppingCartId, idToRemove: number): Promise<boolean> {
+        let cart = await this.shoppingCartRepository.get(shoppingCartId);
+        if (!cart) {
+            return false;
+        }
+
+        cart.removeItem(idToRemove);
+        this.shoppingCartRepository.add(cart);
+        return true;
+    }
+
+    async clear(shoppingCartId: ShoppingCartId): Promise<void> {
+        this.shoppingCartRepository.remove(shoppingCartId);
+    }
+
+    async getItemQuantity(shoppingCartId: ShoppingCartId, productId: number): Promise<number> {
+        let cart = await this.shoppingCartRepository.get(shoppingCartId);
+        if (!cart) {
+            return 0;
+        }
+        return cart.getItemQuantity(productId);
+    }
+
+    async applyDiscountCode(shoppingCartId: ShoppingCartId, code: string, curDate: Date = new Date): Promise<boolean> {
+        const discount = await this.discountCodeRepository.getDiscount(code, curDate);
+        let cart = await this.shoppingCartRepository.get(shoppingCartId);
+        if (!cart) {
+            return false;
+        }
+        if (!discount) {
+            return false;
+        }
+        cart.applyDiscountCode(discount);
+        this.shoppingCartRepository.add(cart);
+        return true;
+    }
+
+    private populateSummary(summary: Summary, items: OrderItem[], discount?: number): Summary {
         let shippingCalculator = new ShippingCalculator();
         let priceCalculator = new PriceCalculator();
 
@@ -65,33 +98,36 @@ export class ShoppingCartUseCases {
             priceCalculator.add(item.price, item.quantity);
         })
 
-        summary.discount = this.shoppingCart.discount;
+        summary.discount = discount;
         summary.shippingCost = shippingCalculator.calculate();
         summary.subtotal = priceCalculator.calculate(summary.discount);
         summary.total = summary.subtotal + summary.shippingCost;
         return summary;
     }
 
-    generateSummary(): Summary {
+    async generateSummary(shoppingCartId: ShoppingCartId): Promise<Summary> {
         let summary: Summary = {
             items: [],
             subtotal: 0,
             total: 0,
             shippingCost: 0,
         };
+        const cart = await this.shoppingCartRepository.get(shoppingCartId)
+        if (!cart) {
+            return summary;
+        }
 
-        const items = this.shoppingCart.getContent();
+        const items = cart.getContent();
         if (!items.length) {
             return summary;
         }
 
-        return this.populateSummary(summary, items);
+        return this.populateSummary(summary, items, cart.discount);
     }
-
-
 }
 
 type AddItemInput = {
+    shoppingCartId: ShoppingCartId;
     productId: number;
     quantity: number;
 }
