@@ -23,11 +23,16 @@ export class ProductUseCases {
         };
 
         listOfProducts.forEach(productQuantity => {
-            output.list.push({ id: productQuantity.product.id, description: productQuantity.product.description, price: productQuantity.product.price })
+            const productInfo = {
+                id: productQuantity.product.id,
+                description: productQuantity.product.description,
+                price: productQuantity.product.price
+            }
+            output.list.push(productInfo);
         })
-
         return output;
     }
+
     async search(input: searchInput): Promise<searchOutput | undefined> {
 
         let product = await this.productRepository.find(input.id);
@@ -44,10 +49,7 @@ export class ProductUseCases {
     async remove(input: removeInput): Promise<boolean> {
         return this.productRepository.remove(input.id, input.quantity);
     }
-
-
 }
-
 
 type AddInput = {
     description: string;
