@@ -1,27 +1,26 @@
 import ShoppingCart from "./domain/entity/ShoppingCart";
-import { ShoppingCartId } from "./domain/entity/ShoppingCartIdGenerator";
 import { ShoppingCartRepository } from "./domain/ShoppingCartRepository";
 
 export class NonPersistentShoppingCartRepository implements ShoppingCartRepository {
-    activeCarts: Map<ShoppingCartId, ShoppingCart>;
+    activeCarts: Map<string, ShoppingCart>;
 
     constructor() {
-        this.activeCarts = new Map<ShoppingCartId, ShoppingCart>();
+        this.activeCarts = new Map<string, ShoppingCart>();
     }
 
     async add(shoppingCart: ShoppingCart): Promise<void> {
         this.activeCarts.set(shoppingCart.id, shoppingCart);
     }
 
-    async remove(shoppingCartId: ShoppingCartId): Promise<void> {
+    async remove(shoppingCartId: string): Promise<void> {
         this.activeCarts.delete(shoppingCartId);
     }
 
-    async has(shoppingCartId: ShoppingCartId): Promise<boolean> {
+    async has(shoppingCartId: string): Promise<boolean> {
         return this.activeCarts.has(shoppingCartId);
     }
 
-    async get(shoppingCartId: ShoppingCartId): Promise<ShoppingCart | undefined> {
+    async get(shoppingCartId: string): Promise<ShoppingCart | undefined> {
         return this.activeCarts.get(shoppingCartId);
     }
 }

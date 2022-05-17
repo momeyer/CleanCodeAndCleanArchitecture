@@ -1,6 +1,5 @@
 import { Order, OrderStatus } from "../domain/entity/Order";
 import { OrderIdGenerator } from "../domain/entity/OrderIdGenerator";
-import { ShoppingCartId } from "../domain/entity/ShoppingCartIdGenerator";
 import { OrdersRepository } from "../domain/OrdersRepository";
 import { ProductRepository } from "../domain/ProductRepository";
 import { ShoppingCartRepository } from "../domain/ShoppingCartRepository";
@@ -67,7 +66,7 @@ type InputItems = {
 
 type placeOrderInput = {
     cpf: string
-    id: ShoppingCartId
+    id: string
     date: Date;
 }
 

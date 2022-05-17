@@ -22,5 +22,5 @@ test("should incrise sequencial", () => {
     orders.add(new Order(cpf, orderIdGenerator.generate(date)));
     orders.add(new Order(cpf, orderIdGenerator.generate(date)));
     orders.add(new Order(cpf, orderIdGenerator.generate(date)));
-    expect(orderIdGenerator.generate(date)).toBe("202100000013");
+    expect(orderIdGenerator.generate(date)).toBe("202100000014");
 })

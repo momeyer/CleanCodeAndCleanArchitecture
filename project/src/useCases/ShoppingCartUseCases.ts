@@ -3,7 +3,7 @@ import { OrderItem } from "../domain/entity/Order";
 import PriceCalculator from "../domain/entity/PriceCalculator";
 import { ShippingCalculator } from "../domain/entity/ShippingCalculator";
 import ShoppingCart from "../domain/entity/ShoppingCart";
-import { ShoppingCartId, ShoppingCartIdGenerator } from "../domain/entity/ShoppingCartIdGenerator";
+import { ShoppingCartIdGenerator } from "../domain/entity/ShoppingCartIdGenerator";
 import { ProductRepository } from "../domain/ProductRepository";
 import { ShoppingCartRepository } from "../domain/ShoppingCartRepository";
 
@@ -20,7 +20,7 @@ export class ShoppingCartUseCases {
         return shoppingCart;
     }
 
-    async getContent(shoppingCartId: ShoppingCartId): Promise<AddItemOutput[]> {
+    async getContent(shoppingCartId: string): Promise<AddItemOutput[]> {
         const output: AddItemOutput[] = [];
         let cart = await this.shoppingCartRepository.get(shoppingCartId);
         if (!cart) {
@@ -51,7 +51,7 @@ export class ShoppingCartUseCases {
         return true;
     }
 
-    async removeItem(shoppingCartId: ShoppingCartId, idToRemove: number): Promise<boolean> {
+    async removeItem(shoppingCartId: string, idToRemove: number): Promise<boolean> {
         let cart = await this.shoppingCartRepository.get(shoppingCartId);
         if (!cart) {
             return false;
@@ -62,11 +62,11 @@ export class ShoppingCartUseCases {
         return true;
     }
 
-    async clear(shoppingCartId: ShoppingCartId): Promise<void> {
+    async clear(shoppingCartId: string): Promise<void> {
         this.shoppingCartRepository.remove(shoppingCartId);
     }
 
-    async getItemQuantity(shoppingCartId: ShoppingCartId, productId: number): Promise<number> {
+    async getItemQuantity(shoppingCartId: string, productId: number): Promise<number> {
         let cart = await this.shoppingCartRepository.get(shoppingCartId);
         if (!cart) {
             return 0;
@@ -74,7 +74,7 @@ export class ShoppingCartUseCases {
         return cart.getItemQuantity(productId);
     }
 
-    async applyDiscountCode(shoppingCartId: ShoppingCartId, code: string, curDate: Date = new Date): Promise<boolean> {
+    async applyDiscountCode(shoppingCartId: string, code: string, curDate: Date = new Date): Promise<boolean> {
         const discount = await this.discountCodeRepository.getDiscount(code, curDate);
         let cart = await this.shoppingCartRepository.get(shoppingCartId);
         if (!cart) {
@@ -105,7 +105,7 @@ export class ShoppingCartUseCases {
         return summary;
     }
 
-    async generateSummary(shoppingCartId: ShoppingCartId): Promise<Summary> {
+    async generateSummary(shoppingCartId: string): Promise<Summary> {
         let summary: Summary = {
             items: [],
             subtotal: 0,
@@ -127,7 +127,7 @@ export class ShoppingCartUseCases {
 }
 
 type AddItemInput = {
-    shoppingCartId: ShoppingCartId;
+    shoppingCartId: string;
     productId: number;
     quantity: number;
 }

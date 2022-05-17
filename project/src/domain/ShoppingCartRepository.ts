@@ -1,9 +1,8 @@
 import ShoppingCart from "./entity/ShoppingCart";
-import { ShoppingCartId } from "./entity/ShoppingCartIdGenerator";
 
 export interface ShoppingCartRepository {
     add(shoppingCart: ShoppingCart): Promise<void>;
-    remove(shoppingCartId: ShoppingCartId): Promise<void>;
-    has(shoppingCartId: ShoppingCartId): Promise<boolean>;
-    get(shoppingCartId: ShoppingCartId): Promise<ShoppingCart | undefined>;
+    remove(shoppingCartId: string): Promise<void>;
+    has(shoppingCartId: string): Promise<boolean>;
+    get(shoppingCartId: string): Promise<ShoppingCart | undefined>;
 }

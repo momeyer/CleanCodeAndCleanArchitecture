@@ -10,8 +10,8 @@ export class OrderIdGenerator {
     generate(date: Date): string {
         const year = date.getFullYear();
         const minDigits = 8;
-        let sequencial = this.seed.toString().padStart(minDigits, "0");
         this.seed++;
+        let sequencial = this.seed.toString().padStart(minDigits, "0");
         return `${year}${sequencial}`;
     }
 }

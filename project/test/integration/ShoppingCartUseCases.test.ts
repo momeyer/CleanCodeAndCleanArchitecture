@@ -23,7 +23,7 @@ describe("ShoppingCart Use Cases", (): void => {
 
     test("Should get content from empty cart", async (): Promise<void> => {
         const shoppingCartUseCases = new ShoppingCartUseCases(productRepository, discountCodeRepository, shoppingCartRepository, shoppingCartIdGenerator);
-        const output = await shoppingCartUseCases.getContent({ value: "SC1" });
+        const output = await shoppingCartUseCases.getContent("SC1");
 
         expect(output.length).toBe(0)
     })

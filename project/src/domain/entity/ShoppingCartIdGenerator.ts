@@ -1,8 +1,4 @@
 
-export type ShoppingCartId = {
-    value: string
-}
-
 export class ShoppingCartIdGenerator {
     seed: number;
 
@@ -10,8 +6,8 @@ export class ShoppingCartIdGenerator {
         this.seed = seed;
     }
 
-    generate(): ShoppingCartId {
+    generate(): string {
         this.seed++;
-        return { value: `SC${this.seed}` };
+        return `SC${this.seed}`;
     }
 }

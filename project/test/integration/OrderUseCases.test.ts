@@ -11,13 +11,19 @@ describe("Order Use Cases", (): void => {
     const validCPF = "111.444.777-35";
     const invalidCPF = "111";
 
-    const productRepository = new NonPersistentProductRepository()
-    const ordersRepository = new NonPersistentOrdersRepository()
-    const orderIdGenerator = new OrderIdGenerator(ordersRepository.placeOrders.size);
-    const shoppingCartRepository = new NonPersistentShoppingCartRepository();
-    const shoppinCartIdGenerator = new ShoppingCartIdGenerator(0);
+    let productRepository = new NonPersistentProductRepository()
+    let ordersRepository = new NonPersistentOrdersRepository()
+    let orderIdGenerator = new OrderIdGenerator(0);
+    let shoppingCartRepository = new NonPersistentShoppingCartRepository();
+    let shoppinCartIdGenerator = new ShoppingCartIdGenerator(0);
 
     beforeEach(async (): Promise<void> => {
+        productRepository = new NonPersistentProductRepository()
+        ordersRepository = new NonPersistentOrdersRepository()
+        orderIdGenerator = new OrderIdGenerator(0);
+        shoppingCartRepository = new NonPersistentShoppingCartRepository();
+        shoppinCartIdGenerator = new ShoppingCartIdGenerator(0);
+
         await productRepository.add(camera, 100);
         await productRepository.add(guitar, 100);
         await productRepository.add(rubberDuck, 100);
@@ -61,25 +67,32 @@ describe("Order Use Cases", (): void => {
             expect(output.id).toBe("202100000001")
             expect(output.status).toBe("PENDING");
             expect(ordersRepository.placeOrders.has(output.id!)).toBeTruthy();
+
         })
     })
 
     describe("cancel order", (): void => {
 
         test("cancel", (): void => {
-            expect(1).toBe(1);
+            // if order doesnt exist
+            // if order is compleated
+            // if order is pendinding (should work)
+
+            expect(1).toStrictEqual(1);
         })
     })
 
     describe("search order", (): void => {
-
+        // if order doesnt exist
+        // if order is pendinding (should work)
         test("search", (): void => {
             expect(1).toBe(1);
         })
     })
 
     describe("update status", (): void => {
-
+        // if order doesnt exist
+        // if order is compleated
         test("update", (): void => {
             expect(1).toBe(1);
         })
