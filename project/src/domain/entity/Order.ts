@@ -1,6 +1,5 @@
 import Cpf from "./Cpf";
 import { DimensionsAndWeight } from "./DimensionsAndWeight";
-import { OrderId } from "./OrderIdGenerator";
 import PriceCalculator from "./PriceCalculator";
 import { ShippingCalculator } from "./ShippingCalculator";
 
@@ -26,7 +25,7 @@ export class Order {
     private priceCalculator: PriceCalculator;
     private shippingCalculator: ShippingCalculator;
 
-    constructor(cpf: string, readonly id: OrderId, readonly discount?: number, readonly time: Date = new Date()) {
+    constructor(cpf: string, readonly id: string, readonly discount?: number, readonly time: Date = new Date()) {
         this.cpf = new Cpf(cpf);
         this.items = [];
 

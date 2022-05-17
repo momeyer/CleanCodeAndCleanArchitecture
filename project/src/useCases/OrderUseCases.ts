@@ -1,22 +1,27 @@
 import { Order, OrderStatus } from "../domain/entity/Order";
 import { OrderIdGenerator } from "../domain/entity/OrderIdGenerator";
+import { ShoppingCartId } from "../domain/entity/ShoppingCartIdGenerator";
 import { OrdersRepository } from "../domain/OrdersRepository";
 import { ProductRepository } from "../domain/ProductRepository";
+import { ShoppingCartRepository } from "../domain/ShoppingCartRepository";
 
 export class OrderUseCases {
 
-    constructor(readonly ordersRepository: OrdersRepository, readonly productRepository: ProductRepository, readonly orderIdGenerator: OrderIdGenerator) { }
+    constructor(readonly ordersRepository: OrdersRepository, readonly productRepository: ProductRepository, readonly orderIdGenerator: OrderIdGenerator, readonly shoppingCartRepository: ShoppingCartRepository) { }
 
-    async place(input: inputOrder): Promise<outputOrderSummary> {
+    async place(input: placeOrderInput): Promise<outputOrderSummary> {
         let order: Order;
-        if (!input.orderItems.length) {
-            return this.generateinvalidOrderSummary(input.date, "Empty order");
+        const cart = await this.shoppingCartRepository.get(input.id);
+
+        if (!cart || cart.isEmpty()) {
+            return this.generateinvalidOrderSummary("Empty order", input.date);
         }
+        const orderItems = cart.getContent();
         try {
-            order = new Order(input.cpf, this.orderIdGenerator.generate(input.date), input.discount, input.date);
-            this.addItemsToOrder(input.orderItems, order);
+            order = new Order(input.cpf, this.orderIdGenerator.generate(input.date), cart.discount, input.date);
+            this.addItemsToOrder(orderItems, order);
         } catch (error: any) {
-            return this.generateinvalidOrderSummary(input.date, error.message);
+            return this.generateinvalidOrderSummary(error.message, input.date);
         }
         this.ordersRepository.add(order);
         return this.generateOrderSummary(order);
@@ -38,7 +43,7 @@ export class OrderUseCases {
         return order;
     }
 
-    private generateinvalidOrderSummary(date: Date, message: string): outputOrderSummary {
+    private generateinvalidOrderSummary(message: string, date: Date = new Date()): outputOrderSummary {
         return {
             date: date,
             status: OrderStatus.INVALID,
@@ -48,7 +53,7 @@ export class OrderUseCases {
 
     private generateOrderSummary(order: Order): outputOrderSummary {
         return {
-            id: order.id.value,
+            id: order.id,
             date: order.time,
             status: order.status,
         }
@@ -60,11 +65,10 @@ type InputItems = {
     quantity: number;
 };
 
-type inputOrder = {
+type placeOrderInput = {
     cpf: string
-    orderItems: InputItems[]
-    discount?: number
-    date: Date
+    id: ShoppingCartId
+    date: Date;
 }
 
 

@@ -1,5 +1,4 @@
 import { Order, OrderItem, OrderStatus } from "../src/domain/entity/Order";
-import { OrderId } from "../src/domain/entity/OrderIdGenerator";
 import { Product } from "../src/domain/entity/Product";
 import { NonPersistentOrdersRepository } from "../src/NonPersistentOrdersRepository";
 import { camera } from "./ProductSamples";
@@ -16,7 +15,7 @@ test("order should persist", (): void => {
         quantity: 2,
     }
     let items: OrderItem[] = [item];
-    let id: OrderId = { value: "202200000001" };
+    let id: string = "202200000001";
 
     let newOrder = new Order(cpf, id);
 
@@ -33,7 +32,7 @@ test("order should update order status", async (): Promise<void> => {
         quantity: 2,
     }
     let items: OrderItem[] = [item];
-    let id: OrderId = { value: "202200000001" };
+    let id: string = "202200000001";
 
     let newOrder = new Order(cpf, id);
     let output = await orders.add(newOrder);

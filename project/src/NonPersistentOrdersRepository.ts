@@ -1,13 +1,12 @@
 import { Order, OrderStatus } from "./domain/entity/Order";
-import { OrderId } from "./domain/entity/OrderIdGenerator";
 import { OrdersRepository } from "./domain/OrdersRepository";
 
 export class NonPersistentOrdersRepository implements OrdersRepository {
 
-    placeOrders: Map<OrderId, Order>;
+    placeOrders: Map<string, Order>;
 
     constructor() {
-        this.placeOrders = new Map<OrderId, Order>();
+        this.placeOrders = new Map<string, Order>();
     }
 
     async add(order: Order): Promise<boolean> {
@@ -15,7 +14,7 @@ export class NonPersistentOrdersRepository implements OrdersRepository {
         return true;
     };
 
-    async updateStatus(orderId: OrderId, status: OrderStatus): Promise<boolean> {
+    async updateStatus(orderId: string, status: OrderStatus): Promise<boolean> {
         let order = this.placeOrders.get(orderId);
         if (!order) {
             return false;
@@ -25,11 +24,11 @@ export class NonPersistentOrdersRepository implements OrdersRepository {
         return true;
     }
 
-    async getOrder(orderId: OrderId): Promise<Order | undefined> {
+    async getOrder(orderId: string): Promise<Order | undefined> {
         return this.placeOrders.get(orderId);
     }
 
-    async getAllPlacedOrder(): Promise<Map<OrderId, Order>> {
+    async getAllPlacedOrder(): Promise<Map<string, Order>> {
         return this.placeOrders;
     }
 }
