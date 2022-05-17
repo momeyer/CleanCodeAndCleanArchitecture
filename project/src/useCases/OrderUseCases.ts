@@ -18,6 +18,7 @@ export class OrderUseCases {
         } catch (error: any) {
             return this.generateinvalidOrderSummary(input.date, error.message);
         }
+        this.ordersRepository.add(order);
         return this.generateOrderSummary(order);
     }
 
