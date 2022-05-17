@@ -1,8 +1,8 @@
 
 export default class Cpf {
-    readonly value: string;
+    private value: string;
 
-    constructor(readonly cpf: string) {
+    constructor(cpf: string) {
         if (!this.isValid(cpf)) { throw new Error("Invalid CPF"); }
         this.value = cpf;
     }

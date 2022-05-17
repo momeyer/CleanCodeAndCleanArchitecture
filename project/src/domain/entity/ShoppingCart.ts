@@ -2,7 +2,6 @@ import { OrderItem } from "./Order";
 import { Product } from "./Product";
 
 export default class ShoppingCart {
-
     private orderItems: Map<number, OrderItem>;
     discount?: number;
 
@@ -57,6 +56,4 @@ export default class ShoppingCart {
     applyDiscountCode(discount: number): void {
         this.discount = discount;
     }
-
-    //simulate shipping cost
 }

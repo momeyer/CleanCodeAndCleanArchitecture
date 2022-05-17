@@ -12,9 +12,10 @@ export type OrderItem = {
 }
 
 export enum OrderStatus {
-    PENDING,
-    CANCELLED,
-    CONFIRMED
+    PENDING = "PENDING",
+    CANCELLED = "CANCELED",
+    CONFIRMED = "CONFIRMED",
+    INVALID = "INVALID"
 }
 
 export class Order {
