@@ -10,7 +10,7 @@ test("order should persist", (): void => {
     let product: Product = camera;
     let item: OrderItem = {
         productId: product.id,
-        productDetails: product.dimensionsAndWeight,
+        productDetails: product.physicalAttributes,
         price: product.price,
         quantity: 2,
     }
@@ -27,7 +27,7 @@ test("order should update order status", async (): Promise<void> => {
     let product: Product = camera;
     let item: OrderItem = {
         productId: product.id,
-        productDetails: product.dimensionsAndWeight,
+        productDetails: product.physicalAttributes,
         price: product.price,
         quantity: 2,
     }

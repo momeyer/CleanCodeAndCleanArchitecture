@@ -1,4 +1,4 @@
-import { DimensionsAndWeight } from "../domain/entity/DimensionsAndWeight";
+import { PhysicalAttributes } from "../domain/entity/PhysicalAttributes";
 import { Product } from "../domain/entity/Product";
 import { ProductRepository } from "../domain/ProductRepository";
 
@@ -8,7 +8,7 @@ export class ProductUseCases {
     async add(input: AddInput): Promise<boolean> {
         try {
             const id = await this.productRepository.nextId();
-            const dimensions = new DimensionsAndWeight(input.height, input.weight, input.depth, input.weight);
+            const dimensions = new PhysicalAttributes(input.height, input.weight, input.depth, input.weight);
             let product = new Product(id, input.description, dimensions, input.price);
             return this.productRepository.add(product, input.quantity);
         } catch (error) {

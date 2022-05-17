@@ -14,29 +14,29 @@ describe("Shipping Calculator", (): void => {
     });
 
     test("Should return 30 for one guitar", (): void => {
-        shippingCalculator.addProductDetails(guitar.dimensionsAndWeight, 1);
+        shippingCalculator.addProductDetails(guitar.physicalAttributes, 1);
         expect(shippingCalculator.calculate()).toBe(30);
     });
 
     test("Should return 60 for two guitars", (): void => {
-        shippingCalculator.addProductDetails(guitar.dimensionsAndWeight, 2);
+        shippingCalculator.addProductDetails(guitar.physicalAttributes, 2);
         expect(shippingCalculator.calculate()).toBe(60);
     });
 
     test("Should return minimum if shipping cost is lower than that", (): void => {
-        shippingCalculator.addProductDetails(rubberDuck.dimensionsAndWeight, 1);
+        shippingCalculator.addProductDetails(rubberDuck.physicalAttributes, 1);
         expect(shippingCalculator.calculate()).toBe(10);
     });
 
     test("Should calcuate shipping cost for 2 different items", (): void => {
-        shippingCalculator.addProductDetails(camera.dimensionsAndWeight, 1);
-        shippingCalculator.addProductDetails(guitar.dimensionsAndWeight, 1);
+        shippingCalculator.addProductDetails(camera.physicalAttributes, 1);
+        shippingCalculator.addProductDetails(guitar.physicalAttributes, 1);
         expect(shippingCalculator.calculate()).toBe(40);
     });
 
     test("Should calcuate shipping cost for 2 different items", (): void => {
-        shippingCalculator.addProductDetails(camera.dimensionsAndWeight, 2);
-        shippingCalculator.addProductDetails(guitar.dimensionsAndWeight, 1);
+        shippingCalculator.addProductDetails(camera.physicalAttributes, 2);
+        shippingCalculator.addProductDetails(guitar.physicalAttributes, 1);
         expect(shippingCalculator.calculate()).toBe(50);
     });
 });

@@ -1,9 +1,9 @@
-import { DimensionsAndWeight } from "./DimensionsAndWeight";
+import { PhysicalAttributes } from "./PhysicalAttributes";
 
 export class Product {
     constructor(readonly id: number,
         readonly description: string,
-        readonly dimensionsAndWeight: DimensionsAndWeight,
+        readonly physicalAttributes: PhysicalAttributes,
         readonly price: number) { }
 }
 

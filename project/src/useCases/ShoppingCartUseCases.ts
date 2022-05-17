@@ -124,6 +124,8 @@ export class ShoppingCartUseCases {
 
         return this.populateSummary(summary, items, cart.discount);
     }
+
+    //TODO estimateShippingCost()
 }
 
 type AddItemInput = {

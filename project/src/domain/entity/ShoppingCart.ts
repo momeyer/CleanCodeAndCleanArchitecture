@@ -22,7 +22,7 @@ export default class ShoppingCart {
         if (!existingProduct) {
             const orderItem: OrderItem = {
                 productId: product.id,
-                productDetails: product.dimensionsAndWeight,
+                productDetails: product.physicalAttributes,
                 quantity: quantity,
                 price: product.price
             }

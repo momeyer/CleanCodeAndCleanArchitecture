@@ -1,7 +1,7 @@
-import { DimensionsAndWeight } from "./DimensionsAndWeight";
+import { PhysicalAttributes } from "./PhysicalAttributes";
 
 type ProductDetails = {
-    dimensionsAndWeight: DimensionsAndWeight;
+    physicalAttributes: PhysicalAttributes;
     quantity: number;
 }
 
@@ -26,8 +26,8 @@ export class ShippingCalculator {
         return total < this.minCost ? this.minCost : total;
     }
 
-    addProductDetails(dimensionsAndWeight: DimensionsAndWeight, quantity: number): void {
-        this.productsDetails.push({ dimensionsAndWeight, quantity });
+    addProductDetails(physicalAttributes: PhysicalAttributes, quantity: number): void {
+        this.productsDetails.push({ physicalAttributes, quantity });
     }
 
     private calculateProductShippingCost(product: ProductDetails): number {
@@ -36,11 +36,11 @@ export class ShippingCalculator {
     }
 
     private calculateItemVolumeInM3(product: ProductDetails): number {
-        const dimensionsInCm3 = product.dimensionsAndWeight.height_cm * product.dimensionsAndWeight.width_cm * product.dimensionsAndWeight.depth_cm;
+        const dimensionsInCm3 = product.physicalAttributes.height_cm * product.physicalAttributes.width_cm * product.physicalAttributes.depth_cm;
         return dimensionsInCm3 / (1000000);
     }
 
     private calculateItemDensityInKgPerM3(product: ProductDetails): number {
-        return product.dimensionsAndWeight.weight_kg / this.calculateItemVolumeInM3(product);
+        return product.physicalAttributes.weight_kg / this.calculateItemVolumeInM3(product);
     }
 }

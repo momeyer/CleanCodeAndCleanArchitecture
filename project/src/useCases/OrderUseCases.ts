@@ -34,7 +34,7 @@ export class OrderUseCases {
             }
             order.addItem({
                 productId: itemInRepository.product.id,
-                productDetails: itemInRepository.product.dimensionsAndWeight,
+                productDetails: itemInRepository.product.physicalAttributes,
                 quantity: item.quantity,
                 price: itemInRepository.product.price
             });

@@ -1,11 +1,11 @@
 import Cpf from "./Cpf";
-import { DimensionsAndWeight } from "./DimensionsAndWeight";
+import { PhysicalAttributes } from "./PhysicalAttributes";
 import PriceCalculator from "./PriceCalculator";
 import { ShippingCalculator } from "./ShippingCalculator";
 
 export type OrderItem = {
     productId: number;
-    productDetails: DimensionsAndWeight;
+    productDetails: PhysicalAttributes;
     quantity: number;
     price: number
 }

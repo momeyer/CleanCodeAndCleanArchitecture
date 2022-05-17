@@ -12,10 +12,10 @@ describe("Product Use Cases", (): void => {
 
             const input = {
                 description: camera.description,
-                height: camera.dimensionsAndWeight.height_cm,
-                width: camera.dimensionsAndWeight.width_cm,
-                depth: camera.dimensionsAndWeight.depth_cm,
-                weight: camera.dimensionsAndWeight.weight_kg,
+                height: camera.physicalAttributes.height_cm,
+                width: camera.physicalAttributes.width_cm,
+                depth: camera.physicalAttributes.depth_cm,
+                weight: camera.physicalAttributes.weight_kg,
                 price: camera.price,
                 quantity: 1
             }
@@ -30,9 +30,9 @@ describe("Product Use Cases", (): void => {
             const input = {
                 description: camera.description,
                 height: -1,
-                width: camera.dimensionsAndWeight.width_cm,
-                depth: camera.dimensionsAndWeight.depth_cm,
-                weight: camera.dimensionsAndWeight.weight_kg,
+                width: camera.physicalAttributes.width_cm,
+                depth: camera.physicalAttributes.depth_cm,
+                weight: camera.physicalAttributes.weight_kg,
                 price: camera.price,
                 quantity: 1
             }
@@ -44,20 +44,20 @@ describe("Product Use Cases", (): void => {
     describe("List Use Cases", () => {
         const cameraInput = {
             description: camera.description,
-            height: camera.dimensionsAndWeight.height_cm,
-            width: camera.dimensionsAndWeight.width_cm,
-            depth: camera.dimensionsAndWeight.depth_cm,
-            weight: camera.dimensionsAndWeight.weight_kg,
+            height: camera.physicalAttributes.height_cm,
+            width: camera.physicalAttributes.width_cm,
+            depth: camera.physicalAttributes.depth_cm,
+            weight: camera.physicalAttributes.weight_kg,
             price: camera.price,
             quantity: 100
         }
 
         const guitarInput = {
             description: guitar.description,
-            height: guitar.dimensionsAndWeight.height_cm,
-            width: guitar.dimensionsAndWeight.width_cm,
-            depth: guitar.dimensionsAndWeight.depth_cm,
-            weight: guitar.dimensionsAndWeight.weight_kg,
+            height: guitar.physicalAttributes.height_cm,
+            width: guitar.physicalAttributes.width_cm,
+            depth: guitar.physicalAttributes.depth_cm,
+            weight: guitar.physicalAttributes.weight_kg,
             price: guitar.price,
             quantity: 100
         }
@@ -86,20 +86,20 @@ describe("Product Use Cases", (): void => {
     describe("Search Use Cases", () => {
         const cameraInput = {
             description: camera.description,
-            height: camera.dimensionsAndWeight.height_cm,
-            width: camera.dimensionsAndWeight.width_cm,
-            depth: camera.dimensionsAndWeight.depth_cm,
-            weight: camera.dimensionsAndWeight.weight_kg,
+            height: camera.physicalAttributes.height_cm,
+            width: camera.physicalAttributes.width_cm,
+            depth: camera.physicalAttributes.depth_cm,
+            weight: camera.physicalAttributes.weight_kg,
             price: camera.price,
             quantity: 100
         }
 
         const guitarInput = {
             description: guitar.description,
-            height: guitar.dimensionsAndWeight.height_cm,
-            width: guitar.dimensionsAndWeight.width_cm,
-            depth: guitar.dimensionsAndWeight.depth_cm,
-            weight: guitar.dimensionsAndWeight.weight_kg,
+            height: guitar.physicalAttributes.height_cm,
+            width: guitar.physicalAttributes.width_cm,
+            depth: guitar.physicalAttributes.depth_cm,
+            weight: guitar.physicalAttributes.weight_kg,
             price: guitar.price,
             quantity: 100
         }
@@ -126,20 +126,20 @@ describe("Product Use Cases", (): void => {
     describe("Delete Use Cases", () => {
         const cameraInput = {
             description: camera.description,
-            height: camera.dimensionsAndWeight.height_cm,
-            width: camera.dimensionsAndWeight.width_cm,
-            depth: camera.dimensionsAndWeight.depth_cm,
-            weight: camera.dimensionsAndWeight.weight_kg,
+            height: camera.physicalAttributes.height_cm,
+            width: camera.physicalAttributes.width_cm,
+            depth: camera.physicalAttributes.depth_cm,
+            weight: camera.physicalAttributes.weight_kg,
             price: camera.price,
             quantity: 100
         }
 
         const guitarInput = {
             description: guitar.description,
-            height: guitar.dimensionsAndWeight.height_cm,
-            width: guitar.dimensionsAndWeight.width_cm,
-            depth: guitar.dimensionsAndWeight.depth_cm,
-            weight: guitar.dimensionsAndWeight.weight_kg,
+            height: guitar.physicalAttributes.height_cm,
+            width: guitar.physicalAttributes.width_cm,
+            depth: guitar.physicalAttributes.depth_cm,
+            weight: guitar.physicalAttributes.weight_kg,
             price: guitar.price,
             quantity: 100
         }
