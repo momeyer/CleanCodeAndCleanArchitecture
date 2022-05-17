@@ -35,3 +35,5 @@ export default class PriceCalculator {
         })
     }
 }
+
+//TODO move to its own unit tests

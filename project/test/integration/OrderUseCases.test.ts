@@ -31,6 +31,7 @@ describe("Order Use Cases", (): void => {
 
     describe("place order", (): void => {
         test("should fail to place empty order", async (): Promise<void> => {
+            //TODO setup
             const orderUseCases = new OrderUseCases(ordersRepository, productRepository, orderIdGenerator, shoppingCartRepository);
             const shoppingCart = new ShoppingCart(shoppinCartIdGenerator.generate());
 

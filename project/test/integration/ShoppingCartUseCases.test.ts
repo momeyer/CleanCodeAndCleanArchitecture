@@ -22,6 +22,7 @@ describe("ShoppingCart Use Cases", (): void => {
     })
 
     test("Should get content from empty cart", async (): Promise<void> => {
+        //TODO move usecases and shoppingcart to fixture
         const shoppingCartUseCases = new ShoppingCartUseCases(productRepository, discountCodeRepository, shoppingCartRepository, shoppingCartIdGenerator);
         const output = await shoppingCartUseCases.getContent("SC1");
 
@@ -29,7 +30,6 @@ describe("ShoppingCart Use Cases", (): void => {
     })
 
     test("Should get content from cart", async (): Promise<void> => {
-
         const shoppingCartUseCases = new ShoppingCartUseCases(productRepository, discountCodeRepository, shoppingCartRepository, shoppingCartIdGenerator);
         const shoppingCart = await shoppingCartUseCases.create();
 

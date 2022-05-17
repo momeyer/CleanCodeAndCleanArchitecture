@@ -11,3 +11,5 @@ export class ShoppingCartIdGenerator {
         return `SC${this.seed}`;
     }
 }
+
+//TODO add unit test

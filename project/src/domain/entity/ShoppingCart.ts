@@ -17,6 +17,7 @@ export default class ShoppingCart {
     }
 
     addItem(product: Product, quantity: number): boolean {
+        // TODO receive product ID
 
         const existingProduct = this.orderItems.get(product.id);
         if (!existingProduct) {
@@ -32,6 +33,9 @@ export default class ShoppingCart {
         existingProduct.quantity += quantity;
         return true;
     }
+
+    //TODO add item should fail with existing Item
+    // TODO create updateItemQuantity
 
     removeItem(productId: number): boolean {
         return this.orderItems.delete(productId);

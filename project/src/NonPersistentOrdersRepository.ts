@@ -15,7 +15,7 @@ export class NonPersistentOrdersRepository implements OrdersRepository {
     };
 
     async updateStatus(orderId: string, status: OrderStatus): Promise<boolean> {
-        let order = this.placeOrders.get(orderId);
+        const order = this.placeOrders.get(orderId);
         if (!order) {
             return false;
         }

@@ -20,11 +20,12 @@ export class ShoppingCartUseCases {
         return shoppingCart;
     }
 
+    //TODO check if should be removed
     async getContent(shoppingCartId: string): Promise<AddItemOutput[]> {
         const output: AddItemOutput[] = [];
-        let cart = await this.shoppingCartRepository.get(shoppingCartId);
+        const cart = await this.shoppingCartRepository.get(shoppingCartId);
         if (!cart) {
-            return []; // throe Invalid id ?
+            return []; // TODO throw Invalid id ?
         }
         const content = cart.getContent();
         content.forEach(item => {
@@ -38,21 +39,24 @@ export class ShoppingCartUseCases {
 
     async addItem(input: AddItemInput): Promise<boolean> {
         const productInRepository = await this.productRepository.find(input.productId);
-        let cart = await this.shoppingCartRepository.get(input.shoppingCartId);
-        // TODO improve error handling
-        if (!cart) {
+        const cart = await this.shoppingCartRepository.get(input.shoppingCartId);
+        if (!productInRepository || !cart) {
             return false;
         }
-        if (!productInRepository || productInRepository.quantity == 0 || input.quantity <= 0 || input.quantity > productInRepository.quantity) {
+
+        const isValidQuantity = (productInRepository.quantity > 0) && (input.quantity > 0);
+        const hasAvailableInStock = input.quantity <= productInRepository.quantity;
+        if (!isValidQuantity || !hasAvailableInStock) {
             return false;
         }
+
         cart.addItem(productInRepository.product, input.quantity);
         this.shoppingCartRepository.add(cart);
         return true;
     }
 
     async removeItem(shoppingCartId: string, idToRemove: number): Promise<boolean> {
-        let cart = await this.shoppingCartRepository.get(shoppingCartId);
+        const cart = await this.shoppingCartRepository.get(shoppingCartId);
         if (!cart) {
             return false;
         }
@@ -67,7 +71,7 @@ export class ShoppingCartUseCases {
     }
 
     async getItemQuantity(shoppingCartId: string, productId: number): Promise<number> {
-        let cart = await this.shoppingCartRepository.get(shoppingCartId);
+        const cart = await this.shoppingCartRepository.get(shoppingCartId);
         if (!cart) {
             return 0;
         }
@@ -76,7 +80,7 @@ export class ShoppingCartUseCases {
 
     async applyDiscountCode(shoppingCartId: string, code: string, curDate: Date = new Date): Promise<boolean> {
         const discount = await this.discountCodeRepository.getDiscount(code, curDate);
-        let cart = await this.shoppingCartRepository.get(shoppingCartId);
+        const cart = await this.shoppingCartRepository.get(shoppingCartId);
         if (!cart) {
             return false;
         }
@@ -86,23 +90,6 @@ export class ShoppingCartUseCases {
         cart.applyDiscountCode(discount);
         this.shoppingCartRepository.add(cart);
         return true;
-    }
-
-    private populateSummary(summary: Summary, items: OrderItem[], discount?: number): Summary {
-        let shippingCalculator = new ShippingCalculator();
-        let priceCalculator = new PriceCalculator();
-
-        items.forEach(item => {
-            summary.items.push({ id: item.productId, price: item.price, quantity: item.quantity });
-            shippingCalculator.addProductDetails(item.productDetails, item.quantity);
-            priceCalculator.add(item.price, item.quantity);
-        })
-
-        summary.discount = discount;
-        summary.shippingCost = shippingCalculator.calculate();
-        summary.subtotal = priceCalculator.calculate(summary.discount);
-        summary.total = summary.subtotal + summary.shippingCost;
-        return summary;
     }
 
     async generateSummary(shoppingCartId: string): Promise<Summary> {
@@ -125,6 +112,22 @@ export class ShoppingCartUseCases {
         return this.populateSummary(summary, items, cart.discount);
     }
 
+    private populateSummary(summary: Summary, items: OrderItem[], discount?: number): Summary {
+        let shippingCalculator = new ShippingCalculator();
+        let priceCalculator = new PriceCalculator();
+
+        items.forEach(item => {
+            summary.items.push({ id: item.productId, price: item.price, quantity: item.quantity });
+            shippingCalculator.addProductDetails(item.productDetails, item.quantity);
+            priceCalculator.add(item.price, item.quantity);
+        })
+
+        summary.discount = discount;
+        summary.shippingCost = shippingCalculator.calculate();
+        summary.subtotal = priceCalculator.calculate(summary.discount);
+        summary.total = summary.subtotal + summary.shippingCost;
+        return summary;
+    }
     //TODO estimateShippingCost()
 }
 

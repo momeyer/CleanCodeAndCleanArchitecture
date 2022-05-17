@@ -1,5 +1,5 @@
-import { DiscountCode } from "./domain/entity/DiscountCode";
 import { DiscountCodeRepository } from "./domain/DiscountCodeRepository";
+import { DiscountCode } from "./domain/entity/DiscountCode";
 
 export class NonPersistenDiscountCodeRepository implements DiscountCodeRepository {
     discountCodes = new Map<string, DiscountCode>();
@@ -9,9 +9,15 @@ export class NonPersistenDiscountCodeRepository implements DiscountCodeRepositor
     }
 
     async getDiscount(code: string, curDate: Date): Promise<number> {
-        let discountCode = this.discountCodes.get(code);
+        const discountCode = this.discountCodes.get(code);
+        if (!discountCode) {
+            return 0;
+        }
 
-        if (!discountCode || await this.isExpired(discountCode, curDate)) { return 0; }
+        const isExpired = await this.isExpired(discountCode, curDate);
+        if (isExpired) {
+            return 0;
+        }
 
         return discountCode.amount;
     }

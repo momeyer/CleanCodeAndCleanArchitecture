@@ -5,6 +5,7 @@ import { camera } from "./ProductSamples";
 
 const cpf = "111.444.777-35";
 
+//TODO move repeated things to fixture/setup
 test("order should persist", (): void => {
     const orders = new NonPersistentOrdersRepository();
     let product: Product = camera;

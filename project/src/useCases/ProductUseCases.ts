@@ -8,8 +8,8 @@ export class ProductUseCases {
     async add(input: AddInput): Promise<boolean> {
         try {
             const id = await this.productRepository.nextId();
-            const dimensions = new PhysicalAttributes(input.height, input.weight, input.depth, input.weight);
-            let product = new Product(id, input.description, dimensions, input.price);
+            const attributes = new PhysicalAttributes(input.height, input.weight, input.depth, input.weight);
+            let product = new Product(id, input.description, attributes, input.price);
             return this.productRepository.add(product, input.quantity);
         } catch (error) {
             return false;
@@ -17,16 +17,16 @@ export class ProductUseCases {
     }
 
     async list(): Promise<OutputList> {
-        let listOfProducts = await this.productRepository.list();
+        const listOfProducts = await this.productRepository.list();
         let output: OutputList = {
             list: []
         };
 
-        listOfProducts.forEach(productQuantity => {
+        listOfProducts.forEach(info => {
             const productInfo = {
-                id: productQuantity.product.id,
-                description: productQuantity.product.description,
-                price: productQuantity.product.price
+                id: info.product.id,
+                description: info.product.description,
+                price: info.product.price
             }
             output.list.push(productInfo);
         })
@@ -34,15 +34,14 @@ export class ProductUseCases {
     }
 
     async search(input: searchInput): Promise<searchOutput | undefined> {
-
-        let product = await this.productRepository.find(input.id);
-        if (!product) {
+        const productAndQuantity = await this.productRepository.find(input.id);
+        if (!productAndQuantity) {
             return undefined;
         }
         return {
-            description: product.product.description,
-            price: product.product.price,
-            inStock: product.quantity
+            description: productAndQuantity.product.description,
+            price: productAndQuantity.product.price,
+            inStock: productAndQuantity.quantity
         };
     }
 
