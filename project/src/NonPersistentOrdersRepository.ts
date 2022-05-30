@@ -14,6 +14,10 @@ export class NonPersistentOrdersRepository implements OrdersRepository {
         return true;
     };
 
+    async get(orderId: string): Promise<Order | undefined> {
+        return this.placeOrders.get(orderId);
+    }
+
     async updateStatus(orderId: string, status: OrderStatus): Promise<boolean> {
         const order = this.placeOrders.get(orderId);
         if (!order) {
@@ -28,7 +32,7 @@ export class NonPersistentOrdersRepository implements OrdersRepository {
         return this.placeOrders.get(orderId);
     }
 
-    async getAllPlacedOrder(): Promise<Map<string, Order>> {
+    async getAll(): Promise<Map<string, Order>> {
         return this.placeOrders;
     }
 }

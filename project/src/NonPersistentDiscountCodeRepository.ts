@@ -4,7 +4,7 @@ import { DiscountCode } from "./domain/entity/DiscountCode";
 export class NonPersistenDiscountCodeRepository implements DiscountCodeRepository {
     discountCodes = new Map<string, DiscountCode>();
 
-    async addDiscountCode(discountCode: DiscountCode): Promise<void> {
+    async add(discountCode: DiscountCode): Promise<void> {
         this.discountCodes.set(discountCode.code, discountCode);
     }
 

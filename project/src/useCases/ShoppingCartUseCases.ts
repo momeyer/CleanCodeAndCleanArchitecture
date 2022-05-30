@@ -20,12 +20,11 @@ export class ShoppingCartUseCases {
         return shoppingCart;
     }
 
-    //TODO check if should be removed
     async getContent(shoppingCartId: string): Promise<AddItemOutput[]> {
         const output: AddItemOutput[] = [];
         const cart = await this.shoppingCartRepository.get(shoppingCartId);
         if (!cart) {
-            return []; // TODO throw Invalid id ?
+            return [];
         }
         const content = cart.getContent();
         content.forEach(item => {

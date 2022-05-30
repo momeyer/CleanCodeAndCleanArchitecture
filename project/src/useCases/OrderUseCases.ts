@@ -26,6 +26,15 @@ export class OrderUseCases {
         return this.generateOrderSummary(order);
     }
 
+    async cancel(orderId: string): Promise<boolean> {
+        const order = await this.ordersRepository.get(orderId);
+
+        if (!order || order.status !== OrderStatus.PENDING) {
+            return false;
+        }
+        return this.ordersRepository.updateStatus(orderId, OrderStatus.CANCELLED);
+    }
+
     private async addItemsToOrder(items: InputItems[], order: Order): Promise<Order> {
         items.forEach(async item => {
             const itemInRepository = await this.productRepository.find(item.productId);

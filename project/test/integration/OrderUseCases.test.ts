@@ -1,3 +1,4 @@
+import { Order, OrderStatus } from "../../src/domain/entity/Order";
 import { OrderIdGenerator } from "../../src/domain/entity/OrderIdGenerator";
 import ShoppingCart from "../../src/domain/entity/ShoppingCart";
 import { ShoppingCartIdGenerator } from "../../src/domain/entity/ShoppingCartIdGenerator";
@@ -16,6 +17,8 @@ describe("Order Use Cases", (): void => {
     let orderIdGenerator = new OrderIdGenerator(0);
     let shoppingCartRepository = new NonPersistentShoppingCartRepository();
     let shoppinCartIdGenerator = new ShoppingCartIdGenerator(0);
+    let orderUseCases = new OrderUseCases(ordersRepository, productRepository, orderIdGenerator, shoppingCartRepository);
+    let shoppingCart = new ShoppingCart(shoppinCartIdGenerator.generate());
 
     beforeEach(async (): Promise<void> => {
         productRepository = new NonPersistentProductRepository()
@@ -27,14 +30,12 @@ describe("Order Use Cases", (): void => {
         await productRepository.add(camera, 100);
         await productRepository.add(guitar, 100);
         await productRepository.add(rubberDuck, 100);
+        orderUseCases = new OrderUseCases(ordersRepository, productRepository, orderIdGenerator, shoppingCartRepository);
+        shoppingCart = new ShoppingCart(shoppinCartIdGenerator.generate());
     })
 
     describe("place order", (): void => {
         test("should fail to place empty order", async (): Promise<void> => {
-            //TODO setup
-            const orderUseCases = new OrderUseCases(ordersRepository, productRepository, orderIdGenerator, shoppingCartRepository);
-            const shoppingCart = new ShoppingCart(shoppinCartIdGenerator.generate());
-
             const output = await orderUseCases.place({ id: shoppingCart.id, cpf: validCPF, date: new Date("2021-01-01") })
             expect(output.date?.toDateString()).toBe(new Date("2021-01-01T00:00:00.000Z").toDateString());
             expect(output.message).toBe("Empty order");
@@ -42,9 +43,6 @@ describe("Order Use Cases", (): void => {
         })
 
         test("should fail to place order with invalid cpf", async (): Promise<void> => {
-            const orderUseCases = new OrderUseCases(ordersRepository, productRepository, orderIdGenerator, shoppingCartRepository);
-            const shoppingCart = new ShoppingCart(shoppinCartIdGenerator.generate());
-
             shoppingCart.addItem(camera, 1);
             shoppingCart.addItem(guitar, 1);
             shoppingCartRepository.add(shoppingCart);
@@ -56,8 +54,6 @@ describe("Order Use Cases", (): void => {
         })
 
         test("should place order", async (): Promise<void> => {
-            const orderUseCases = new OrderUseCases(ordersRepository, productRepository, orderIdGenerator, shoppingCartRepository);
-            const shoppingCart = new ShoppingCart(shoppinCartIdGenerator.generate());
 
             shoppingCart.addItem(camera, 1);
             shoppingCart.addItem(guitar, 1);
@@ -74,19 +70,39 @@ describe("Order Use Cases", (): void => {
 
     describe("cancel order", (): void => {
 
-        test("cancel", (): void => {
-            // if order doesnt exist
-            // if order is compleated
-            // if order is pendinding (should work)
+        test("should fail to cancel non-existing order", async (): Promise<void> => {
+            const output = await orderUseCases.cancel("invalidId")
+            expect(output).toBeFalsy();
+        })
 
-            expect(1).toStrictEqual(1);
+        test("should fail to cancel compleated order", async (): Promise<void> => {
+            await ordersRepository.add(new Order(validCPF, "202100000001", undefined, new Date("2021-01-01")))
+            ordersRepository.updateStatus("202100000001", OrderStatus.COMPLETE);
+            const output = await orderUseCases.cancel("202100000001");
+            expect(output).toBeFalsy();
+        })
+
+        test("should fail to cancel canceled order", async (): Promise<void> => {
+            await ordersRepository.add(new Order(validCPF, "202100000001", undefined, new Date("2021-01-01")))
+            ordersRepository.updateStatus("202100000001", OrderStatus.CANCELLED);
+            const output = await orderUseCases.cancel("202100000001");
+            expect(output).toBeFalsy();
+        })
+
+        test("should cancel pending order", async (): Promise<void> => {
+            await ordersRepository.add(new Order(validCPF, "202100000001", undefined, new Date("2021-01-01")))
+            const output = await orderUseCases.cancel("202100000001");
+            expect(output).toBeTruthy();
+            const order = await ordersRepository.get("202100000001");
+            expect(order?.status).toBe(OrderStatus.CANCELLED);
         })
     })
 
     describe("search order", (): void => {
+        //TODO
         // if order doesnt exist
         // if order is pendinding (should work)
-        test("search", (): void => {
+        test("search", async (): Promise<void> => {
             expect(1).toBe(1);
         })
     })

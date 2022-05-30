@@ -10,13 +10,13 @@ describe("Non Persistent Product repository", (): void => {
     });
 
     test("invalid product", async (): Promise<void> => {
-        const isValid = await repository.isValidProductId(10);
+        const isValid = await repository.isValidProduct(10);
         expect(isValid).toBeFalsy();
     });
 
     test("valid product", async (): Promise<void> => {
         await repository?.add(camera, 1);
-        const isValid = await repository.isValidProductId(camera.id);
+        const isValid = await repository.isValidProduct(camera.id);
         expect(isValid).toBeTruthy();
     });
 

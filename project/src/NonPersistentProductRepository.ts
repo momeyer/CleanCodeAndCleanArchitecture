@@ -1,12 +1,12 @@
 import { Product } from "./domain/entity/Product";
-import { ProductQuantity, ProductRepository } from "./domain/ProductRepository";
+import { ProductAndQuantity, ProductRepository } from "./domain/ProductRepository";
 
 export class NonPersistentProductRepository implements ProductRepository {
 
-    private inventory: Map<number, ProductQuantity>;
+    private inventory: Map<number, ProductAndQuantity>;
 
     constructor() {
-        this.inventory = new Map<number, ProductQuantity>();
+        this.inventory = new Map<number, ProductAndQuantity>();
     }
 
     async add(product: Product, quantity: number): Promise<boolean> {
@@ -17,11 +17,11 @@ export class NonPersistentProductRepository implements ProductRepository {
         return true;
     };
 
-    async find(productId: number): Promise<ProductQuantity | undefined> {
+    async find(productId: number): Promise<ProductAndQuantity | undefined> {
         return this.inventory.get(productId);
     };
 
-    async isValidProductId(productId: number): Promise<boolean> {
+    async isValidProduct(productId: number): Promise<boolean> {
         if (productId <= 0) { return false; }
         return this.inventory.has(productId);
     };
@@ -35,8 +35,8 @@ export class NonPersistentProductRepository implements ProductRepository {
         return true;
     };
 
-    async list(): Promise<ProductQuantity[]> {
-        let productsList: ProductQuantity[] = [];
+    async list(): Promise<ProductAndQuantity[]> {
+        let productsList: ProductAndQuantity[] = [];
 
         this.inventory.forEach(product => {
             productsList.push(product);
