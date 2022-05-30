@@ -1,4 +1,4 @@
-import { ProductRepository } from "../src/domain/ProductRepository";
+import { ProductRepository } from "../src/domain/repository/ProductRepository";
 import { NonPersistentProductRepository } from "../src/NonPersistentProductRepository";
 import { camera, guitar } from "./ProductSamples";
 

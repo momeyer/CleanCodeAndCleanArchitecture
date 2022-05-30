@@ -99,11 +99,15 @@ describe("Order Use Cases", (): void => {
     })
 
     describe("search order", (): void => {
-        //TODO
-        // if order doesnt exist
-        // if order is pendinding (should work)
-        test("search", async (): Promise<void> => {
-            expect(1).toBe(1);
+        test("should fail to find non-existing order", async (): Promise<void> => {
+            const output = await orderUseCases.search("202100000001");
+            expect(output?.id).toBeUndefined();
+        })
+
+        test("should return order", async (): Promise<void> => {
+            await ordersRepository.add(new Order(validCPF, "202100000001", undefined, new Date("2021-01-01")))
+            const output = await orderUseCases.search("202100000001");
+            expect(output?.id).toBe("202100000001");
         })
     })
 })
