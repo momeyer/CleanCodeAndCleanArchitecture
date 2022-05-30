@@ -1,5 +1,3 @@
-
-
 export class OrderIdGenerator {
     seed: number;
 
@@ -7,7 +5,7 @@ export class OrderIdGenerator {
         this.seed = seed;
     }
 
-    generate(date: Date): string {
+    generate(date: Date = new Date()): string {
         const year = date.getFullYear();
         const minDigits = 8;
         this.seed++;
