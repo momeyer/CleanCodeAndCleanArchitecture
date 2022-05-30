@@ -1,8 +1,8 @@
 
 export class ShoppingCartIdGenerator {
-    seed: number;
+    private seed: number;
 
-    constructor(seed: number) {
+    constructor(seed: number = 0) {
         this.seed = seed;
     }
 
@@ -11,5 +11,3 @@ export class ShoppingCartIdGenerator {
         return `SC${this.seed}`;
     }
 }
-
-//TODO add unit test

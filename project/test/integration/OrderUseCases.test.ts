@@ -90,12 +90,4 @@ describe("Order Use Cases", (): void => {
             expect(1).toBe(1);
         })
     })
-
-    describe("update status", (): void => {
-        // if order doesnt exist
-        // if order is compleated
-        test("update", (): void => {
-            expect(1).toBe(1);
-        })
-    })
 })

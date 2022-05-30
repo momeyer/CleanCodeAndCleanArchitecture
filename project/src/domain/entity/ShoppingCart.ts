@@ -17,25 +17,19 @@ export default class ShoppingCart {
     }
 
     addItem(product: Product, quantity: number): boolean {
-        // TODO receive product ID
-
         const existingProduct = this.orderItems.get(product.id);
-        if (!existingProduct) {
-            const orderItem: OrderItem = {
-                productId: product.id,
-                productDetails: product.physicalAttributes,
-                quantity: quantity,
-                price: product.price
-            }
-            this.orderItems.set(product.id, orderItem);
-            return true;
+        if (existingProduct) {
+            return false;
         }
-        existingProduct.quantity += quantity;
+        const orderItem: OrderItem = {
+            productId: product.id,
+            productDetails: product.physicalAttributes,
+            quantity: quantity,
+            price: product.price
+        }
+        this.orderItems.set(product.id, orderItem);
         return true;
     }
-
-    //TODO add item should fail with existing Item
-    // TODO create updateItemQuantity
 
     removeItem(productId: number): boolean {
         return this.orderItems.delete(productId);
