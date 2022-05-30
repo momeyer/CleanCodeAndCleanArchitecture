@@ -1,4 +1,4 @@
-import { Order, OrderStatus } from "./entity/Order";
+import { Order, OrderStatus } from "../entity/Order";
 
 export interface OrdersRepository {
     add(order: Order): Promise<boolean>;

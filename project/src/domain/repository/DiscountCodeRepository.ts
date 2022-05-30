@@ -1,4 +1,4 @@
-import { DiscountCode } from "./entity/DiscountCode";
+import { DiscountCode } from "../entity/DiscountCode";
 
 
 export interface DiscountCodeRepository {

@@ -1,6 +1,6 @@
 import { PhysicalAttributes } from "../domain/entity/PhysicalAttributes";
 import { Product } from "../domain/entity/Product";
-import { ProductRepository } from "../domain/ProductRepository";
+import { ProductRepository } from "../domain/repository/ProductRepository";
 
 export class ProductUseCases {
 

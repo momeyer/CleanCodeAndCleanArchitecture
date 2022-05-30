@@ -1,4 +1,5 @@
-import ShoppingCart from "./entity/ShoppingCart";
+import ShoppingCart from "../entity/ShoppingCart";
+
 
 export interface ShoppingCartRepository {
     add(shoppingCart: ShoppingCart): Promise<void>;

@@ -1,8 +1,8 @@
 import { Order, OrderStatus } from "../domain/entity/Order";
 import { OrderIdGenerator } from "../domain/entity/OrderIdGenerator";
-import { OrdersRepository } from "../domain/OrdersRepository";
-import { ProductRepository } from "../domain/ProductRepository";
-import { ShoppingCartRepository } from "../domain/ShoppingCartRepository";
+import { OrdersRepository } from "../domain/repository/OrdersRepository";
+import { ProductRepository } from "../domain/repository/ProductRepository";
+import { ShoppingCartRepository } from "../domain/repository/ShoppingCartRepository";
 
 export class OrderUseCases {
 
@@ -33,6 +33,10 @@ export class OrderUseCases {
             return false;
         }
         return this.ordersRepository.updateStatus(orderId, OrderStatus.CANCELLED);
+    }
+
+    async search(orderId: string): Promise<Order | undefined> {
+        return await this.ordersRepository.get(orderId);
     }
 
     private async addItemsToOrder(items: InputItems[], order: Order): Promise<Order> {

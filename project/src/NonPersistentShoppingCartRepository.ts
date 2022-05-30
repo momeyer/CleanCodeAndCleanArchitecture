@@ -1,5 +1,5 @@
 import ShoppingCart from "./domain/entity/ShoppingCart";
-import { ShoppingCartRepository } from "./domain/ShoppingCartRepository";
+import { ShoppingCartRepository } from "./domain/repository/ShoppingCartRepository";
 
 export class NonPersistentShoppingCartRepository implements ShoppingCartRepository {
     activeCarts: Map<string, ShoppingCart>;

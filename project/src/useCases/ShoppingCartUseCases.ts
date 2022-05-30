@@ -1,11 +1,11 @@
-import { DiscountCodeRepository } from "../domain/DiscountCodeRepository";
+import { DiscountCodeRepository } from "../domain/repository/DiscountCodeRepository";
 import { OrderItem } from "../domain/entity/Order";
 import PriceCalculator from "../domain/entity/PriceCalculator";
 import { ShippingCalculator } from "../domain/entity/ShippingCalculator";
 import ShoppingCart from "../domain/entity/ShoppingCart";
 import { ShoppingCartIdGenerator } from "../domain/entity/ShoppingCartIdGenerator";
-import { ProductRepository } from "../domain/ProductRepository";
-import { ShoppingCartRepository } from "../domain/ShoppingCartRepository";
+import { ProductRepository } from "../domain/repository/ProductRepository";
+import { ShoppingCartRepository } from "../domain/repository/ShoppingCartRepository";
 
 
 export class ShoppingCartUseCases {

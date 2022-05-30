@@ -1,4 +1,4 @@
-import { DiscountCodeRepository } from "./domain/DiscountCodeRepository";
+import { DiscountCodeRepository } from "./domain/repository/DiscountCodeRepository";
 import { DiscountCode } from "./domain/entity/DiscountCode";
 
 export class NonPersistenDiscountCodeRepository implements DiscountCodeRepository {
