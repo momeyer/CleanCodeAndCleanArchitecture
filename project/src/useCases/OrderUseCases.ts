@@ -1,5 +1,6 @@
 import { Order, OrderStatus } from "../domain/entity/Order";
 import { OrderIdGenerator } from "../domain/entity/OrderIdGenerator";
+import { Product } from "../domain/entity/Product";
 import { OrdersRepository } from "../domain/repository/OrdersRepository";
 import { ProductRepository } from "../domain/repository/ProductRepository";
 import { ShoppingCartRepository } from "../domain/repository/ShoppingCartRepository";
@@ -32,6 +33,9 @@ export class OrderUseCases {
         if (!order || order.status !== OrderStatus.PENDING) {
             return false;
         }
+        order.items.forEach(item => {
+            this.productRepository.updateQuantityBy(item.productId, item.quantity);
+        })
         return this.ordersRepository.updateStatus(orderId, OrderStatus.CANCELLED);
     }
 

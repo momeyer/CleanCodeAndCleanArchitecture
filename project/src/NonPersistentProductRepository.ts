@@ -30,10 +30,19 @@ export class NonPersistentProductRepository implements ProductRepository {
         const productInInventory = await this.find(productId);
         if (!productInInventory || productInInventory.quantity < quantity) { return false; }
 
-        productInInventory.quantity = productInInventory.quantity - quantity;
+        productInInventory.quantity -= quantity;
         this.inventory.set(productId, productInInventory);
         return true;
     };
+
+    async updateQuantityBy(productId: number, quantity: number): Promise<boolean> {
+        const productInInventory = await this.find(productId);
+        if (!productInInventory || productInInventory.quantity < quantity) { return false; }
+
+        productInInventory.quantity += quantity;
+        this.inventory.set(productId, productInInventory);
+        return true;
+    }
 
     async list(): Promise<ProductAndQuantity[]> {
         let productsList: ProductAndQuantity[] = [];

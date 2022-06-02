@@ -101,6 +101,22 @@ describe("Order Use Cases", (): void => {
             const order = await ordersRepository.get("202100000001");
             expect(order?.status).toBe(OrderStatus.CANCELLED);
         })
+
+        test("should cancel pending order and return items to repository", async (): Promise<void> => {
+            shoppingCart.addItem(camera, 5);
+            shoppingCart.addItem(guitar, 10);
+            shoppingCartRepository.add(shoppingCart);
+            const wasPlaces = await orderUseCases.place({ id: shoppingCart.id, cpf: validCPF, date: new Date("2021-01-01") })
+            const output = await orderUseCases.cancel("202100000001");
+            expect(output).toBeTruthy();
+            const order = await ordersRepository.get("202100000001");
+            expect(order?.status).toBe(OrderStatus.CANCELLED);
+            const updatedCamera = await productRepository.find(camera.id)
+            const updatedGuitar = await productRepository.find(guitar.id)
+            expect(updatedCamera?.quantity).toBe(100)
+            expect(updatedGuitar?.quantity).toBe(100)
+        })
+
     })
 
     describe("search order", (): void => {
