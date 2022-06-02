@@ -1,3 +1,5 @@
+import PgPromiseConnectionAdapter from "../../src/infra/database/PgPromiseConnectionAdapter";
+import DatabaseProductRepository from "../../src/infra/repository/DatabaseProductRepository";
 import { NonPersistentProductRepository } from "../../src/NonPersistentProductRepository";
 import { ProductUseCases } from "../../src/useCases/ProductUseCases";
 import { camera, guitar } from "../ProductSamples";
@@ -80,6 +82,20 @@ describe("Product Use Cases", (): void => {
             const output = await productUseCases.list();
             expect(output.list).toHaveLength(2);
         })
+
+        // test("Should list all Products DATABASE", async (): Promise<void> => {
+        //     const productRepository = new DatabaseProductRepository(new PgPromiseConnectionAdapter())
+        //     const productUseCases = new ProductUseCases(productRepository);
+
+        //     await productUseCases.add(cameraInput);
+        //     await productUseCases.add(guitarInput);
+
+        //     const output = await productUseCases.list();
+        //     expect(output.list).toHaveLength(2);
+        // })
+
+
+
 
     })
 

@@ -1,17 +1,21 @@
-import express, { Request, Response } from "express";
-const router = express()
-const port = 3000;
+import { camera, guitar, rubberDuck } from "../test/ProductSamples";
+import ProductController from "./infra/controller/ProductController";
+import PgPromiseConnectionAdapter from "./infra/database/PgPromiseConnectionAdapter";
+import NonPersistentRepositoryFactory from "./infra/factory/NonPersistentRepositoryFactory";
+import ExpressAdapter from "./infra/http/ExpressAdapter";
+import { NonPersistentOrdersRepository } from "./NonPersistentOrdersRepository";
+import { NonPersistentProductRepository } from "./NonPersistentProductRepository";
+const PORT = 3000;
+const http = new ExpressAdapter();
 
-router.get('/', (req: Request, res: Response): void => {
-    res.status(200).send('Hello World!');
-})
+const connection = new PgPromiseConnectionAdapter();
+const productRepository = new NonPersistentProductRepository();
+productRepository.add(camera, 100);
+productRepository.add(guitar, 100);
+productRepository.add(rubberDuck, 100);
+const orderRepository = new NonPersistentOrdersRepository();
+const repositoryFactory = new NonPersistentRepositoryFactory();
+new ProductController(http, productRepository);
 
-router.get('/hello', (req: Request, res: Response): void => {
-    console.log("This is the headers: ", req.headers);
-    console.log("This is the header: ", req.header);
-    res.status(200).send({ hello: "hey" });
-})
-
-router.listen(port, (): void => {
-    console.log(`Example router listening on port ${port}`);
-})
+console.log(`\u001b[32m Server is running on port ${PORT}`);
+http.listen(PORT);

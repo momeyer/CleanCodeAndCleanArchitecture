@@ -10,7 +10,7 @@ export interface ProductRepository {
     find(productId: number): Promise<ProductAndQuantity | undefined>;
     isValidProduct(productId: number): Promise<boolean>;
     remove(productId: number, quantity: number): Promise<boolean>;
-    updateQuantityBy(productId: number, quantity: number): Promise<boolean>;
+    updateQuantityBy(productId: number, amount: number): Promise<boolean>;
     list(): Promise<ProductAndQuantity[]>;
     nextId(): Promise<number>;
 }

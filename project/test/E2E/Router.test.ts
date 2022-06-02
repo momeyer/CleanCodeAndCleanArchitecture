@@ -1,24 +1,10 @@
 import axios from "axios";
 
-test.skip("Deve chamar /", async function (): Promise<void> {
+test("Should list products", async function (): Promise<void> {
     const response = await axios({
-        url: "http://localhost:3000/",
+        url: "http://localhost:3000/products",
         method: "get",
     });
-    expect(response.data).toBe("Hello World!");
-    expect(response.status).toBe(200);
-});
+    let test = { id: 1, description: 'Camera', price: 10 };
 
-
-test.skip("Deve chamar /hello", async function (): Promise<void> {
-    const response = await axios({
-        url: "http://localhost:3000/hello",
-        method: "get",
-        headers: {
-            'Content-Type': 'application/json',
-            Permissions: 'hello:hello',
-        },
-    });
-    expect(response.data).toBe("Hello World!");
-    expect(response.status).toBe(200);
 });
