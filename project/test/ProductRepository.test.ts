@@ -30,7 +30,7 @@ describe("Non Persistent Product repository", (): void => {
     test("add product", async (): Promise<void> => {
         await repository.add(camera, 3);
         const product = await repository.find(camera.id);
-        expect(product?.quantity).toBe(3);
+        expect(product!.quantity).toBe(3);
     });
 
     test("cannot find product", async (): Promise<void> => {
@@ -41,8 +41,8 @@ describe("Non Persistent Product repository", (): void => {
     test("find existing product", async (): Promise<void> => {
         await repository?.add(camera, 1);
         const product = await repository.find(camera.id);
-        expect(product?.product).toBe(camera);
-        expect(product?.quantity).toBe(1);
+        expect(product!.product).toBe(camera);
+        expect(product!.quantity).toBe(1);
     });
 
     test("try to remove invalid product", async (): Promise<void> => {

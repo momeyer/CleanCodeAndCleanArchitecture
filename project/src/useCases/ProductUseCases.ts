@@ -33,8 +33,8 @@ export class ProductUseCases {
         return output;
     }
 
-    async search(input: searchInput): Promise<searchOutput | undefined> {
-        const productAndQuantity = await this.productRepository.find(input.id);
+    async search(id: number): Promise<searchOutput | undefined> {
+        const productAndQuantity = await this.productRepository.find(id);
         if (!productAndQuantity) {
             return undefined;
         }
@@ -62,10 +62,6 @@ type AddInput = {
 
 type OutputList = {
     list: { id: number, description: string, price: number }[];
-}
-
-type searchInput = {
-    id: number
 }
 
 type searchOutput = {

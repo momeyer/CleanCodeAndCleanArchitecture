@@ -1,6 +1,6 @@
 import axios from "axios";
 
-test("Should list products", async function (): Promise<void> {
+test.skip("Should list products", async function (): Promise<void> {
     const response = await axios({
         url: "http://localhost:3000/products",
         method: "get",

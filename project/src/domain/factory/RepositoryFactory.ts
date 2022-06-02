@@ -4,7 +4,7 @@ import { ProductRepository } from "../repository/ProductRepository";
 import { ShoppingCartRepository } from "../repository/ShoppingCartRepository";
 
 export default interface RepositoryFactory {
-    createItemRepository(): ProductRepository;
+    createProductRepository(): ProductRepository;
     createOrdersRepository(): OrdersRepository;
     createDiscountCodeRepository(): DiscountCodeRepository;
     createDiscountCodeRepository(): DiscountCodeRepository;

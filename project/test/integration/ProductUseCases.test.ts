@@ -1,5 +1,3 @@
-import PgPromiseConnectionAdapter from "../../src/infra/database/PgPromiseConnectionAdapter";
-import DatabaseProductRepository from "../../src/infra/repository/DatabaseProductRepository";
 import { NonPersistentProductRepository } from "../../src/NonPersistentProductRepository";
 import { ProductUseCases } from "../../src/useCases/ProductUseCases";
 import { camera, guitar } from "../ProductSamples";
@@ -123,7 +121,7 @@ describe("Product Use Cases", (): void => {
         test("Should return undefined when product doesnt exist", async (): Promise<void> => {
             const productRepository = new NonPersistentProductRepository()
             const productUseCases = new ProductUseCases(productRepository);
-            expect(await productUseCases.search({ id: 2 })).toBeUndefined();
+            expect(await productUseCases.search(2)).toBeUndefined();
         })
 
         test("Should return camera", async (): Promise<void> => {
@@ -133,7 +131,7 @@ describe("Product Use Cases", (): void => {
             await productUseCases.add(cameraInput);
             await productUseCases.add(guitarInput);
 
-            const output = await productUseCases.search({ id: 1 });
+            const output = await productUseCases.search(1);
             expect(output?.description).toBe(camera.description);
             expect(output?.price).toBe(camera.price);
         })
@@ -170,7 +168,7 @@ describe("Product Use Cases", (): void => {
 
             const output = await productUseCases.remove({ id: 1, quantity: 100 });
             expect(output).toBeTruthy();
-            const item = await productUseCases.search({ id: 1 });
+            const item = await productUseCases.search(1);
             expect(item?.inStock).toBe(0);
         })
 

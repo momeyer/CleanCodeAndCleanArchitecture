@@ -3,18 +3,23 @@ import { DiscountCodeRepository } from "../../domain/repository/DiscountCodeRepo
 import { OrdersRepository } from "../../domain/repository/OrdersRepository";
 import { ProductRepository } from "../../domain/repository/ProductRepository";
 import { ShoppingCartRepository } from "../../domain/repository/ShoppingCartRepository";
+import { NonPersistenDiscountCodeRepository } from "../../NonPersistentDiscountCodeRepository";
+import { NonPersistentOrdersRepository } from "../../NonPersistentOrdersRepository";
+import { NonPersistentProductRepository } from "../../NonPersistentProductRepository";
+import { NonPersistentShoppingCartRepository } from "../../NonPersistentShoppingCartRepository";
 
 export default class NonPersistentRepositoryFactory implements RepositoryFactory {
-    createItemRepository(): ProductRepository {
-        throw new Error("Method not implemented.");
+    createProductRepository(): ProductRepository {
+        return new NonPersistentProductRepository();
     }
     createOrdersRepository(): OrdersRepository {
-        throw new Error("Method not implemented.");
+        return new NonPersistentOrdersRepository();
     }
     createDiscountCodeRepository(): DiscountCodeRepository {
-        throw new Error("Method not implemented.");
+        return new NonPersistenDiscountCodeRepository();
     }
     createShoppingCartRepository(): ShoppingCartRepository {
-        throw new Error("Method not implemented.");
+        return new NonPersistentShoppingCartRepository();
+
     }
 }
