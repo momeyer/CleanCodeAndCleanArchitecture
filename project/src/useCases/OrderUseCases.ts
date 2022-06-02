@@ -45,6 +45,7 @@ export class OrderUseCases {
             if (!itemInRepository) {
                 throw new Error(`Item ${item.productId} not available`);
             }
+            this.productRepository.remove(item.productId, item.quantity);
             order.addItem({
                 productId: itemInRepository.product.id,
                 productDetails: itemInRepository.product.physicalAttributes,

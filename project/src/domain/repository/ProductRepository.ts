@@ -1,4 +1,4 @@
-import { Product } from "./entity/Product";
+import { Product } from "../entity/Product";
 
 export type ProductAndQuantity = {
     product: Product;

@@ -53,10 +53,10 @@ describe("Order Use Cases", (): void => {
             expect(output.status).toBe("INVALID");
         })
 
-        test("should place order", async (): Promise<void> => {
+        test("should decrese items quantity in repository", async (): Promise<void> => {
 
-            shoppingCart.addItem(camera, 1);
-            shoppingCart.addItem(guitar, 1);
+            shoppingCart.addItem(camera, 5);
+            shoppingCart.addItem(guitar, 10);
             shoppingCartRepository.add(shoppingCart);
 
             const output = await orderUseCases.place({ id: shoppingCart.id, cpf: validCPF, date: new Date("2021-01-01") })
@@ -64,8 +64,13 @@ describe("Order Use Cases", (): void => {
             expect(output.id).toBe("202100000001")
             expect(output.status).toBe("PENDING");
             expect(ordersRepository.placeOrders.has(output.id!)).toBeTruthy();
-
+            const updatedCamera = await productRepository.find(camera.id)
+            const updatedGuitar = await productRepository.find(guitar.id)
+            expect(updatedCamera?.quantity).toBe(95)
+            expect(updatedGuitar?.quantity).toBe(90)
         })
+
+
     })
 
     describe("cancel order", (): void => {

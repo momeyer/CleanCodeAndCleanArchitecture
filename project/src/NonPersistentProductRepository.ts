@@ -30,8 +30,8 @@ export class NonPersistentProductRepository implements ProductRepository {
         const productInInventory = await this.find(productId);
         if (!productInInventory || productInInventory.quantity < quantity) { return false; }
 
-        const updatedQuantity = productInInventory.quantity - quantity;
-        this.inventory.set(productId, { ...productInInventory, quantity: updatedQuantity });
+        productInInventory.quantity = productInInventory.quantity - quantity;
+        this.inventory.set(productId, productInInventory);
         return true;
     };
 
