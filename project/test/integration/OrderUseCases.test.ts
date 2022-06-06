@@ -122,13 +122,14 @@ describe("Order Use Cases", (): void => {
     describe("search order", (): void => {
         test("should fail to find non-existing order", async (): Promise<void> => {
             const output = await orderUseCases.search("202100000001");
-            expect(output?.id).toBeUndefined();
+            expect(output).toBeUndefined();
         })
 
         test("should return order", async (): Promise<void> => {
             await ordersRepository.add(new Order(validCPF, "202100000001", undefined, new Date("2021-01-01")))
             const output = await orderUseCases.search("202100000001");
             expect(output?.id).toBe("202100000001");
+            expect(output?.status).toBe("PENDING");
         })
     })
 })

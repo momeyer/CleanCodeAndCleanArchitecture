@@ -1,6 +1,5 @@
 import { Order, OrderStatus } from "../domain/entity/Order";
 import { OrderIdGenerator } from "../domain/entity/OrderIdGenerator";
-import { Product } from "../domain/entity/Product";
 import { OrdersRepository } from "../domain/repository/OrdersRepository";
 import { ProductRepository } from "../domain/repository/ProductRepository";
 import { ShoppingCartRepository } from "../domain/repository/ShoppingCartRepository";
@@ -14,14 +13,14 @@ export class OrderUseCases {
         const cart = await this.shoppingCartRepository.get(input.id);
 
         if (!cart || cart.isEmpty()) {
-            return this.generateinvalidOrderSummary("Empty order", input.date);
+            return this.generateInvalidOrderSummary("Empty order", input.date);
         }
         const orderItems = cart.getContent();
         try {
             order = new Order(input.cpf, this.orderIdGenerator.generate(input.date), cart.discount, input.date);
             this.addItemsToOrder(orderItems, order);
         } catch (error: any) {
-            return this.generateinvalidOrderSummary(error.message, input.date);
+            return this.generateInvalidOrderSummary(error.message, input.date);
         }
         this.ordersRepository.add(order);
         return this.generateOrderSummary(order);
@@ -39,8 +38,11 @@ export class OrderUseCases {
         return this.ordersRepository.updateStatus(orderId, OrderStatus.CANCELLED);
     }
 
-    async search(orderId: string): Promise<Order | undefined> {
-        return await this.ordersRepository.get(orderId);
+    async search(orderId: string): Promise<orderOutput | undefined> {
+        const order = await this.ordersRepository.get(orderId);
+
+        if (!order) { return undefined; }
+        return { id: order?.id, status: order?.status.toString() };
     }
 
     private async addItemsToOrder(items: InputItems[], order: Order): Promise<Order> {
@@ -60,7 +62,7 @@ export class OrderUseCases {
         return order;
     }
 
-    private generateinvalidOrderSummary(message: string, date: Date = new Date()): outputOrderSummary {
+    private generateInvalidOrderSummary(message: string, date: Date = new Date()): outputOrderSummary {
         return {
             date: date,
             status: OrderStatus.INVALID,
@@ -94,4 +96,9 @@ type outputOrderSummary = {
     date?: Date
     status?: OrderStatus
     message?: string
+}
+
+type orderOutput = {
+    id?: string,
+    status?: string
 }
