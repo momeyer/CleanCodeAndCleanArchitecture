@@ -6,5 +6,4 @@ test.skip("Should list products", async function (): Promise<void> {
         method: "get",
     });
     let test = { id: 1, description: 'Camera', price: 10 };
-
 });
