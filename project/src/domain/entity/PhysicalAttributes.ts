@@ -1,5 +1,6 @@
 
 export class PhysicalAttributes {
+
     constructor(readonly height_cm: number,
         readonly width_cm: number,
         readonly depth_cm: number,
@@ -8,4 +9,14 @@ export class PhysicalAttributes {
             throw new Error("Dimensions should always be bigger than 0");
         }
     }
+
+    calculateVolumeInM3(): number {
+        const dimensionsInCm3 = this.height_cm * this.width_cm * this.depth_cm;
+        return dimensionsInCm3 / (1000000);
+    }
+
+    calculateDensityInKgPerM3(): number {
+        return this.weight_kg / this.calculateVolumeInM3();
+    }
+
 }
