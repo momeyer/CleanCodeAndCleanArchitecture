@@ -33,7 +33,7 @@ export class ProductUseCases {
         return output;
     }
 
-    async search(id: number): Promise<searchOutput | undefined> {
+    async search(id: number): Promise<SearchOutput | undefined> {
         const productAndQuantity = await this.productRepository.find(id);
         if (!productAndQuantity) {
             return undefined;
@@ -45,7 +45,7 @@ export class ProductUseCases {
         };
     }
 
-    async remove(input: removeInput): Promise<boolean> {
+    async remove(input: RemoveInput): Promise<boolean> {
         return this.productRepository.remove(input.id, input.quantity);
     }
 }
@@ -64,13 +64,13 @@ type OutputList = {
     list: { id: number, description: string, price: number }[];
 }
 
-type searchOutput = {
+type SearchOutput = {
     description: string;
     price: number;
     inStock: number
 };
 
-type removeInput = {
+type RemoveInput = {
     id: number
     quantity: number
 }

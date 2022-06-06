@@ -8,7 +8,7 @@ export class OrderUseCases {
 
     constructor(readonly ordersRepository: OrdersRepository, readonly productRepository: ProductRepository, readonly orderIdGenerator: OrderIdGenerator, readonly shoppingCartRepository: ShoppingCartRepository) { }
 
-    async place(input: placeOrderInput): Promise<outputOrderSummary> {
+    async place(input: PlaceOrderInput): Promise<OutputOrderSummary> {
         let order: Order;
         const cart = await this.shoppingCartRepository.get(input.id);
 
@@ -38,7 +38,7 @@ export class OrderUseCases {
         return this.ordersRepository.updateStatus(orderId, OrderStatus.CANCELLED);
     }
 
-    async search(orderId: string): Promise<orderOutput | undefined> {
+    async search(orderId: string): Promise<OrderOutput | undefined> {
         const order = await this.ordersRepository.get(orderId);
 
         if (!order) { return undefined; }
@@ -62,7 +62,7 @@ export class OrderUseCases {
         return order;
     }
 
-    private generateInvalidOrderSummary(message: string, date: Date = new Date()): outputOrderSummary {
+    private generateInvalidOrderSummary(message: string, date: Date = new Date()): OutputOrderSummary {
         return {
             date: date,
             status: OrderStatus.INVALID,
@@ -70,7 +70,7 @@ export class OrderUseCases {
         }
     }
 
-    private generateOrderSummary(order: Order): outputOrderSummary {
+    private generateOrderSummary(order: Order): OutputOrderSummary {
         return {
             id: order.id,
             date: order.time,
@@ -84,21 +84,21 @@ type InputItems = {
     quantity: number;
 };
 
-type placeOrderInput = {
+type PlaceOrderInput = {
     cpf: string
     id: string
     date: Date;
 }
 
 
-type outputOrderSummary = {
+type OutputOrderSummary = {
     id?: string
     date?: Date
     status?: OrderStatus
     message?: string
 }
 
-type orderOutput = {
+type OrderOutput = {
     id?: string,
     status?: string
 }
