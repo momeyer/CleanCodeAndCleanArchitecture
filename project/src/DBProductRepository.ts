@@ -12,8 +12,19 @@ export class DBProductRepository implements ProductRepository {
     add(product: Product, quantity: number): Promise<boolean> {
         throw new Error("Method not implemented.");
     }
-    find(productId: number): Promise<ProductAndQuantity | undefined> {
-        throw new Error("Method not implemented.");
+
+    async find(productId: number): Promise<ProductAndQuantity | undefined> {
+        await this.connection.connect();
+        const [product] = await this.connection.query(`select * from stock where productID = ${productId}`);
+        const [item] = await this.connection.query(`select * from product where id = ${product.productID}`);
+        let output = {
+            product: new Product(item.id, item.description, new PhysicalAttributes(item.height, item.width, item.depth, item.weight), item.price),
+            quantity: product.quantity
+        }
+
+        await this.connection.close();
+        return output;
+
     }
     isValidProduct(productId: number): Promise<boolean> {
         throw new Error("Method not implemented.");
@@ -32,7 +43,7 @@ export class DBProductRepository implements ProductRepository {
             async (product: any): Promise<void> => {
                 const [item] = await this.connection.query(`select * from product where id = ${product.productID}`);
                 list.push({
-                    product: new Product(item.id, item.description, new PhysicalAttributes(item.height, item.weight, item.depth, item.weight), item.price),
+                    product: new Product(item.id, item.description, new PhysicalAttributes(item.height, item.width, item.depth, item.weight), item.price),
                     quantity: product.quantity
                 });
             }

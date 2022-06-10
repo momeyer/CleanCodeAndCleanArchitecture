@@ -74,11 +74,13 @@ describe("Non Persistent Product repository", (): void => {
 })
 
 
-
-
-
-describe("Non Persistent Product repository", (): void => {
+describe("DB Product repository", (): void => {
     let repository: ProductRepository = new DBProductRepository(new MySqlPromiseConnectionAdapter());
+
+    test("find existing product", async (): Promise<void> => {
+        const product = await repository.find(camera.id);
+        expect(product!.quantity).toBe(100);
+    });
 
     test("should list products", async (): Promise<void> => {
         const output = await repository.list();
