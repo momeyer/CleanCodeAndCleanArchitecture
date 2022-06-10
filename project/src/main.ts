@@ -1,46 +1,43 @@
-// import { camera, guitar, rubberDuck } from "../test/ProductSamples";
-// import ShoppingCart from "./domain/entity/ShoppingCart";
-// import { ShoppingCartIdGenerator } from "./domain/entity/ShoppingCartIdGenerator";
-// import ProductController from "./infra/controller/ProductController";
-// import ShoppingCartController from "./infra/controller/ShoppingCartController";
-// import PgPromiseConnectionAdapter from "./infra/database/mySqlPromiseConnectionAdapter";
-// import NonPersistentRepositoryFactory from "./infra/factory/NonPersistentRepositoryFactory";
-// import ExpressAdapter from "./infra/http/ExpressAdapter";
-// const PORT = 3000;
-// const http = new ExpressAdapter();
+import { camera, guitar, rubberDuck } from "../test/ProductSamples";
+import ShoppingCart from "./domain/entity/ShoppingCart";
+import { ShoppingCartIdGenerator } from "./domain/entity/ShoppingCartIdGenerator";
+import ProductController from "./infra/controller/ProductController";
+import ShoppingCartController from "./infra/controller/ShoppingCartController";
+import NonPersistentRepositoryFactory from "./infra/factory/NonPersistentRepositoryFactory";
+import ExpressAdapter from "./infra/http/ExpressAdapter";
 import MySqlPromiseConnectionAdapter from "./infra/database/MySqlPromiseConnectionAdapter";
+import RepositoryFactory from "./infra/factory/RepositoryFactory";
+
+const PORT = 3000;
+const http = new ExpressAdapter();
 
 
-// const repositoryFactory = new NonPersistentRepositoryFactory();
-// const connection = new PgPromiseConnectionAdapter();
-// const productRepository = repositoryFactory.createProductRepository();
-// const orderRepository = repositoryFactory.createOrdersRepository();
-// const discountCodeRepository = repositoryFactory.createDiscountCodeRepository();
-// const shoppingCartRepository = repositoryFactory.createShoppingCartRepository();
-// const shoppingCartIdGenerator = new ShoppingCartIdGenerator(1);
+const connection = new MySqlPromiseConnectionAdapter();
+const repositoryFactory = new NonPersistentRepositoryFactory();
+const repositoryFactoryDB = new RepositoryFactory(connection);
+const productRepository = repositoryFactoryDB.createProductRepository();
+const orderRepository = repositoryFactory.createOrdersRepository();
+const discountCodeRepository = repositoryFactory.createDiscountCodeRepository();
+const shoppingCartRepository = repositoryFactory.createShoppingCartRepository();
+const shoppingCartIdGenerator = new ShoppingCartIdGenerator(1);
+
+new ProductController(http, productRepository);
+new ShoppingCartController(http, productRepository, discountCodeRepository, shoppingCartRepository, shoppingCartIdGenerator);
+
+shoppingCartRepository.add(new ShoppingCart(shoppingCartIdGenerator.generate()))
+
+console.log(`\u001b[32m Server is running on port ${PORT}`);
+http.listen(PORT);
+
+// async function mofadocker() {
+//     await myconnection.connect();
+//     const products = await myconnection.query('select * from product');
+//     console.log(products);
+//     await myconnection.close();
+// }
 
 
-// productRepository.add(camera, 100);
-// productRepository.add(guitar, 100);
-// productRepository.add(rubberDuck, 100);
-// new ProductController(http, productRepository);
-// new ShoppingCartController(http, productRepository, discountCodeRepository, shoppingCartRepository, shoppingCartIdGenerator);
-
-// shoppingCartRepository.add(new ShoppingCart(shoppingCartIdGenerator.generate()))
-
-// console.log(`\u001b[32m Server is running on port ${PORT}`);
-// http.listen(PORT);
-
-async function mofadocker() {
-    let myconnection = new MySqlPromiseConnectionAdapter();
-    await myconnection.connect();
-    const products = await myconnection.query('select * from product');
-    console.log(products);
-    await myconnection.close();
-}
-
-
-mofadocker();
+// mofadocker();
 
 
 

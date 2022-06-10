@@ -1,4 +1,6 @@
+import { DBProductRepository } from "../src/DBProductRepository";
 import { ProductRepository } from "../src/domain/repository/ProductRepository";
+import MySqlPromiseConnectionAdapter from "../src/infra/database/MySqlPromiseConnectionAdapter";
 import { NonPersistentProductRepository } from "../src/NonPersistentProductRepository";
 import { camera, guitar } from "./ProductSamples";
 
@@ -70,3 +72,21 @@ describe("Non Persistent Product repository", (): void => {
         expect(output.length).toBe(2)
     });
 })
+
+
+
+
+
+describe("Non Persistent Product repository", (): void => {
+    let repository: ProductRepository = new DBProductRepository(new MySqlPromiseConnectionAdapter());
+
+    test("should list products", async (): Promise<void> => {
+        const output = await repository.list();
+        expect(output.length).toBe(3)
+        expect(output[0].product.description).toBe("Camera")
+        expect(output[1].product.description).toBe("Guitar")
+        expect(output[2].product.description).toBe("Rubber Duck")
+    });
+})
+
+
