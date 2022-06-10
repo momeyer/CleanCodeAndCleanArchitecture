@@ -1,0 +1,6 @@
+#features/ShoppingCartController.feature
+Feature: Get Shopping Cart Summary
+    Scenario: Should return empty summary
+        Given An empty shopping cart
+        When Generate shopping cart is called
+        Then Empty summary should be returned
