@@ -10,21 +10,24 @@ import Connection from "../database/Connection";
 import { DBProductRepository } from "../repository/DBProductRepository";
 
 export default class NonPersistentRepositoryFactory implements RepositoryFactory {
-    constructor(readonly connection: Connection) { }
+  constructor(readonly connection: Connection) {}
 
-    createProductRepository(): ProductRepository {
-        return new DBProductRepository(this.connection);
-    }
+  createProductRepository(): ProductRepository {
+    return new DBProductRepository(this.connection);
+  }
 
-    createOrdersRepository(): OrdersRepository {
-        return new NonPersistentOrdersRepository();
-    }
+  // TODO replace with real DB repos
+  createOrdersRepository(): OrdersRepository {
+    return new NonPersistentOrdersRepository();
+  }
 
-    createDiscountCodeRepository(): DiscountCodeRepository {
-        return new NonPersistenDiscountCodeRepository();
-    }
+  // TODO replace with real DB repos
+  createDiscountCodeRepository(): DiscountCodeRepository {
+    return new NonPersistenDiscountCodeRepository();
+  }
 
-    createShoppingCartRepository(): ShoppingCartRepository {
-        return new NonPersistentShoppingCartRepository();
-    }
+  // TODO replace with real DB repos
+  createShoppingCartRepository(): ShoppingCartRepository {
+    return new NonPersistentShoppingCartRepository();
+  }
 }

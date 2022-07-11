@@ -7,7 +7,5 @@ export default interface RepositoryFactory {
     createProductRepository(): ProductRepository;
     createOrdersRepository(): OrdersRepository;
     createDiscountCodeRepository(): DiscountCodeRepository;
-    createDiscountCodeRepository(): DiscountCodeRepository;
     createShoppingCartRepository(): ShoppingCartRepository;
 }
-

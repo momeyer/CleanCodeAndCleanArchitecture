@@ -1,31 +1,32 @@
-import { DiscountCodeRepository } from "./domain/repository/DiscountCodeRepository";
 import { DiscountCode } from "./domain/entity/DiscountCode";
+import { DiscountCodeRepository } from "./domain/repository/DiscountCodeRepository";
 
 export class NonPersistenDiscountCodeRepository implements DiscountCodeRepository {
-    discountCodes = new Map<string, DiscountCode>();
+  discountCodes = new Map<string, DiscountCode>();
 
-    async add(discountCode: DiscountCode): Promise<void> {
-        this.discountCodes.set(discountCode.code, discountCode);
+  async add(discountCode: DiscountCode): Promise<void> {
+    this.discountCodes.set(discountCode.code, discountCode);
+  }
+
+  async getDiscount(code: string, curDate: Date): Promise<number> {
+    const discountCode = this.discountCodes.get(code);
+    if (!discountCode) {
+      return 0;
     }
 
-    async getDiscount(code: string, curDate: Date): Promise<number> {
-        const discountCode = this.discountCodes.get(code);
-        if (!discountCode) {
-            return 0;
-        }
-
-        const isExpired = await this.isExpired(discountCode, curDate);
-        if (isExpired) {
-            return 0;
-        }
-
-        return discountCode.amount;
+    const isExpired = await this.isExpired(discountCode, curDate);
+    if (isExpired) {
+      return 0;
     }
 
-    async isExpired(code: DiscountCode, curDate: Date): Promise<boolean> {
+    return discountCode.amount;
+  }
 
-        if (code.expireDate < curDate) { return true; }
-
-        return false;
+  async isExpired(code: DiscountCode, curDate: Date): Promise<boolean> {
+    if (code.expireDate < curDate) {
+      return true;
     }
+
+    return false;
+  }
 }

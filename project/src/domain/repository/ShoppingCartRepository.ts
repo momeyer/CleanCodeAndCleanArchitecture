@@ -6,4 +6,5 @@ export interface ShoppingCartRepository {
     remove(shoppingCartId: string): Promise<void>;
     has(shoppingCartId: string): Promise<boolean>;
     get(shoppingCartId: string): Promise<ShoppingCart | undefined>;
+    clear(): Promise<void>;
 }

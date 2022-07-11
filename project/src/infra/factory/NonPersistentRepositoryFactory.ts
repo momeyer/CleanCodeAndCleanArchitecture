@@ -9,17 +9,16 @@ import { NonPersistentProductRepository } from "../../NonPersistentProductReposi
 import { NonPersistentShoppingCartRepository } from "../../NonPersistentShoppingCartRepository";
 
 export default class NonPersistentRepositoryFactory implements RepositoryFactory {
-    createProductRepository(): ProductRepository {
-        return new NonPersistentProductRepository();
-    }
-    createOrdersRepository(): OrdersRepository {
-        return new NonPersistentOrdersRepository();
-    }
-    createDiscountCodeRepository(): DiscountCodeRepository {
-        return new NonPersistenDiscountCodeRepository();
-    }
-    createShoppingCartRepository(): ShoppingCartRepository {
-        return new NonPersistentShoppingCartRepository();
-
-    }
+  createProductRepository(): ProductRepository {
+    return new NonPersistentProductRepository();
+  }
+  createOrdersRepository(): OrdersRepository {
+    return new NonPersistentOrdersRepository();
+  }
+  createDiscountCodeRepository(): DiscountCodeRepository {
+    return new NonPersistenDiscountCodeRepository();
+  }
+  createShoppingCartRepository(): ShoppingCartRepository {
+    return new NonPersistentShoppingCartRepository();
+  }
 }

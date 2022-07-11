@@ -4,98 +4,107 @@ import { ProductAndQuantity, ProductRepository } from "../../domain/repository/P
 import Connection from "../database/Connection";
 
 export class DBProductRepository implements ProductRepository {
-    private inventory: Map<number, ProductAndQuantity>;
+  private inventory: Map<number, ProductAndQuantity>;
 
-    constructor(readonly connection: Connection) {
-        this.inventory = new Map<number, ProductAndQuantity>();
+  constructor(readonly connection: Connection) {
+    this.inventory = new Map<number, ProductAndQuantity>();
+  }
+
+  async add(product: Product, quantity: number): Promise<boolean> {
+    await this.connection.connect();
+    const [productExist] = await this.connection.query(`select * from product where id = ${product.id}`);
+    const values = `${product.id}, '${product.description}', ${product.physicalAttributes.height_cm}, ${product.physicalAttributes.width_cm}, ${product.physicalAttributes.depth_cm}, ${product.physicalAttributes.weight_kg}, ${product.price}`;
+    if (!productExist) {
+      await this.connection.query(
+        `insert into product (id, description, height, width, depth, weight, price) values (${values})`
+      );
+      await this.connection.close();
+      return true;
     }
-
-    async add(product: Product, quantity: number): Promise<boolean> {
-        await this.connection.connect();
-        const [productExist] = await this.connection.query(`select * from product where id = ${product.id}`);
-        // const nextID = await this.nextId();
-        if (!productExist) {
-            await this.connection.query(`insert into product (id, description, height, width, depth, weight, price) values (${product.id}, '${product.description}', ${product.physicalAttributes.height_cm}, ${product.physicalAttributes.width_cm}, ${product.physicalAttributes.depth_cm}, ${product.physicalAttributes.weight_kg}, ${product.price})`)
-            await this.connection.close()
-            return true;
-        }
-        const [productInStock] = await this.connection.query(`select quantity from stock where productID = ${product.id}`);
-        if (productInStock) {
-            const quantityToAdd: number = productInStock.quantity + quantity;
-            await this.connection.query(`UPDATE stock SET quantity = '${quantityToAdd}' WHERE productID = ${product.id}`);
-        }
-        else {
-            await this.connection.query(`insert into stock (productID, quantity) values (${product.id}, ${quantity});`);
-        }
-        await this.connection.close()
-        return true;
+    const [productInStock] = await this.connection.query(`select quantity from stock where productID = ${product.id}`);
+    if (productInStock) {
+      const quantityToAdd: number = productInStock.quantity + quantity;
+      await this.connection.query(`UPDATE stock SET quantity = '${quantityToAdd}' WHERE productID = ${product.id}`);
+    } else {
+      await this.connection.query(`insert into stock (productID, quantity) values (${product.id}, ${quantity});`);
     }
+    await this.connection.close();
+    return true;
+  }
 
-    async find(productId: number): Promise<ProductAndQuantity | undefined> {
-        await this.connection.connect();
-        const [product] = await this.connection.query(`select * from stock where productID = ${productId} `);
-        const [item] = await this.connection.query(`select * from product where id = ${product.productID} `);
-        let output = {
-            product: new Product(item.id, item.description, new PhysicalAttributes(item.height, item.width, item.depth, item.weight), item.price),
-            quantity: product.quantity
-        }
+  async find(productId: number): Promise<ProductAndQuantity | undefined> {
+    await this.connection.connect();
+    const [product] = await this.connection.query(`select * from stock where productID = ${productId}`);
+    const [item] = await this.connection.query(`select * from product where id = ${product.productID}`);
+    let output = {
+      product: new Product(
+        item.id,
+        item.description,
+        new PhysicalAttributes(item.height, item.width, item.depth, item.weight),
+        item.price
+      ),
+      quantity: product.quantity,
+    };
 
-        await this.connection.close();
-        return output;
-
+    await this.connection.close();
+    return output;
+  }
+  isValidProduct(productId: number): Promise<boolean> {
+    throw new Error("Method not implemented.");
+  }
+  async remove(productId: number, quantity: number): Promise<boolean> {
+    await this.connection.connect();
+    const [item] = await this.connection.query(`select * from stock where productID = ${productId}`);
+    if (!item || item.quantity < quantity) {
+      await this.connection.close();
+      return false;
     }
-    isValidProduct(productId: number): Promise<boolean> {
-        throw new Error("Method not implemented.");
-    }
-    async remove(productId: number, quantity: number): Promise<boolean> {
-        await this.connection.connect();
-        const [item] = await this.connection.query(`select * from stock where productID = ${productId} `);
-        if (!item || item.quantity < quantity) {
-            await this.connection.close();
-            return false;
-        }
-        await this.connection.query(`update stock set quantity = ${item.quantity - quantity} where productID = ${productId}; `);
-        await this.connection.close();
-        return true;
-    }
+    await this.connection.query(
+      `update stock set quantity = ${item.quantity - quantity} where productID = ${productId}`
+    );
+    await this.connection.close();
+    return true;
+  }
 
-    async updateQuantityBy(productId: number, amount: number): Promise<boolean> {
-        await this.connection.connect();
-        const [productInStock] = await this.connection.query(`select quantity from stock where productID = ${productId}`);
-        if (productInStock) {
-            const quantityToAdd: number = productInStock.quantity + amount;
-            await this.connection.query(`UPDATE stock SET quantity = '${quantityToAdd}' WHERE productID = ${productId}`);
-        }
-        await this.connection.close()
-        return false;
+  async updateQuantityBy(productId: number, amount: number): Promise<boolean> {
+    await this.connection.connect();
+    const [productInStock] = await this.connection.query(`select quantity from stock where productID = ${productId}`);
+    if (productInStock) {
+      const quantityToAdd: number = productInStock.quantity + amount;
+      await this.connection.query(`UPDATE stock SET quantity = '${quantityToAdd}' WHERE productID = ${productId}`);
     }
+    await this.connection.close();
+    return false;
+  }
 
-    async list(): Promise<ProductAndQuantity[]> {
-        await this.connection.connect();
-        const products = await this.connection.query("select * from stock");
-        let list: ProductAndQuantity[] = [];
-        products.forEach(
-            async (product: any): Promise<void> => {
-                const [item] = await this.connection.query(`select * from product where id = ${product.productID} `);
-                list.push({
-                    product: new Product(item.id, item.description, new PhysicalAttributes(item.height, item.width, item.depth, item.weight), item.price),
-                    quantity: product.quantity
-                });
-            }
-        )
+  async list(): Promise<ProductAndQuantity[]> {
+    await this.connection.connect();
+    const products = await this.connection.query("select * from stock");
+    let list: ProductAndQuantity[] = [];
+    products.forEach(async (product: any): Promise<void> => {
+      const [item] = await this.connection.query(`select * from product where id = ${product.productID}`);
+      list.push({
+        product: new Product(
+          item.id,
+          item.description,
+          new PhysicalAttributes(item.height, item.width, item.depth, item.weight),
+          item.price
+        ),
+        quantity: product.quantity,
+      });
+    });
 
-        await this.connection.close();
-        return list;
+    await this.connection.close();
+    return list;
+  }
 
-    }
+  nextId(): Promise<number> {
+    throw new Error("Method not implemented.");
+  }
 
-    nextId(): Promise<number> {
-        throw new Error("Method not implemented.");
-    }
-
-    async clear(): Promise<void> {
-        await this.connection.connect();
-        await this.connection.query(`delete from stock`);
-        await this.connection.close();
-    }
+  async clear(): Promise<void> {
+    await this.connection.connect();
+    await this.connection.query(`delete from stock`);
+    await this.connection.close();
+  }
 }

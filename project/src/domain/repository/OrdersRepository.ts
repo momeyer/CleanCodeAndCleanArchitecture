@@ -5,4 +5,5 @@ export interface OrdersRepository {
     get(orderId: string): Promise<Order | undefined>;
     updateStatus(orderId: string, status: OrderStatus): Promise<boolean>;
     getAll(): Promise<Map<string, Order>>;
+    clear(): Promise<void>;
 }

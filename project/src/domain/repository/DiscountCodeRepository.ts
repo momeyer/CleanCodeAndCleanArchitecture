@@ -6,5 +6,3 @@ export interface DiscountCodeRepository {
     getDiscount(code: string, curDate: Date): Promise<number>;
     isExpired(code: DiscountCode, curDate: Date): Promise<boolean>;
 }
-
-
