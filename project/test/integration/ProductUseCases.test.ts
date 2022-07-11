@@ -79,17 +79,6 @@ describe("Product Use Cases", (): void => {
       const output = await productUseCases.list();
       expect(output.list).toHaveLength(2);
     });
-
-    // test("Should list all Products DATABASE", async (): Promise<void> => {
-    //     const productRepository = new DatabaseProductRepository(new PgPromiseConnectionAdapter())
-    //     const productUseCases = new ProductUseCases(productRepository);
-
-    //     await productUseCases.add(cameraInput);
-    //     await productUseCases.add(guitarInput);
-
-    //     const output = await productUseCases.list();
-    //     expect(output.list).toHaveLength(2);
-    // })
   });
 
   describe("Search Use Cases", () => {
@@ -189,20 +178,39 @@ describe("Product Use Cases DB", (): void => {
       const productUseCases = new ProductUseCases(productRepository);
 
       const input = {
+        description: camera.description,
+        height: camera.physicalAttributes.height_cm,
+        width: camera.physicalAttributes.width_cm,
+        depth: camera.physicalAttributes.depth_cm,
+        weight: camera.physicalAttributes.weight_kg,
+        price: camera.price,
+        quantity: 10,
+      };
+
+      const output = await productUseCases.add(input);
+      expect(output).toBeTruthy();
+      const output1 = await productUseCases.search(1);
+    });
+    test("Should add valid product", async (): Promise<void> => {
+      const connection = new MySqlPromiseConnectionAdapter();
+      const productRepository = new DBProductRepository(connection);
+      const productUseCases = new ProductUseCases(productRepository);
+      await productRepository.clear();
+
+      const input = {
         description: "hello",
-        height: 10,
-        width: 10,
-        depth: 10,
-        weight: 10,
-        price: 10,
+        height: 1,
+        width: 1,
+        depth: 1,
+        weight: 1,
+        price: 1,
         quantity: 1,
       };
 
       const output = await productUseCases.add(input);
-
       expect(output).toBeTruthy();
+      let output1 = await productUseCases.search(1);
     });
-
     //   test("Should fail to add product with invalid dimensions", async (): Promise<void> => {
     //     const productRepository = new NonPersistentProductRepository();
     //     const productUseCases = new ProductUseCases(productRepository);

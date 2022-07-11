@@ -9,7 +9,6 @@ export class ProductUseCases {
       const id = await this.productRepository.nextId();
       const attributes = new PhysicalAttributes(input.height, input.weight, input.depth, input.weight);
       let product = new Product(id, input.description, attributes, input.price);
-      console.log("product: ", product);
       return await this.productRepository.add(product, input.quantity);
     } catch (error) {
       return false;
