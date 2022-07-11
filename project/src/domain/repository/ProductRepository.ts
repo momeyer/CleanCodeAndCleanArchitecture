@@ -13,4 +13,5 @@ export interface ProductRepository {
     updateQuantityBy(productId: number, amount: number): Promise<boolean>;
     list(): Promise<ProductAndQuantity[]>;
     nextId(): Promise<number>;
+    clear(): Promise<void>;
 }

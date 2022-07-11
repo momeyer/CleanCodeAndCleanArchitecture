@@ -58,4 +58,8 @@ export class NonPersistentProductRepository implements ProductRepository {
     async nextId(): Promise<number> {
         return this.inventory.size + 1;
     }
+
+    async clear(): Promise<void> {
+        this.inventory.clear();
+    }
 }

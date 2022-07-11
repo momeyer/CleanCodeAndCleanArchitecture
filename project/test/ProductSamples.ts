@@ -15,10 +15,16 @@ export const guitar: Product = {
     price: 20
 };
 
-
 export const rubberDuck: Product = {
     id: 3,
-    description: "Rubber Duck",
+    description: "Rubber_Duck",
     physicalAttributes: new PhysicalAttributes(5, 5, 5, 0.05),
     price: 1
+};
+
+export const tshirt: Product = {
+    id: 4,
+    description: "tshirt",
+    physicalAttributes: new PhysicalAttributes(1, 1, 1, 1),
+    price: 100
 };
