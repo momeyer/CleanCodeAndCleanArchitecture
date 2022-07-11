@@ -12,15 +12,14 @@ export class DBProductRepository implements ProductRepository {
 
   async add(product: Product, quantity: number): Promise<boolean> {
     await this.connection.connect();
-    const [productExist] = await this.connection.query(`select * from product where id = ${product.id}; `);
+    const [productExist] = await this.connection.query(
+      `select * from product where description = "${product.description}";`
+    );
     if (!productExist) {
-      console.log("Product doesnt exist");
       const values = `${product.id}, '${product.description}', ${product.physicalAttributes.height_cm}, ${product.physicalAttributes.width_cm}, ${product.physicalAttributes.depth_cm}, ${product.physicalAttributes.weight_kg}, ${product.price}`;
       await this.connection.query(
         `insert into product (id, description, height, width, depth, weight, price) values (${values});`
       );
-      await this.connection.close();
-      return true;
     }
     const [productInStock] = await this.connection.query(`select quantity from stock where productID = ${product.id};`);
     if (productInStock) {
@@ -101,14 +100,15 @@ export class DBProductRepository implements ProductRepository {
 
   async nextId(): Promise<number> {
     await this.connection.connect();
-    const [nextId] = await this.connection.query(`select count(*) as num_items from stock`);
+    const [nextId] = await this.connection.query(`select count(*) as num_items from product`);
     await this.connection.close();
-    return nextId.num_items;
+    return nextId.num_items + 1;
   }
 
   async clear(): Promise<void> {
     await this.connection.connect();
     await this.connection.query(`delete from stock`);
+    await this.connection.query(`delete from product`);
     await this.connection.close();
   }
 }

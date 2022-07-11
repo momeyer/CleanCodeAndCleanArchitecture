@@ -180,7 +180,7 @@ describe("Product Use Cases", (): void => {
   });
 });
 
-describe.only("Product Use Cases DB", (): void => {
+describe("Product Use Cases DB", (): void => {
   describe("Add Use Cases", (): void => {
     test("Should add valid product", async (): Promise<void> => {
       const connection = new MySqlPromiseConnectionAdapter();

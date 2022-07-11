@@ -1,3 +1,4 @@
+import ts from "typescript";
 import { ProductRepository } from "../src/domain/repository/ProductRepository";
 import MySqlPromiseConnectionAdapter from "../src/infra/database/MySqlPromiseConnectionAdapter";
 import { DBProductRepository } from "../src/infra/repository/DBProductRepository";
@@ -109,9 +110,10 @@ describe("DB Product repository", (): void => {
   test("should list products", async (): Promise<void> => {
     const output = await repository.list();
     expect(output.length).toBe(4);
+
     expect(output[0].product.description).toBe("Camera");
     expect(output[1].product.description).toBe("Guitar");
-    expect(output[2].product.description).toBe("Rubber Duck");
+    expect(output[2].product.description).toBe("Rubber_Duck");
     expect(output[3].product.description).toBe("tshirt");
   });
 });

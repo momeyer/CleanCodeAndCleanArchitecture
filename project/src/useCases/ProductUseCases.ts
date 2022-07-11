@@ -7,14 +7,11 @@ export class ProductUseCases {
   async add(input: AddInput): Promise<boolean> {
     try {
       const id = await this.productRepository.nextId();
-      console.log("id: ", id);
       const attributes = new PhysicalAttributes(input.height, input.weight, input.depth, input.weight);
-      console.log("attributes: ", attributes);
       let product = new Product(id, input.description, attributes, input.price);
       console.log("product: ", product);
       return await this.productRepository.add(product, input.quantity);
     } catch (error) {
-      console.log("Error ", error);
       return false;
     }
   }
