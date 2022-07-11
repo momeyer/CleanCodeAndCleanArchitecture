@@ -83,6 +83,7 @@ describe("DB Product repository", (): void => {
     await repository.add(rubberDuck, 50);
     await repository.add(tshirt, 2);
   });
+
   test("find existing product", async (): Promise<void> => {
     const product = await repository.find(camera.id);
     expect(product!.quantity).toBe(100);
