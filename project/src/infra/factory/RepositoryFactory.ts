@@ -1,4 +1,3 @@
-import { DBProductRepository } from "../../DBProductRepository";
 import RepositoryFactory from "../../domain/factory/RepositoryFactory";
 import { DiscountCodeRepository } from "../../domain/repository/DiscountCodeRepository";
 import { OrdersRepository } from "../../domain/repository/OrdersRepository";
@@ -8,6 +7,7 @@ import { NonPersistenDiscountCodeRepository } from "../../NonPersistentDiscountC
 import { NonPersistentOrdersRepository } from "../../NonPersistentOrdersRepository";
 import { NonPersistentShoppingCartRepository } from "../../NonPersistentShoppingCartRepository";
 import Connection from "../database/Connection";
+import { DBProductRepository } from "../repository/DBProductRepository";
 
 export default class NonPersistentRepositoryFactory implements RepositoryFactory {
     constructor(readonly connection: Connection) { }

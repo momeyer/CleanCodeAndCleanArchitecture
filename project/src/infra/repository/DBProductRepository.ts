@@ -1,7 +1,7 @@
-import { PhysicalAttributes } from "./domain/entity/PhysicalAttributes";
-import { Product } from "./domain/entity/Product";
-import { ProductAndQuantity, ProductRepository } from "./domain/repository/ProductRepository";
-import Connection from "./infra/database/Connection";
+import { PhysicalAttributes } from "../../domain/entity/PhysicalAttributes";
+import { Product } from "../../domain/entity/Product";
+import { ProductAndQuantity, ProductRepository } from "../../domain/repository/ProductRepository";
+import Connection from "../database/Connection";
 
 export class DBProductRepository implements ProductRepository {
     private inventory: Map<number, ProductAndQuantity>;

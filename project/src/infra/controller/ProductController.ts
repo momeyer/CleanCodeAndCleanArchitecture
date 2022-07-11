@@ -1,10 +1,12 @@
-import { ProductRepository } from "../../domain/repository/ProductRepository";
+import RepositoryFactory from "../../domain/factory/RepositoryFactory";
 import { ProductUseCases } from "../../useCases/ProductUseCases";
 import Http from "../http/Http";
 
 export default class ProductController {
 
-    constructor(readonly http: Http, readonly productRepository: ProductRepository) {
+    constructor(readonly http: Http, readonly repositoryFactory: RepositoryFactory) {
+        const productRepository = repositoryFactory.createProductRepository();
+
         http.on("get", "/products", async function (params: any, body: any): Promise<any> {
             const productUseCases = new ProductUseCases(productRepository);
             const output = await productUseCases.list();

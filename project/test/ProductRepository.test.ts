@@ -1,6 +1,6 @@
-import { DBProductRepository } from "../src/DBProductRepository";
 import { ProductRepository } from "../src/domain/repository/ProductRepository";
 import MySqlPromiseConnectionAdapter from "../src/infra/database/MySqlPromiseConnectionAdapter";
+import { DBProductRepository } from "../src/infra/repository/DBProductRepository";
 import { NonPersistentProductRepository } from "../src/NonPersistentProductRepository";
 import { camera, guitar, rubberDuck, tshirt } from "./ProductSamples";
 
@@ -116,5 +116,3 @@ describe("DB Product repository", (): void => {
     });
 
 })
-
-
