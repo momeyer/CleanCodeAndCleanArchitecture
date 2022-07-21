@@ -4,9 +4,9 @@ import { OrdersRepository } from "../../domain/repository/OrdersRepository";
 import { ProductRepository } from "../../domain/repository/ProductRepository";
 import { ShoppingCartRepository } from "../../domain/repository/ShoppingCartRepository";
 import { NonPersistenDiscountCodeRepository } from "../../NonPersistentDiscountCodeRepository";
-import { NonPersistentOrdersRepository } from "../../NonPersistentOrdersRepository";
 import { NonPersistentShoppingCartRepository } from "../../NonPersistentShoppingCartRepository";
 import Connection from "../database/Connection";
+import DBOrdersRepository from "../repository/DBOrdersRepository";
 import { DBProductRepository } from "../repository/DBProductRepository";
 
 export default class NonPersistentRepositoryFactory implements RepositoryFactory {
@@ -16,9 +16,8 @@ export default class NonPersistentRepositoryFactory implements RepositoryFactory
     return new DBProductRepository(this.connection);
   }
 
-  // TODO replace with real DB repos
   createOrdersRepository(): OrdersRepository {
-    return new NonPersistentOrdersRepository();
+    return new DBOrdersRepository(this.connection);
   }
 
   // TODO replace with real DB repos

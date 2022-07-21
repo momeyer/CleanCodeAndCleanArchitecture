@@ -74,7 +74,7 @@ describe("Non Persistent Product repository", (): void => {
   });
 });
 
-describe("DB Product repository", (): void => {
+describe.skip("DB Product repository", (): void => {
   let repository: ProductRepository = new DBProductRepository(new MySqlPromiseConnectionAdapter());
 
   beforeEach(async (): Promise<void> => {
@@ -83,6 +83,10 @@ describe("DB Product repository", (): void => {
     await repository.add(guitar, 150);
     await repository.add(rubberDuck, 50);
     await repository.add(tshirt, 2);
+  });
+
+  afterEach(async () => {
+    await repository.clear();
   });
 
   test("find existing product", async (): Promise<void> => {

@@ -15,18 +15,25 @@ export class OrderUseCases {
   async place(input: PlaceOrderInput): Promise<OutputOrderSummary> {
     let order: Order;
     const cart = await this.shoppingCartRepository.get(input.id);
-
     if (!cart || cart.isEmpty()) {
       return this.generateInvalidOrderSummary("Empty order", input.date);
     }
     const orderItems = cart.getContent();
+
     try {
       order = new Order(input.cpf, this.orderIdGenerator.generate(input.date), cart.discount, input.date);
-      this.addItemsToOrder(orderItems, order);
+      orderItems.forEach((item) => {
+        order.addItem({
+          productId: item.productId,
+          productDetails: item.productDetails,
+          quantity: item.quantity,
+          price: item.price,
+        });
+      });
     } catch (error: any) {
       return this.generateInvalidOrderSummary(error.message, input.date);
     }
-    this.ordersRepository.add(order);
+    await this.ordersRepository.add(order);
     return this.generateOrderSummary(order);
   }
 
@@ -36,7 +43,7 @@ export class OrderUseCases {
     if (!order || order.status !== OrderStatus.PENDING) {
       return false;
     }
-    order.items.forEach((item) => {
+    order.items.forEach((item): void => {
       this.productRepository.updateQuantityBy(item.productId, item.quantity);
     });
     return this.ordersRepository.updateStatus(orderId, OrderStatus.CANCELLED);
@@ -49,23 +56,6 @@ export class OrderUseCases {
       return undefined;
     }
     return { id: order?.id, status: order?.status.toString() };
-  }
-
-  private async addItemsToOrder(items: InputItems[], order: Order): Promise<Order> {
-    items.forEach(async (item) => {
-      const itemInRepository = await this.productRepository.find(item.productId);
-      if (!itemInRepository) {
-        throw new Error(`Item ${item.productId} not available`);
-      }
-      this.productRepository.remove(item.productId, item.quantity);
-      order.addItem({
-        productId: itemInRepository.product.id,
-        productDetails: itemInRepository.product.physicalAttributes,
-        quantity: item.quantity,
-        price: itemInRepository.product.price,
-      });
-    });
-    return order;
   }
 
   private generateInvalidOrderSummary(message: string, date: Date = new Date()): OutputOrderSummary {
