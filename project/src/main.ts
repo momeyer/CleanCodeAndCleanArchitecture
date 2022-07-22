@@ -17,9 +17,9 @@ const repositoryFactory = new NonPersistentRepositoryFactory();
 const orderRepository = repositoryFactory.createOrdersRepository();
 const discountCodeRepository = repositoryFactory.createDiscountCodeRepository();
 const shoppingCartRepository = repositoryFactory.createShoppingCartRepository();
-const shoppingCartIdGenerator = new ShoppingCartIdGenerator(1);
+const shoppingCartIdGenerator = new ShoppingCartIdGenerator(0);
 
-new ProductController(http, repositoryFactory);
+new ProductController(http, repositoryFactoryDB);
 new ShoppingCartController(
   http,
   productRepository,

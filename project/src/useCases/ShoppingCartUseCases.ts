@@ -52,7 +52,7 @@ export class ShoppingCartUseCases {
     }
 
     cart.addItem(productInRepository.product, input.quantity);
-    this.shoppingCartRepository.add(cart);
+    await this.shoppingCartRepository.add(cart);
     return true;
   }
 
@@ -68,7 +68,12 @@ export class ShoppingCartUseCases {
   }
 
   async clear(shoppingCartId: string): Promise<void> {
-    this.shoppingCartRepository.remove(shoppingCartId);
+    const cart = await this.shoppingCartRepository.get(shoppingCartId);
+
+    if (cart) {
+      cart.clear();
+      await this.shoppingCartRepository.add(cart);
+    }
   }
 
   async getItemQuantity(shoppingCartId: string, productId: number): Promise<number> {
@@ -100,9 +105,10 @@ export class ShoppingCartUseCases {
       total: 0,
       shippingCost: 0,
     };
+
     const cart = await this.shoppingCartRepository.get(shoppingCartId);
     if (!cart) {
-      return summary;
+      throw new Error("Not Found");
     }
 
     const items = cart.getContent();

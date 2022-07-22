@@ -6,6 +6,8 @@ import { ShoppingCartUseCases } from "../../useCases/ShoppingCartUseCases";
 import Http from "../http/Http";
 
 export default class ShoppingCartController {
+  shoppingCartUseCases: ShoppingCartUseCases;
+
   constructor(
     readonly http: Http,
     readonly productRepository: ProductRepository,
@@ -13,6 +15,13 @@ export default class ShoppingCartController {
     readonly shoppingCartRepository: ShoppingCartRepository,
     readonly shoppingCartIdGenerator: ShoppingCartIdGenerator
   ) {
+    this.shoppingCartUseCases = new ShoppingCartUseCases(
+      productRepository,
+      discountRepository,
+      shoppingCartRepository,
+      shoppingCartIdGenerator
+    );
+
     http.on("get", "/shoppingCart/:shoppingCartId", async function (params: any, body: any): Promise<any> {
       const shoppingCartUseCases = new ShoppingCartUseCases(
         productRepository,
@@ -20,7 +29,38 @@ export default class ShoppingCartController {
         shoppingCartRepository,
         shoppingCartIdGenerator
       );
-      return shoppingCartUseCases.generateSummary(params.shoppingCartId);
+      try {
+        return await shoppingCartUseCases.generateSummary(params.shoppingCartId);
+      } catch (error: any) {
+        return { errorType: "Not Found" };
+      }
+    });
+
+    http.on("post", "/shoppingCart/:shoppingCartId", async function (params: any, body: any): Promise<any> {
+      const shoppingCartUseCases = new ShoppingCartUseCases(
+        productRepository,
+        discountRepository,
+        shoppingCartRepository,
+        shoppingCartIdGenerator
+      );
+      await shoppingCartUseCases.addItem({
+        shoppingCartId: params.shoppingCartId,
+        productId: body.productId,
+        quantity: body.quantity,
+      });
+
+      return await shoppingCartUseCases.generateSummary(params.shoppingCartId);
+    });
+
+    http.on("post", "/shoppingCart/:shoppingCartId/clear", async function (params: any, body: any): Promise<any> {
+      const shoppingCartUseCases = new ShoppingCartUseCases(
+        productRepository,
+        discountRepository,
+        shoppingCartRepository,
+        shoppingCartIdGenerator
+      );
+      await shoppingCartUseCases.clear(params.shoppingCartId);
+      return await shoppingCartUseCases.generateSummary(params.shoppingCartId);
     });
   }
 }

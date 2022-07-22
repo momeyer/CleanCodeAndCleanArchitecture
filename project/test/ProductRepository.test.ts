@@ -1,11 +1,10 @@
-import ts from "typescript";
 import { ProductRepository } from "../src/domain/repository/ProductRepository";
 import MySqlPromiseConnectionAdapter from "../src/infra/database/MySqlPromiseConnectionAdapter";
 import { DBProductRepository } from "../src/infra/repository/DBProductRepository";
 import { NonPersistentProductRepository } from "../src/NonPersistentProductRepository";
 import { camera, guitar, rubberDuck, tshirt } from "./ProductSamples";
 
-describe("Non Persistent Product repository", (): void => {
+describe.skip("Non Persistent Product repository", (): void => {
   let repository: ProductRepository = new NonPersistentProductRepository();
 
   beforeEach((): void => {
@@ -74,8 +73,9 @@ describe("Non Persistent Product repository", (): void => {
   });
 });
 
-describe.skip("DB Product repository", (): void => {
-  let repository: ProductRepository = new DBProductRepository(new MySqlPromiseConnectionAdapter());
+describe("DB Product repository", (): void => {
+  const connection = new MySqlPromiseConnectionAdapter();
+  let repository: ProductRepository = new DBProductRepository(connection);
 
   beforeEach(async (): Promise<void> => {
     await repository.clear();
@@ -87,6 +87,10 @@ describe.skip("DB Product repository", (): void => {
 
   afterEach(async () => {
     await repository.clear();
+  });
+
+  afterAll(async () => {
+    await connection.close();
   });
 
   test("find existing product", async (): Promise<void> => {

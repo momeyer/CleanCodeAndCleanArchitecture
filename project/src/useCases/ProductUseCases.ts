@@ -20,7 +20,6 @@ export class ProductUseCases {
     let output: OutputList = {
       list: [],
     };
-
     listOfProducts.forEach((info): void => {
       const productInfo = {
         id: info.product.id,
