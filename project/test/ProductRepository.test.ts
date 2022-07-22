@@ -4,7 +4,7 @@ import { DBProductRepository } from "../src/infra/repository/DBProductRepository
 import { NonPersistentProductRepository } from "../src/NonPersistentProductRepository";
 import { camera, guitar, rubberDuck, tshirt } from "./ProductSamples";
 
-describe.skip("Non Persistent Product repository", (): void => {
+describe("Non Persistent Product repository", (): void => {
   let repository: ProductRepository = new NonPersistentProductRepository();
 
   beforeEach((): void => {

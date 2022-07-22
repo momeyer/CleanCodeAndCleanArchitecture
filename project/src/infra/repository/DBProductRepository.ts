@@ -8,18 +8,18 @@ export class DBProductRepository implements ProductRepository {
 
   private async registerProduct(product: Product): Promise<void> {
     const values = `${product.id}, '${product.description}', ${product.physicalAttributes.height_cm}, ${product.physicalAttributes.width_cm}, ${product.physicalAttributes.depth_cm}, ${product.physicalAttributes.weight_kg}, ${product.price}`;
-    await this.connection.connect();
+
     await this.connection.query(
       `insert into product (id, description, height, width, depth, weight, price) values (${values});`
     );
   }
 
   async add(product: Product, quantity: number): Promise<boolean> {
+    await this.connection.connect();
     const isValidProduct = await this.isValidProduct(product.id);
     if (!isValidProduct) {
-      this.registerProduct(product);
+      await this.registerProduct(product);
     }
-    await this.connection.connect();
     const [productInStock] = await this.connection.query(`select * from stock where productID = ${product.id};`);
     if (productInStock) {
       const quantityToAdd: number = productInStock.quantity + quantity;
