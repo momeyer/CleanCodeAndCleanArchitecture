@@ -51,7 +51,6 @@ export class OrderUseCases {
 
   async search(orderId: string): Promise<OrderOutput | undefined> {
     const order = await this.ordersRepository.get(orderId);
-
     if (!order) {
       return undefined;
     }

@@ -6,6 +6,7 @@ export default class DBOrdersRepository implements OrdersRepository {
   constructor(readonly connection: Connection) {}
 
   async add(order: Order): Promise<boolean> {
+    await this.connection.connect();
     await this.connection.query(
       `INSERT INTO orders(id,cpf,total,status,time) VALUES(${order.id},'${
         order.cpf.value
@@ -19,7 +20,12 @@ export default class DBOrdersRepository implements OrdersRepository {
     return true;
   }
   async get(orderId: string): Promise<Order | undefined> {
-    throw new Error("Method not implemented.");
+    await this.connection.connect();
+    const [output] = await this.connection.query(`select * from orders where id = "${orderId}"`);
+    if (!output) {
+      return undefined;
+    }
+    return new Order(output.cpf, output.id, output.discount, output.time);
   }
 
   async updateStatus(orderId: string, status: OrderStatus): Promise<boolean> {
