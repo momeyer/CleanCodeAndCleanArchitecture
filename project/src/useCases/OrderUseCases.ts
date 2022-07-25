@@ -70,6 +70,7 @@ export class OrderUseCases {
       id: order.id,
       date: order.time,
       status: order.status,
+      items: JSON.stringify(order.items),
     };
   }
 }
@@ -89,6 +90,7 @@ type OutputOrderSummary = {
   id?: string;
   date?: Date;
   status?: OrderStatus;
+  items?: string;
   message?: string;
 };
 

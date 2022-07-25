@@ -165,13 +165,27 @@ describe("DB Order Use Cases", (): void => {
     });
 
     test("should place an order", async (): Promise<void> => {
-      await shoppingCart.addItem(guitar, 10);
-      await shoppingCart.addItem(camera, 5);
-      await shoppingCartRepository.add(shoppingCart);
+      shoppingCart.addItem(guitar, 10);
+      shoppingCart.addItem(camera, 5);
+      shoppingCartRepository.add(shoppingCart);
       const output = await orderUseCases.place({ id: shoppingCart.id, cpf: validCPF, date: new Date("2021-01-01") });
       expect(output.date?.toDateString()).toBe(new Date("2021-01-01T00:00:00.000Z").toDateString());
       expect(output.id).toBe("202100000001");
       expect(output.status).toBe("PENDING");
+      expect(JSON.parse(output.items!)).toStrictEqual([
+        {
+          price: 20,
+          productDetails: { depth_cm: 10, height_cm: 100, weight_kg: 3, width_cm: 30 },
+          productId: 2,
+          quantity: 10,
+        },
+        {
+          price: 10,
+          productDetails: { depth_cm: 10, height_cm: 20, weight_kg: 1, width_cm: 15 },
+          productId: 1,
+          quantity: 5,
+        },
+      ]);
 
       await ordersRepository.clear();
     });

@@ -8,15 +8,13 @@ export default class DBOrdersRepository implements OrdersRepository {
   async add(order: Order): Promise<boolean> {
     await this.connection.connect();
     await this.connection.query(
-      `INSERT INTO orders(id,cpf,total,status,time) VALUES(${order.id},'${
+      `INSERT INTO orders(id,cpf,total,status,time,items) VALUES(${order.id},'${
         order.cpf.value
-      }',${order.calculateTotalPrice()},'${order.status}','${order.time.toISOString().slice(0, 19).replace("T", " ")}')`
+      }',${order.calculateTotalPrice()},'${order.status}','${order.time
+        .toISOString()
+        .slice(0, 19)
+        .replace("T", " ")}', '${JSON.stringify({ ...order.items })}')`
     );
-    order.items.forEach(async (item): Promise<void> => {
-      await this.connection.query(
-        `INSERT INTO order_items(orderID, productID, quantity) VALUES(${order.id},${item.productId},${item.quantity})`
-      );
-    });
     return true;
   }
   async get(orderId: string): Promise<Order | undefined> {
@@ -36,6 +34,5 @@ export default class DBOrdersRepository implements OrdersRepository {
   }
   async clear(): Promise<void> {
     await this.connection.query(`delete from orders`);
-    await this.connection.query(`delete from order_items`);
   }
 }

@@ -43,6 +43,7 @@ export default class ShoppingCartController {
         shoppingCartRepository,
         shoppingCartIdGenerator
       );
+      console.log(body);
       await shoppingCartUseCases.addItem({
         shoppingCartId: params.shoppingCartId,
         productId: body.productId,
