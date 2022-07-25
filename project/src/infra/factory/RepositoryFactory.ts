@@ -3,9 +3,9 @@ import { DiscountCodeRepository } from "../../domain/repository/DiscountCodeRepo
 import { OrdersRepository } from "../../domain/repository/OrdersRepository";
 import { ProductRepository } from "../../domain/repository/ProductRepository";
 import { ShoppingCartRepository } from "../../domain/repository/ShoppingCartRepository";
-import { NonPersistenDiscountCodeRepository } from "../../NonPersistentDiscountCodeRepository";
 import { NonPersistentShoppingCartRepository } from "../../NonPersistentShoppingCartRepository";
 import Connection from "../database/Connection";
+import { DBDiscountCodeRepository } from "../repository/DBDiscountCodeRepository";
 import DBOrdersRepository from "../repository/DBOrdersRepository";
 import { DBProductRepository } from "../repository/DBProductRepository";
 
@@ -22,7 +22,7 @@ export default class NonPersistentRepositoryFactory implements RepositoryFactory
 
   // TODO replace with real DB repos
   createDiscountCodeRepository(): DiscountCodeRepository {
-    return new NonPersistenDiscountCodeRepository();
+    return new DBDiscountCodeRepository(this.connection);
   }
 
   // TODO replace with real DB repos

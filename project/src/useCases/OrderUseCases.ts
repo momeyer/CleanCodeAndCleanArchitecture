@@ -57,6 +57,10 @@ export class OrderUseCases {
     return { id: order?.id, status: order?.status.toString() };
   }
 
+  async updateStatus(orderId: string, newStatus: OrderStatus): Promise<boolean> {
+    return await this.ordersRepository.updateStatus(orderId, newStatus);
+  }
+
   private generateInvalidOrderSummary(message: string, date: Date = new Date()): OutputOrderSummary {
     return {
       date: date,

@@ -2,7 +2,7 @@ import RepositoryFactory from "../../domain/factory/RepositoryFactory";
 import { ProductUseCases } from "../../useCases/ProductUseCases";
 import Http from "../http/Http";
 
-export default class ProductController {
+export default class orderControllerProductController {
   constructor(readonly http: Http, readonly repositoryFactory: RepositoryFactory) {
     const productRepository = repositoryFactory.createProductRepository();
 

@@ -43,7 +43,6 @@ export default class ShoppingCartController {
         shoppingCartRepository,
         shoppingCartIdGenerator
       );
-      console.log(body);
       await shoppingCartUseCases.addItem({
         shoppingCartId: params.shoppingCartId,
         productId: body.productId,
@@ -62,6 +61,20 @@ export default class ShoppingCartController {
       );
       await shoppingCartUseCases.clear(params.shoppingCartId);
       return await shoppingCartUseCases.generateSummary(params.shoppingCartId);
+    });
+
+    http.on("post", "/shoppingCart/:shoppingCartId/discount", async function (params: any, body: any): Promise<any> {
+      const shoppingCartUseCases = new ShoppingCartUseCases(
+        productRepository,
+        discountRepository,
+        shoppingCartRepository,
+        shoppingCartIdGenerator
+      );
+      const discountApplied = await shoppingCartUseCases.applyDiscountCode(params.shoppingCartId, body.discountCode);
+      if (discountApplied) {
+        return await shoppingCartUseCases.generateSummary(params.shoppingCartId);
+      }
+      return { ErrorType: `Failed to apply discount code ${body.discountCode}` };
     });
   }
 }

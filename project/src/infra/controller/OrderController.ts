@@ -27,11 +27,32 @@ export default class OrderController {
       return output;
     });
 
-    // http.on("get", "/products/:id", async function (params: any, body: any): Promise<any> {
-    //   const productUseCases = new ProductUseCases(productRepository);
+    http.on("post", "/order/place", async function (params: any, body: any): Promise<any> {
+      const orderUseCases = new OrderUseCases(
+        ordersRepository,
+        productRepository,
+        orderIdGenerator,
+        shoppingCartRepository
+      );
+      const output = await orderUseCases.place({ cpf: body.cpf, id: body.shoppingCartId, date: body.date });
+      if (!output) {
+        return { error: "failed" };
+      }
+      return output;
+    });
 
-    //   const output = await productUseCases.search(Number(params.id));
-    //   return output;
-    // });
+    http.on("post", "/internal/order/:orderId", async function (params: any, body: any): Promise<any> {
+      const orderUseCases = new OrderUseCases(
+        ordersRepository,
+        productRepository,
+        orderIdGenerator,
+        shoppingCartRepository
+      );
+      const output = await orderUseCases.updateStatus(params.orderId, body.status);
+      if (!output) {
+        return { error: "failed" };
+      }
+      return output;
+    });
   }
 }

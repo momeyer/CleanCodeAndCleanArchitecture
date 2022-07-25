@@ -2,7 +2,7 @@ import express from "express";
 import Http from "./Http";
 
 export default class ExpressAdapter implements Http {
-  private app: any;
+  app: any;
 
   constructor() {
     this.app = express();

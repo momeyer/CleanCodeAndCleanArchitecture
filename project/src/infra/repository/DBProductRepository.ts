@@ -32,6 +32,7 @@ export class DBProductRepository implements ProductRepository {
 
   async find(productId: number): Promise<ProductAndQuantity | undefined> {
     await this.connection.connect();
+
     const [product] = await this.connection.query(`select * from stock where productID = ${productId};`);
     if (!product) {
       this.connection.close();

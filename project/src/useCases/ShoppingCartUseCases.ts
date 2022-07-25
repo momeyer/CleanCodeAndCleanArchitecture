@@ -72,6 +72,7 @@ export class ShoppingCartUseCases {
 
     if (cart) {
       cart.clear();
+      cart.discount = undefined;
       await this.shoppingCartRepository.add(cart);
     }
   }
@@ -94,7 +95,7 @@ export class ShoppingCartUseCases {
       return false;
     }
     cart.applyDiscountCode(discount);
-    this.shoppingCartRepository.add(cart);
+    await this.shoppingCartRepository.add(cart);
     return true;
   }
 
