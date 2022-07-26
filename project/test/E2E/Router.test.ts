@@ -262,10 +262,10 @@ describe("API router tests", () => {
 
   describe("GET /products", () => {
     beforeAll(async () => {
-      await application.connectDB();
+      await application.start();
     });
     afterAll(async () => {
-      await application.closeDBConnection();
+      await application.stop();
     });
 
     test("Should list products", async function (): Promise<void> {
@@ -300,10 +300,10 @@ describe("API router tests", () => {
 
   describe("GET /ShoppingCart/:ShoppingCartID", () => {
     beforeAll(async () => {
-      await application.connectDB();
+      await application.start();
     });
     afterAll(async () => {
-      await application.closeDBConnection();
+      await application.stop();
     });
     test("Should get shopping cart by ID", async function (): Promise<void> {
       const response = await request(app).get("/ShoppingCart/SC1");
@@ -314,10 +314,10 @@ describe("API router tests", () => {
 
   describe("POST /ShoppingCart/:ShoppingCartID - add product", () => {
     beforeAll(async () => {
-      await application.connectDB();
+      await application.start();
     });
     afterAll(async () => {
-      await application.closeDBConnection();
+      await application.stop();
     });
     test("Should fail to add invalid product to shopping cart", async function (): Promise<void> {
       const response = await request(app).post("/ShoppingCart/SC1").send({
@@ -366,10 +366,10 @@ describe("API router tests", () => {
 
   describe("POST /ShoppingCart/:ShoppingCartID - clear", () => {
     beforeAll(async () => {
-      await application.connectDB();
+      await application.start();
     });
     afterAll(async () => {
-      await application.closeDBConnection();
+      await application.stop();
     });
     test("Should clear products from shopping cart", async function (): Promise<void> {
       let response = await request(app).get("/ShoppingCart/SC1");
@@ -387,10 +387,10 @@ describe("API router tests", () => {
 
   describe("POST /ShoppingCart/:ShoppingCartID - discount code", () => {
     beforeAll(async () => {
-      await application.connectDB();
+      await application.start();
     });
     afterAll(async () => {
-      await application.closeDBConnection();
+      await application.stop();
     });
     test("Should fail to apply invalid discount code to shopping cart", async function (): Promise<void> {
       let response = await request(app).post("/ShoppingCart/SC1/discount").send({
@@ -431,10 +431,10 @@ describe("API router tests", () => {
       await application.orderRepository.clear();
     });
     beforeAll(async () => {
-      await application.connectDB();
+      await application.start();
     });
     afterAll(async () => {
-      await application.closeDBConnection();
+      await application.stop();
     });
     test("Should fail to place order with invalid shopping cart Id", async function (): Promise<void> {
       let response = await request(app)
@@ -477,11 +477,11 @@ describe("API router tests", () => {
   });
   describe("POST /internal/order/:orderId", () => {
     beforeAll(async () => {
-      await application.connectDB();
+      await application.start();
       await application.orderRepository.clear();
     });
     afterAll(async () => {
-      await application.closeDBConnection();
+      await application.stop();
     });
     test("Should fail to update place order", async function (): Promise<void> {
       await request(app).post("/ShoppingCart/SC1").send({

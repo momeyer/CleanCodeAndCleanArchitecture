@@ -10,7 +10,6 @@ import ProductController from "./infra/controller/ProductController";
 import ShoppingCartController from "./infra/controller/ShoppingCartController";
 import MySqlPromiseConnectionAdapter from "./infra/database/MySqlPromiseConnectionAdapter";
 import RepositoryFactory from "./infra/factory/RepositoryFactory";
-import ExpressAdapter from "./infra/http/ExpressAdapter";
 import Http from "./infra/http/Http";
 
 export class Application {
@@ -58,10 +57,10 @@ export class Application {
     this.shoppingCartRepository.add(new ShoppingCart(this.shoppingCartIdGenerator.generate()));
   }
 
-  async connectDB(): Promise<void> {
+  async start(): Promise<void> {
     await this.connection.connect();
   }
-  async closeDBConnection(): Promise<void> {
+  async stop(): Promise<void> {
     await this.connection.close();
   }
 }
