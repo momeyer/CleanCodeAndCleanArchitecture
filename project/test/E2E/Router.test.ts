@@ -488,6 +488,9 @@ describe("API tests", () => {
   });
 
   describe("POST /order/place", () => {
+    beforeEach(async () => {
+      await application.orderRepository.clear();
+    });
     beforeAll(async () => {
       await application.connection.connect();
     });
@@ -536,14 +539,29 @@ describe("API tests", () => {
   describe("POST /internal/order/:orderId", () => {
     beforeAll(async () => {
       await application.connection.connect();
+      await application.orderRepository.clear();
     });
     afterAll(async () => {
       await application.connection.close();
     });
-    test("Should fail to place order", async function (): Promise<void> {
-      let response = await request(app).post("/internal/order/202200000001").send({
+    test("Should fail to update place order", async function (): Promise<void> {
+      await request(app).post("/ShoppingCart/SC1").send({
+        productId: 1,
+        quantity: 2,
+      });
+
+      const order = await request(app)
+        .post("/order/place")
+        .send({
+          cpf: "111.444.777-35",
+          shoppingCartId: "SC1",
+          date: new Date("2022-01-10"),
+        });
+
+      let response = await request(app).post(`/internal/order/${order.body.id}`).send({
         status: "COMPLETE",
       });
+
       console.log(response);
       expect(response.body).toStrictEqual(true);
     });

@@ -9,7 +9,7 @@ import { DBDiscountCodeRepository } from "../repository/DBDiscountCodeRepository
 import DBOrdersRepository from "../repository/DBOrdersRepository";
 import { DBProductRepository } from "../repository/DBProductRepository";
 
-export default class NonPersistentRepositoryFactory implements RepositoryFactory {
+export default class DBRepositoryFactory implements RepositoryFactory {
   constructor(readonly connection: Connection) {}
 
   createProductRepository(): ProductRepository {
@@ -20,7 +20,6 @@ export default class NonPersistentRepositoryFactory implements RepositoryFactory
     return new DBOrdersRepository(this.connection);
   }
 
-  // TODO replace with real DB repos
   createDiscountCodeRepository(): DiscountCodeRepository {
     return new DBDiscountCodeRepository(this.connection);
   }
