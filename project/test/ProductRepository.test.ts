@@ -76,6 +76,9 @@ describe("Non Persistent Product repository", (): void => {
 describe("DB Product repository", (): void => {
   const connection = new MySqlPromiseConnectionAdapter();
   let repository: ProductRepository = new DBProductRepository(connection);
+  beforeAll(async (): Promise<void> => {
+    await connection.connect();
+  });
 
   beforeEach(async (): Promise<void> => {
     await repository.clear();

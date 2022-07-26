@@ -89,19 +89,20 @@ export class DBProductRepository implements ProductRepository {
     const products: Array<any> = await this.connection.query("select * from stock");
 
     let list: ProductAndQuantity[] = [];
-
-    for (let product of products) {
-      const [item] = await this.connection.query(`select * from product where id = ${product.productID};`);
-      list.push({
-        product: new Product(
-          item.id,
-          item.description,
-          new PhysicalAttributes(item.height, item.width, item.depth, item.weight),
-          item.price
-        ),
-        quantity: product.quantity,
-      });
-    }
+    try {
+      for (let product of products) {
+        const [item] = await this.connection.query(`select * from product where id = ${product.productID};`);
+        list.push({
+          product: new Product(
+            item.id,
+            item.description,
+            new PhysicalAttributes(item.height, item.width, item.depth, item.weight),
+            item.price
+          ),
+          quantity: product.quantity,
+        });
+      }
+    } catch (error) {}
     return list;
   }
 

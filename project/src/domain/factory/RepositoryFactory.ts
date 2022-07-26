@@ -8,6 +8,4 @@ export default interface RepositoryFactory {
   createOrdersRepository(): OrdersRepository;
   createDiscountCodeRepository(): DiscountCodeRepository;
   createShoppingCartRepository(): ShoppingCartRepository;
-  closeConnection(): Promise<void>;
-  connect(): Promise<void>;
 }

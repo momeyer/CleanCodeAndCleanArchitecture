@@ -39,11 +39,8 @@ export class ShoppingCartUseCases {
   }
 
   async addItem(input: AddItemInput): Promise<boolean> {
-    console.log(1);
     const productInRepository = await this.productRepository.find(input.productId);
-    console.log(2);
     const cart = await this.shoppingCartRepository.get(input.shoppingCartId);
-    console.log(3);
     if (!productInRepository || !cart) {
       return false;
     }
@@ -89,11 +86,11 @@ export class ShoppingCartUseCases {
   }
 
   async applyDiscountCode(shoppingCartId: string, code: string, curDate: Date = new Date()): Promise<boolean> {
-    const discount = await this.discountCodeRepository.getDiscount(code, curDate);
     const cart = await this.shoppingCartRepository.get(shoppingCartId);
     if (!cart) {
       return false;
     }
+    const discount = await this.discountCodeRepository.getDiscount(code, curDate);
     if (!discount) {
       return false;
     }

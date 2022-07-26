@@ -11,9 +11,10 @@ import ShoppingCartController from "./infra/controller/ShoppingCartController";
 import MySqlPromiseConnectionAdapter from "./infra/database/MySqlPromiseConnectionAdapter";
 import NonPersistentRepositoryFactory from "./infra/factory/NonPersistentRepositoryFactory";
 import RepositoryFactory from "./infra/factory/RepositoryFactory";
+import ExpressAdapter from "./infra/http/ExpressAdapter";
 import Http from "./infra/http/Http";
 
-export default class Application {
+export class Application {
   http: Http;
   connection: MySqlPromiseConnectionAdapter; // DB
   repositoryFactoryDB: RepositoryFactory; // DB
@@ -59,4 +60,12 @@ export default class Application {
 
     this.shoppingCartRepository.add(new ShoppingCart(this.shoppingCartIdGenerator.generate()));
   }
+}
+
+export async function run() {
+  const http = new ExpressAdapter();
+  const application = new Application(http);
+  await application.connection.connect();
+  http.listen(3000);
+  console.log(`\u001b[32m Server is running on port 3000`);
 }

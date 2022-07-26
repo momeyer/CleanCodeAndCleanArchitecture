@@ -21,6 +21,4 @@ export default class NonPersistentRepositoryFactory implements RepositoryFactory
   createShoppingCartRepository(): ShoppingCartRepository {
     return new NonPersistentShoppingCartRepository();
   }
-  async closeConnection(): Promise<void> {}
-  async connect(): Promise<void> {}
 }
