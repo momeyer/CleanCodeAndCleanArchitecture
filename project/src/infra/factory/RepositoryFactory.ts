@@ -20,7 +20,6 @@ export default class NonPersistentRepositoryFactory implements RepositoryFactory
     return new DBOrdersRepository(this.connection);
   }
 
-  // TODO replace with real DB repos
   createDiscountCodeRepository(): DiscountCodeRepository {
     return new DBDiscountCodeRepository(this.connection);
   }
@@ -28,5 +27,11 @@ export default class NonPersistentRepositoryFactory implements RepositoryFactory
   // TODO replace with real DB repos
   createShoppingCartRepository(): ShoppingCartRepository {
     return new NonPersistentShoppingCartRepository();
+  }
+  async closeConnection(): Promise<void> {
+    this.connection.close();
+  }
+  async connect(): Promise<void> {
+    this.connection.connect();
   }
 }

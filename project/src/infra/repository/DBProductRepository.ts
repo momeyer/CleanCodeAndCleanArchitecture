@@ -5,6 +5,9 @@ import Connection from "../database/Connection";
 
 export class DBProductRepository implements ProductRepository {
   constructor(readonly connection: Connection) {}
+  async connect(): Promise<void> {
+    await this.connection.connect();
+  }
 
   private async registerProduct(product: Product): Promise<void> {
     const values = `${product.id}, '${product.description}', ${product.physicalAttributes.height_cm}, ${product.physicalAttributes.width_cm}, ${product.physicalAttributes.depth_cm}, ${product.physicalAttributes.weight_kg}, ${product.price}`;
@@ -15,7 +18,6 @@ export class DBProductRepository implements ProductRepository {
   }
 
   async add(product: Product, quantity: number): Promise<boolean> {
-    await this.connection.connect();
     const isValidProduct = await this.isValidProduct(product.id);
     if (!isValidProduct) {
       await this.registerProduct(product);
@@ -31,16 +33,12 @@ export class DBProductRepository implements ProductRepository {
   }
 
   async find(productId: number): Promise<ProductAndQuantity | undefined> {
-    await this.connection.connect();
-
     const [product] = await this.connection.query(`select * from stock where productID = ${productId};`);
     if (!product) {
-      this.connection.close();
       return undefined;
     }
     const [item] = await this.connection.query(`select * from product where id = ${product.productID};`);
     if (!item) {
-      this.connection.close();
       return undefined;
     }
     let output = {
@@ -57,7 +55,6 @@ export class DBProductRepository implements ProductRepository {
   }
 
   async isValidProduct(productId: number): Promise<boolean> {
-    await this.connection.connect();
     const [productExist] = await this.connection.query(`select * from product where id = "${productId}";`);
     if (!productExist) {
       return false;
@@ -67,7 +64,6 @@ export class DBProductRepository implements ProductRepository {
   }
 
   async remove(productId: number, quantity: number): Promise<boolean> {
-    await this.connection.connect();
     const [item] = await this.connection.query(`select * from stock where productID = ${productId};`);
     if (!item || item.quantity < quantity) {
       return false;
@@ -79,7 +75,6 @@ export class DBProductRepository implements ProductRepository {
   }
 
   async updateQuantityBy(productId: number, amount: number): Promise<boolean> {
-    await this.connection.connect();
     const [productInStock] = await this.connection.query(`select quantity from stock where productID = ${productId}`);
 
     if (productInStock) {
@@ -91,7 +86,6 @@ export class DBProductRepository implements ProductRepository {
   }
 
   async list(): Promise<ProductAndQuantity[]> {
-    await this.connection.connect();
     const products: Array<any> = await this.connection.query("select * from stock");
 
     let list: ProductAndQuantity[] = [];
@@ -112,13 +106,11 @@ export class DBProductRepository implements ProductRepository {
   }
 
   async nextId(): Promise<number> {
-    await this.connection.connect();
     const [nextId] = await this.connection.query(`select count(*) as num_items from product`);
     return nextId.num_items + 1;
   }
 
   async clear(): Promise<void> {
-    await this.connection.connect();
     await this.connection.query(`delete from stock`);
     await this.connection.query(`delete from product`);
   }

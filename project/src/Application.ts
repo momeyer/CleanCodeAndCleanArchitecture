@@ -42,7 +42,7 @@ export default class Application {
 
     this.productController = new ProductController(http, this.repositoryFactoryDB);
     this.shoppingCartController = new ShoppingCartController(
-      http,
+      this.http,
       this.productRepository,
       this.discountCodeRepository,
       this.shoppingCartRepository,
@@ -50,7 +50,7 @@ export default class Application {
     );
 
     this.orderController = new OrderController(
-      http,
+      this.http,
       this.orderRepository,
       this.productRepository,
       this.orderIdGenerator,

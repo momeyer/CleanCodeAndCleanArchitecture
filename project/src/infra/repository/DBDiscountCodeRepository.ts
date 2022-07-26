@@ -9,7 +9,6 @@ export class DBDiscountCodeRepository implements DiscountCodeRepository {
     throw new Error("Method not implemented.");
   }
   async getDiscount(code: string, curDate: Date): Promise<number> {
-    await this.connection.connect();
     const [data] = await this.connection.query(`select * from discount_codes where code = '${code}'`);
     if (!data) {
       return 0;

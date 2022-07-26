@@ -14,4 +14,5 @@ export interface ProductRepository {
   list(): Promise<ProductAndQuantity[]>;
   nextId(): Promise<number>;
   clear(): Promise<void>;
+  connect(): Promise<void>;
 }

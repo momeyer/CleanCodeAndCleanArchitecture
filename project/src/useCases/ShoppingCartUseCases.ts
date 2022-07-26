@@ -39,8 +39,11 @@ export class ShoppingCartUseCases {
   }
 
   async addItem(input: AddItemInput): Promise<boolean> {
+    console.log(1);
     const productInRepository = await this.productRepository.find(input.productId);
+    console.log(2);
     const cart = await this.shoppingCartRepository.get(input.shoppingCartId);
+    console.log(3);
     if (!productInRepository || !cart) {
       return false;
     }

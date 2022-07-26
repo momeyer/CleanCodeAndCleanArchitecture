@@ -7,6 +7,9 @@ export class NonPersistentProductRepository implements ProductRepository {
   constructor() {
     this.inventory = new Map<number, ProductAndQuantity>();
   }
+  connect(): Promise<void> {
+    throw new Error("Method not implemented.");
+  }
 
   async add(product: Product, quantity: number): Promise<boolean> {
     const productInInventory = await this.find(product.id);
