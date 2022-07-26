@@ -123,7 +123,6 @@ export class ShoppingCartUseCases {
   private populateSummary(summary: Summary, items: OrderItem[], discount?: number): Summary {
     let shippingCalculator = new ShippingCalculator();
     let priceCalculator = new PriceCalculator();
-
     items.forEach((item) => {
       summary.items.push({ id: item.productId, price: item.price, quantity: item.quantity });
       shippingCalculator.addProductDetails(item.productDetails, item.quantity);
@@ -136,6 +135,7 @@ export class ShoppingCartUseCases {
     summary.total = summary.subtotal + summary.shippingCost;
     return summary;
   }
+
   //TODO estimateShippingCost()
 }
 

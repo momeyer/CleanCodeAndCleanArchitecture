@@ -2,7 +2,7 @@ import axios from "axios";
 import { Application } from "../../src/Application";
 import ExpressAdapter from "../../src/infra/http/ExpressAdapter";
 
-describe.skip("API tests", () => {
+describe.skip("API E2E tests", () => {
   beforeEach(async () => {
     await axios({
       url: "http://localhost:3000/shoppingCart/SC1/clear",
@@ -254,68 +254,7 @@ describe.skip("API tests", () => {
   });
 });
 
-// describe.only("Test App", () => {
-//   const request = require("supertest");
-//   // const http = new ExpressAdapter();
-//   // const myApp = new Application(http);
-
-//   // http.on("get", "/products", async function (params: any, body: any): Promise<any> {
-//   //   console.log("heeeeeeeeeeeeeeeeeeeeeeeeeeello");
-//   //   return { test: "hello" };
-//   // });
-
-//   test("GET /", (done) => {
-//     const app = require("express")();
-//     app.get("/products", function (req: any, res: any) {
-//       res.status(200).json({
-//         message: "https://example.com/",
-//         status: "success",
-//       });
-//     });
-//     request(app).get("/products").expect("Content-Type", /json/);
-//     // Logic goes here
-//   });
-// });
-
-// describe("Test App", () => {
-//   const request = require("supertest");
-//   const http = new ExpressAdapter();
-//   const application = new Application(http);
-//   const app = http.app;
-
-//   afterEach(async () => {
-//   });
-//   test("router list products", async () => {
-//     const response = await request(app).get("/products");
-//     expect(response.status).toBe(200);
-//     expect(response.body).toStrictEqual({
-//       list: [
-//         {
-//           description: "Camera",
-//           id: 1,
-//           price: 10,
-//         },
-//         {
-//           description: "Guitar",
-//           id: 2,
-//           price: 20,
-//         },
-//         {
-//           description: "Rubber_Duck",
-//           id: 3,
-//           price: 1,
-//         },
-//         {
-//           description: "tshirt",
-//           id: 4,
-//           price: 100,
-//         },
-//       ],
-//     });
-//   });
-// });
-
-describe("API tests", () => {
+describe("API router tests", () => {
   const request = require("supertest");
   const http = new ExpressAdapter();
   const application = new Application(http);
@@ -323,10 +262,10 @@ describe("API tests", () => {
 
   describe("GET /products", () => {
     beforeAll(async () => {
-      await application.connection.connect();
+      await application.connectDB();
     });
     afterAll(async () => {
-      await application.connection.close();
+      await application.closeDBConnection();
     });
 
     test("Should list products", async function (): Promise<void> {
@@ -361,10 +300,10 @@ describe("API tests", () => {
 
   describe("GET /ShoppingCart/:ShoppingCartID", () => {
     beforeAll(async () => {
-      await application.connection.connect();
+      await application.connectDB();
     });
     afterAll(async () => {
-      await application.connection.close();
+      await application.closeDBConnection();
     });
     test("Should get shopping cart by ID", async function (): Promise<void> {
       const response = await request(app).get("/ShoppingCart/SC1");
@@ -375,10 +314,10 @@ describe("API tests", () => {
 
   describe("POST /ShoppingCart/:ShoppingCartID - add product", () => {
     beforeAll(async () => {
-      await application.connection.connect();
+      await application.connectDB();
     });
     afterAll(async () => {
-      await application.connection.close();
+      await application.closeDBConnection();
     });
     test("Should fail to add invalid product to shopping cart", async function (): Promise<void> {
       const response = await request(app).post("/ShoppingCart/SC1").send({
@@ -427,10 +366,10 @@ describe("API tests", () => {
 
   describe("POST /ShoppingCart/:ShoppingCartID - clear", () => {
     beforeAll(async () => {
-      await application.connection.connect();
+      await application.connectDB();
     });
     afterAll(async () => {
-      await application.connection.close();
+      await application.closeDBConnection();
     });
     test("Should clear products from shopping cart", async function (): Promise<void> {
       let response = await request(app).get("/ShoppingCart/SC1");
@@ -448,10 +387,10 @@ describe("API tests", () => {
 
   describe("POST /ShoppingCart/:ShoppingCartID - discount code", () => {
     beforeAll(async () => {
-      await application.connection.connect();
+      await application.connectDB();
     });
     afterAll(async () => {
-      await application.connection.close();
+      await application.closeDBConnection();
     });
     test("Should fail to apply invalid discount code to shopping cart", async function (): Promise<void> {
       let response = await request(app).post("/ShoppingCart/SC1/discount").send({
@@ -492,10 +431,10 @@ describe("API tests", () => {
       await application.orderRepository.clear();
     });
     beforeAll(async () => {
-      await application.connection.connect();
+      await application.connectDB();
     });
     afterAll(async () => {
-      await application.connection.close();
+      await application.closeDBConnection();
     });
     test("Should fail to place order with invalid shopping cart Id", async function (): Promise<void> {
       let response = await request(app)
@@ -538,11 +477,11 @@ describe("API tests", () => {
   });
   describe("POST /internal/order/:orderId", () => {
     beforeAll(async () => {
-      await application.connection.connect();
+      await application.connectDB();
       await application.orderRepository.clear();
     });
     afterAll(async () => {
-      await application.connection.close();
+      await application.closeDBConnection();
     });
     test("Should fail to update place order", async function (): Promise<void> {
       await request(app).post("/ShoppingCart/SC1").send({
@@ -562,7 +501,6 @@ describe("API tests", () => {
         status: "COMPLETE",
       });
 
-      console.log(response);
       expect(response.body).toStrictEqual(true);
     });
   });

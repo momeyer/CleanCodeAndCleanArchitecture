@@ -1,3 +1,5 @@
-import { run } from "./Application";
+import Server from "./Server";
 
-run().catch(console.error);
+const server = new Server();
+
+server.run(3000).catch(console.error);
