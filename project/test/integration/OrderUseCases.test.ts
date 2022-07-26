@@ -5,9 +5,9 @@ import { ShoppingCartIdGenerator } from "../../src/domain/entity/ShoppingCartIdG
 import MySqlPromiseConnectionAdapter from "../../src/infra/database/MySqlPromiseConnectionAdapter";
 import DBOrdersRepository from "../../src/infra/repository/DBOrdersRepository";
 import { DBProductRepository } from "../../src/infra/repository/DBProductRepository";
-import { NonPersistentOrdersRepository } from "../../src/NonPersistentOrdersRepository";
-import { NonPersistentProductRepository } from "../../src/NonPersistentProductRepository";
-import { NonPersistentShoppingCartRepository } from "../../src/NonPersistentShoppingCartRepository";
+import { NonPersistentOrdersRepository } from "../../src/infra/repository/NonPersistentOrdersRepository";
+import { NonPersistentProductRepository } from "../../src/infra/repository/NonPersistentProductRepository";
+import { NonPersistentShoppingCartRepository } from "../../src/infra/repository/NonPersistentShoppingCartRepository";
 import { OrderUseCases } from "../../src/useCases/OrderUseCases";
 import { camera, guitar, rubberDuck } from "../ProductSamples";
 

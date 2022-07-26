@@ -1,6 +1,6 @@
 import MySqlPromiseConnectionAdapter from "../../src/infra/database/MySqlPromiseConnectionAdapter";
 import { DBProductRepository } from "../../src/infra/repository/DBProductRepository";
-import { NonPersistentProductRepository } from "../../src/NonPersistentProductRepository";
+import { NonPersistentProductRepository } from "../../src/infra/repository/NonPersistentProductRepository";
 import { ProductUseCases } from "../../src/useCases/ProductUseCases";
 import { camera, guitar } from "../ProductSamples";
 

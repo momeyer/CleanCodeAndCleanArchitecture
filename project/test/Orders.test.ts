@@ -1,6 +1,6 @@
 import { Order, OrderItem, OrderStatus } from "../src/domain/entity/Order";
 import { Product } from "../src/domain/entity/Product";
-import { NonPersistentOrdersRepository } from "../src/NonPersistentOrdersRepository";
+import { NonPersistentOrdersRepository } from "../src/infra/repository/NonPersistentOrdersRepository";
 import { camera } from "./ProductSamples";
 
 describe("Order Repository test", () => {

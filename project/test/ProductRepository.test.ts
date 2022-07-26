@@ -1,7 +1,7 @@
 import { ProductRepository } from "../src/domain/repository/ProductRepository";
 import MySqlPromiseConnectionAdapter from "../src/infra/database/MySqlPromiseConnectionAdapter";
 import { DBProductRepository } from "../src/infra/repository/DBProductRepository";
-import { NonPersistentProductRepository } from "../src/NonPersistentProductRepository";
+import { NonPersistentProductRepository } from "../src/infra/repository/NonPersistentProductRepository";
 import { camera, guitar, rubberDuck, tshirt } from "./ProductSamples";
 
 describe("Non Persistent Product repository", (): void => {

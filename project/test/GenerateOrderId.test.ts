@@ -1,6 +1,6 @@
 import { Order } from "../src/domain/entity/Order";
 import { OrderIdGenerator } from "../src/domain/entity/OrderIdGenerator";
-import { NonPersistentOrdersRepository } from "../src/NonPersistentOrdersRepository";
+import { NonPersistentOrdersRepository } from "../src/infra/repository/NonPersistentOrdersRepository";
 
 test("should increase sequencial", () => {
   const orders = new NonPersistentOrdersRepository();

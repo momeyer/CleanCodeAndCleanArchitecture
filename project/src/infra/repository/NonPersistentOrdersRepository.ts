@@ -1,5 +1,5 @@
-import { Order, OrderStatus } from "./domain/entity/Order";
-import { OrdersRepository } from "./domain/repository/OrdersRepository";
+import { Order, OrderStatus } from "../../domain/entity/Order";
+import { OrdersRepository } from "../../domain/repository/OrdersRepository";
 
 export class NonPersistentOrdersRepository implements OrdersRepository {
   placeOrders: Map<string, Order>;

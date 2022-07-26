@@ -1,9 +1,10 @@
 import { DiscountCode } from "../../src/domain/entity/DiscountCode";
 import ShoppingCart from "../../src/domain/entity/ShoppingCart";
 import { ShoppingCartIdGenerator } from "../../src/domain/entity/ShoppingCartIdGenerator";
-import { NonPersistenDiscountCodeRepository } from "../../src/NonPersistentDiscountCodeRepository";
-import { NonPersistentProductRepository } from "../../src/NonPersistentProductRepository";
-import { NonPersistentShoppingCartRepository } from "../../src/NonPersistentShoppingCartRepository";
+import { NonPersistenDiscountCodeRepository } from "../../src/infra/repository/NonPersistentDiscountCodeRepository";
+import { NonPersistentProductRepository } from "../../src/infra/repository/NonPersistentProductRepository";
+import { NonPersistentShoppingCartRepository } from "../../src/infra/repository/NonPersistentShoppingCartRepository";
+
 import { ShoppingCartUseCases } from "../../src/useCases/ShoppingCartUseCases";
 import { camera, guitar, rubberDuck } from "../ProductSamples";
 

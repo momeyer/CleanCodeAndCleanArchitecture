@@ -1,5 +1,5 @@
-import { Product } from "./domain/entity/Product";
-import { ProductAndQuantity, ProductRepository } from "./domain/repository/ProductRepository";
+import { Product } from "../../domain/entity/Product";
+import { ProductAndQuantity, ProductRepository } from "../../domain/repository/ProductRepository";
 
 export class NonPersistentProductRepository implements ProductRepository {
   private inventory: Map<number, ProductAndQuantity>;
