@@ -5,18 +5,21 @@ import { DiscountCodeRepository } from "./domain/repository/DiscountCodeReposito
 import { OrdersRepository } from "./domain/repository/OrdersRepository";
 import { ProductRepository } from "./domain/repository/ProductRepository";
 import { ShoppingCartRepository } from "./domain/repository/ShoppingCartRepository";
+import StockEntryRepository from "./domain/repository/StockEntryRepository";
 import OrderController from "./infra/controller/OrderController";
 import ProductController from "./infra/controller/ProductController";
 import ShoppingCartController from "./infra/controller/ShoppingCartController";
 import MySqlPromiseConnectionAdapter from "./infra/database/MySqlPromiseConnectionAdapter";
 import RepositoryFactory from "./infra/factory/RepositoryFactory";
 import Http from "./infra/http/Http";
+import DBStockEntryRepository from "./infra/repository/DBStockEntryRepository";
 
 export class Application {
   http: Http;
   connection: MySqlPromiseConnectionAdapter; // DB
   repositoryFactoryDB: RepositoryFactory; // DB
   productRepository: ProductRepository; // DB
+  stockRepository: StockEntryRepository; // DB
   orderRepository: OrdersRepository;
   discountCodeRepository: DiscountCodeRepository; // DB
   shoppingCartRepository: ShoppingCartRepository;
@@ -30,7 +33,8 @@ export class Application {
     this.http = http;
     this.connection = new MySqlPromiseConnectionAdapter(); // DB
     this.repositoryFactoryDB = new RepositoryFactory(this.connection); // DB
-    this.productRepository = this.repositoryFactoryDB.createProductRepository(); // DB
+    this.productRepository = this.repositoryFactoryDB.createProductRepository();
+    this.stockRepository = new DBStockEntryRepository(this.connection); // DB
     this.orderRepository = this.repositoryFactoryDB.createOrdersRepository();
     this.discountCodeRepository = this.repositoryFactoryDB.createDiscountCodeRepository();
     this.shoppingCartRepository = this.repositoryFactoryDB.createShoppingCartRepository();
@@ -41,6 +45,7 @@ export class Application {
     this.shoppingCartController = new ShoppingCartController(
       this.http,
       this.productRepository,
+      this.stockRepository,
       this.discountCodeRepository,
       this.shoppingCartRepository,
       this.shoppingCartIdGenerator

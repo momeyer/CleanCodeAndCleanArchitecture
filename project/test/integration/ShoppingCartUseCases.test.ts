@@ -1,9 +1,11 @@
 import { DiscountCode } from "../../src/domain/entity/DiscountCode";
 import ShoppingCart from "../../src/domain/entity/ShoppingCart";
 import { ShoppingCartIdGenerator } from "../../src/domain/entity/ShoppingCartIdGenerator";
+import StockEntry from "../../src/domain/entity/StockEntry";
 import { NonPersistenDiscountCodeRepository } from "../../src/infra/repository/NonPersistentDiscountCodeRepository";
 import { NonPersistentProductRepository } from "../../src/infra/repository/NonPersistentProductRepository";
 import { NonPersistentShoppingCartRepository } from "../../src/infra/repository/NonPersistentShoppingCartRepository";
+import NonPersistentStockEntryRepository from "../../src/infra/repository/NonPersistentStockEntryRepository";
 
 import { ShoppingCartUseCases } from "../../src/useCases/ShoppingCartUseCases";
 import { camera, guitar, rubberDuck } from "../ProductSamples";
@@ -11,10 +13,12 @@ import { camera, guitar, rubberDuck } from "../ProductSamples";
 describe("ShoppingCart Use Cases", (): void => {
   let productRepository = new NonPersistentProductRepository();
   let discountCodeRepository = new NonPersistenDiscountCodeRepository();
+  let stockRepository = new NonPersistentStockEntryRepository();
   let shoppingCartRepository = new NonPersistentShoppingCartRepository();
   let shoppingCartIdGenerator = new ShoppingCartIdGenerator(0);
   let shoppingCartUseCases = new ShoppingCartUseCases(
     productRepository,
+    stockRepository,
     discountCodeRepository,
     shoppingCartRepository,
     shoppingCartIdGenerator
@@ -26,9 +30,14 @@ describe("ShoppingCart Use Cases", (): void => {
     await productRepository.add(camera, 10);
     await productRepository.add(guitar, 10);
     await productRepository.add(rubberDuck, 10);
+    await stockRepository.clear();
+    await stockRepository.save(new StockEntry(1, "in", 10));
+    await stockRepository.save(new StockEntry(2, "in", 10));
+    await stockRepository.save(new StockEntry(3, "in", 10));
     discountCodeRepository = new NonPersistenDiscountCodeRepository();
     shoppingCartUseCases = new ShoppingCartUseCases(
       productRepository,
+      stockRepository,
       discountCodeRepository,
       shoppingCartRepository,
       shoppingCartIdGenerator

@@ -2,7 +2,7 @@ import StockEntry from "../../domain/entity/StockEntry";
 import StockEntryRepository from "../../domain/repository/StockEntryRepository";
 import Connection from "../database/Connection";
 
-export default class StockEntryRepositoryDatabase implements StockEntryRepository {
+export default class DBStockEntryRepository implements StockEntryRepository {
   constructor(readonly connection: Connection) {}
 
   async save(stockEntry: StockEntry): Promise<void> {

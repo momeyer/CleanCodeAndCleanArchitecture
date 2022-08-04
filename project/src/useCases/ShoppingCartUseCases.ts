@@ -6,10 +6,13 @@ import { ShoppingCartIdGenerator } from "../domain/entity/ShoppingCartIdGenerato
 import { DiscountCodeRepository } from "../domain/repository/DiscountCodeRepository";
 import { ProductRepository } from "../domain/repository/ProductRepository";
 import { ShoppingCartRepository } from "../domain/repository/ShoppingCartRepository";
+import StockEntryRepository from "../domain/repository/StockEntryRepository";
+import GetStock from "./GetStock";
 
 export class ShoppingCartUseCases {
   constructor(
     readonly productRepository: ProductRepository,
+    readonly stockRepository: StockEntryRepository,
     readonly discountCodeRepository: DiscountCodeRepository,
     readonly shoppingCartRepository: ShoppingCartRepository,
     readonly shoppingCartidGenerator: ShoppingCartIdGenerator
@@ -39,21 +42,26 @@ export class ShoppingCartUseCases {
   }
 
   async addItem(input: AddItemInput): Promise<boolean> {
-    const productInRepository = await this.productRepository.find(input.productId);
+    const getItem = new GetStock(this.stockRepository);
+    const productInRepository = await getItem.execute(input.productId);
     const cart = await this.shoppingCartRepository.get(input.shoppingCartId);
     if (!productInRepository || !cart) {
       return false;
     }
 
-    const isValidQuantity = productInRepository.quantity > 0 && input.quantity > 0;
-    const hasAvailableInStock = input.quantity <= productInRepository.quantity;
+    const isValidQuantity = productInRepository.total > 0 && input.quantity > 0;
+    const hasAvailableInStock = input.quantity <= productInRepository.total;
     if (!isValidQuantity || !hasAvailableInStock) {
       return false;
     }
-
-    cart.addItem(productInRepository.product, input.quantity);
-    await this.shoppingCartRepository.add(cart);
-    return true;
+    console.log(`id: ${input.productId}, inStock: ${productInRepository.total}`);
+    const product = await this.productRepository.find(input.productId);
+    if (product) {
+      cart.addItem(product?.product, input.quantity);
+      await this.shoppingCartRepository.add(cart);
+      return true;
+    }
+    return false;
   }
 
   async removeItem(shoppingCartId: string, idToRemove: number): Promise<boolean> {
