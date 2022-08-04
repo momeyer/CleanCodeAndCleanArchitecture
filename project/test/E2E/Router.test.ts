@@ -34,7 +34,7 @@ describe.skip("API E2E tests", () => {
     });
   });
 
-  describe("POST /ShoppingCart/:ShoppingCartID - add product", () => {
+  describe.skip("POST /ShoppingCart/:ShoppingCartID - add product", () => {
     test("Should fail to add invalid product to shopping cart", async function (): Promise<void> {
       let response = await axios({
         url: "http://localhost:3000/ShoppingCart/SC1",
@@ -95,7 +95,7 @@ describe.skip("API E2E tests", () => {
     });
   });
 
-  describe("POST /ShoppingCart/:ShoppingCartID - clear", () => {
+  describe.skip("POST /ShoppingCart/:ShoppingCartID - clear", () => {
     test("Should clear products from shopping cart", async function (): Promise<void> {
       let response = await axios({
         url: "http://localhost:3000/ShoppingCart/SC1",
@@ -125,7 +125,7 @@ describe.skip("API E2E tests", () => {
     });
   });
 
-  describe("POST /ShoppingCart/:ShoppingCartID - discount code", () => {
+  describe.skip("POST /ShoppingCart/:ShoppingCartID - discount code", () => {
     test("Should fail to apply invalid discount code to shopping cart", async function (): Promise<void> {
       let response = await axios({
         url: "http://localhost:3000/shoppingCart/SC1/discount",
@@ -190,7 +190,7 @@ describe.skip("API E2E tests", () => {
       });
     });
 
-    describe("POST /order/place", () => {
+    describe.skip("POST /order/place", () => {
       test("Should fail to place order with invalid shopping cart Id", async function (): Promise<void> {
         let response = await axios({
           url: "http://localhost:3000/order/place",
@@ -238,7 +238,7 @@ describe.skip("API E2E tests", () => {
         });
       });
     });
-    describe("POST /internal/order/:orderId", () => {
+    describe.skip("POST /internal/order/:orderId", () => {
       test("Should fail to place order", async function (): Promise<void> {
         let response = await axios({
           url: "http://localhost:3000/internal/order/202200000001",
@@ -254,7 +254,7 @@ describe.skip("API E2E tests", () => {
   });
 });
 
-describe("API router tests", () => {
+describe.skip("API router tests", () => {
   const request = require("supertest");
   const http = new ExpressAdapter();
   const application = new Application(http);
