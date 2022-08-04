@@ -141,31 +141,6 @@ describe("Product Use Cases", (): void => {
       price: guitar.price,
       quantity: 100,
     };
-
-    test("Should delete camera", async (): Promise<void> => {
-      const productRepository = new NonPersistentProductRepository();
-      const productUseCases = new ProductUseCases(productRepository);
-
-      await productUseCases.add(cameraInput);
-      await productUseCases.add(guitarInput);
-
-      const output = await productUseCases.remove({ id: 1, quantity: 100 });
-      expect(output).toBeTruthy();
-      const item = await productUseCases.search(1);
-      expect(item?.inStock).toBe(0);
-    });
-
-    test("Should return false when product is 0", async (): Promise<void> => {
-      const productRepository = new NonPersistentProductRepository();
-      const productUseCases = new ProductUseCases(productRepository);
-
-      await productUseCases.add(cameraInput);
-      await productUseCases.add(guitarInput);
-
-      await productUseCases.remove({ id: 1, quantity: 100 });
-      const output = await productUseCases.remove({ id: 1, quantity: 1 });
-      expect(output).toBeFalsy();
-    });
   });
 });
 
@@ -189,7 +164,6 @@ describe.skip("Product Use Cases DB", (): void => {
       expect(output).toBeTruthy();
       const find = await productUseCases.search(1);
       expect(find?.description).toBe(camera.description);
-      expect(find?.inStock).toBe(10);
     });
     test("Should add valid product", async (): Promise<void> => {
       const connection = new MySqlPromiseConnectionAdapter();
@@ -209,7 +183,6 @@ describe.skip("Product Use Cases DB", (): void => {
       expect(output).toBeTruthy();
       let find = await productUseCases.search(1);
       expect(find?.description).toBe("hello");
-      expect(find?.inStock).toBe(1);
     });
     test("Should add more items to existing product", async (): Promise<void> => {
       const connection = new MySqlPromiseConnectionAdapter();
@@ -230,8 +203,8 @@ describe.skip("Product Use Cases DB", (): void => {
       output = await productUseCases.add(input);
       const find = await productUseCases.search(1);
       expect(find?.description).toBe(camera.description);
-      expect(find?.inStock).toBe(20);
     });
+
     test("Should fail to add product with invalid dimensions", async (): Promise<void> => {
       const productRepository = new NonPersistentProductRepository();
       const productUseCases = new ProductUseCases(productRepository);
@@ -351,7 +324,6 @@ describe.skip("Product Use Cases DB", (): void => {
       const output = await productUseCases.remove({ id: 1, quantity: 100 });
       expect(output).toBeTruthy();
       const item = await productUseCases.search(1);
-      expect(item?.inStock).toBe(0);
     });
     test("Should return false when product is 0", async (): Promise<void> => {
       const productRepository = new NonPersistentProductRepository();

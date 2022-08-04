@@ -2,6 +2,7 @@ import { OrderIdGenerator } from "../../domain/entity/OrderIdGenerator";
 import { OrdersRepository } from "../../domain/repository/OrdersRepository";
 import { ProductRepository } from "../../domain/repository/ProductRepository";
 import { ShoppingCartRepository } from "../../domain/repository/ShoppingCartRepository";
+import StockEntryRepository from "../../domain/repository/StockEntryRepository";
 import { OrderUseCases } from "../../useCases/OrderUseCases";
 import Http from "../http/Http";
 
@@ -10,6 +11,7 @@ export default class OrderController {
     readonly http: Http,
     readonly ordersRepository: OrdersRepository,
     readonly productRepository: ProductRepository,
+    readonly stockRepository: StockEntryRepository,
     readonly orderIdGenerator: OrderIdGenerator,
     readonly shoppingCartRepository: ShoppingCartRepository
   ) {
@@ -17,6 +19,7 @@ export default class OrderController {
       const orderUseCases = new OrderUseCases(
         ordersRepository,
         productRepository,
+        stockRepository,
         orderIdGenerator,
         shoppingCartRepository
       );
@@ -31,6 +34,7 @@ export default class OrderController {
       const orderUseCases = new OrderUseCases(
         ordersRepository,
         productRepository,
+        stockRepository,
         orderIdGenerator,
         shoppingCartRepository
       );
@@ -45,6 +49,7 @@ export default class OrderController {
       const orderUseCases = new OrderUseCases(
         ordersRepository,
         productRepository,
+        stockRepository,
         orderIdGenerator,
         shoppingCartRepository
       );

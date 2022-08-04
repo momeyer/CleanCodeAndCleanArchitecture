@@ -7,7 +7,7 @@ import { DiscountCodeRepository } from "../domain/repository/DiscountCodeReposit
 import { ProductRepository } from "../domain/repository/ProductRepository";
 import { ShoppingCartRepository } from "../domain/repository/ShoppingCartRepository";
 import StockEntryRepository from "../domain/repository/StockEntryRepository";
-import GetStock from "./GetStock";
+import { GetStock } from "./Stock";
 
 export class ShoppingCartUseCases {
   constructor(
@@ -54,10 +54,9 @@ export class ShoppingCartUseCases {
     if (!isValidQuantity || !hasAvailableInStock) {
       return false;
     }
-    console.log(`id: ${input.productId}, inStock: ${productInRepository.total}`);
     const product = await this.productRepository.find(input.productId);
     if (product) {
-      cart.addItem(product?.product, input.quantity);
+      cart.addItem(product, input.quantity);
       await this.shoppingCartRepository.add(cart);
       return true;
     }

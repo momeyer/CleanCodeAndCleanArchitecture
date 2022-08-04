@@ -12,7 +12,6 @@ export default class MySqlPromiseConnectionAdapter implements Connection {
       password: "101086",
       database: "test",
     });
-    // console.log(GREEN, "connected to DB :D", RESET);
   }
 
   async query(statement: string): Promise<any> {

@@ -5,10 +5,13 @@ import { ShoppingCartIdGenerator } from "../../src/domain/entity/ShoppingCartIdG
 import MySqlPromiseConnectionAdapter from "../../src/infra/database/MySqlPromiseConnectionAdapter";
 import DBOrdersRepository from "../../src/infra/repository/DBOrdersRepository";
 import { DBProductRepository } from "../../src/infra/repository/DBProductRepository";
+import DBStockEntryRepository from "../../src/infra/repository/DBStockEntryRepository";
 import { NonPersistentOrdersRepository } from "../../src/infra/repository/NonPersistentOrdersRepository";
 import { NonPersistentProductRepository } from "../../src/infra/repository/NonPersistentProductRepository";
 import { NonPersistentShoppingCartRepository } from "../../src/infra/repository/NonPersistentShoppingCartRepository";
+import NonPersistentStockEntryRepository from "../../src/infra/repository/NonPersistentStockEntryRepository";
 import { OrderUseCases } from "../../src/useCases/OrderUseCases";
+import { GetStock } from "../../src/useCases/Stock";
 import { camera, guitar, rubberDuck } from "../ProductSamples";
 
 describe("Order Use Cases", (): void => {
@@ -16,11 +19,18 @@ describe("Order Use Cases", (): void => {
   const invalidCPF = "111";
 
   let productRepository = new NonPersistentProductRepository();
+  let stockRepository = new NonPersistentStockEntryRepository();
   let ordersRepository = new NonPersistentOrdersRepository();
   let orderIdGenerator = new OrderIdGenerator(0);
   let shoppingCartRepository = new NonPersistentShoppingCartRepository();
   let shoppinCartIdGenerator = new ShoppingCartIdGenerator(0);
-  let orderUseCases = new OrderUseCases(ordersRepository, productRepository, orderIdGenerator, shoppingCartRepository);
+  let orderUseCases = new OrderUseCases(
+    ordersRepository,
+    productRepository,
+    stockRepository,
+    orderIdGenerator,
+    shoppingCartRepository
+  );
   let shoppingCart = new ShoppingCart(shoppinCartIdGenerator.generate());
 
   beforeEach(async (): Promise<void> => {
@@ -30,11 +40,18 @@ describe("Order Use Cases", (): void => {
     shoppingCartRepository = new NonPersistentShoppingCartRepository();
     shoppinCartIdGenerator = new ShoppingCartIdGenerator(0);
 
-    await productRepository.add(camera, 100);
-    await productRepository.add(guitar, 100);
-    await productRepository.add(rubberDuck, 100);
-    orderUseCases = new OrderUseCases(ordersRepository, productRepository, orderIdGenerator, shoppingCartRepository);
+    await productRepository.add(camera);
+    await productRepository.add(guitar);
+    await productRepository.add(rubberDuck);
+    orderUseCases = new OrderUseCases(
+      ordersRepository,
+      productRepository,
+      stockRepository,
+      orderIdGenerator,
+      shoppingCartRepository
+    );
     shoppingCart = new ShoppingCart(shoppinCartIdGenerator.generate());
+    await stockRepository.clear();
   });
 
   describe("place order", (): void => {
@@ -66,10 +83,12 @@ describe("Order Use Cases", (): void => {
       expect(output.id).toBe("202100000001");
       expect(output.status).toBe("PENDING");
       expect(ordersRepository.placeOrders.has(output.id!)).toBeTruthy();
-      const updatedCamera = await productRepository.find(camera.id);
-      const updatedGuitar = await productRepository.find(guitar.id);
-      // expect(updatedCamera?.quantity).toBe(95); TODO send EVENT
-      // expect(updatedGuitar?.quantity).toBe(90); TODO send EVENT
+
+      const getStock = new GetStock(stockRepository);
+      const cameraStock = await getStock.execute(camera.id);
+      const guitarStock = await getStock.execute(guitar.id);
+      expect(cameraStock.total).toBe(-5);
+      expect(guitarStock.total).toBe(-10);
     });
   });
 
@@ -132,24 +151,37 @@ describe("Order Use Cases", (): void => {
   });
 });
 
-describe("DB Order Use Cases", (): void => {
+describe.skip("DB Order Use Cases", (): void => {
   const validCPF = "111.444.777-35";
   const invalidCPF = "111";
 
   const connection = new MySqlPromiseConnectionAdapter();
   let productRepository = new DBProductRepository(connection);
+  let stockRepository = new DBStockEntryRepository(connection);
   let ordersRepository = new DBOrdersRepository(connection);
   let orderIdGenerator = new OrderIdGenerator(1);
   let shoppingCartRepository = new NonPersistentShoppingCartRepository();
   let shoppinCartIdGenerator = new ShoppingCartIdGenerator(0);
-  let orderUseCases = new OrderUseCases(ordersRepository, productRepository, orderIdGenerator, shoppingCartRepository);
+  let orderUseCases = new OrderUseCases(
+    ordersRepository,
+    productRepository,
+    stockRepository,
+    orderIdGenerator,
+    shoppingCartRepository
+  );
   let shoppingCart = new ShoppingCart(shoppinCartIdGenerator.generate());
 
   orderIdGenerator = new OrderIdGenerator(0);
   shoppingCartRepository = new NonPersistentShoppingCartRepository();
   shoppinCartIdGenerator = new ShoppingCartIdGenerator(0);
 
-  orderUseCases = new OrderUseCases(ordersRepository, productRepository, orderIdGenerator, shoppingCartRepository);
+  orderUseCases = new OrderUseCases(
+    ordersRepository,
+    productRepository,
+    stockRepository,
+    orderIdGenerator,
+    shoppingCartRepository
+  );
   shoppingCart = new ShoppingCart(shoppinCartIdGenerator.generate());
   describe("place order", (): void => {
     beforeAll(async () => {

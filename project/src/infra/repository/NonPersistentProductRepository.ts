@@ -1,25 +1,24 @@
 import { Product } from "../../domain/entity/Product";
-import { ProductAndQuantity, ProductRepository } from "../../domain/repository/ProductRepository";
+import { ProductRepository } from "../../domain/repository/ProductRepository";
 
 export class NonPersistentProductRepository implements ProductRepository {
-  private inventory: Map<number, ProductAndQuantity>;
+  private inventory: Map<number, Product>;
 
   constructor() {
-    this.inventory = new Map<number, ProductAndQuantity>();
+    this.inventory = new Map<number, Product>();
   }
   connect(): Promise<void> {
     throw new Error("Method not implemented.");
   }
 
-  async add(product: Product, quantity: number): Promise<boolean> {
+  async add(product: Product): Promise<boolean> {
     const productInInventory = await this.find(product.id);
-    const quantityToAdd = productInInventory ? productInInventory.quantity + quantity : quantity;
 
-    this.inventory.set(product.id, { product: product, quantity: quantityToAdd });
+    this.inventory.set(product.id, product);
     return true;
   }
 
-  async find(productId: number): Promise<ProductAndQuantity | undefined> {
+  async find(productId: number): Promise<Product | undefined> {
     return this.inventory.get(productId);
   }
 
@@ -30,30 +29,17 @@ export class NonPersistentProductRepository implements ProductRepository {
     return this.inventory.has(productId);
   }
 
-  async remove(productId: number, quantity: number): Promise<boolean> {
-    const productInInventory = await this.find(productId);
-    if (!productInInventory || productInInventory.quantity < quantity) {
-      return false;
-    }
-
-    productInInventory.quantity -= quantity;
-    this.inventory.set(productId, productInInventory);
+  async remove(productId: number): Promise<boolean> {
+    this.inventory.delete(productId);
     return true;
   }
 
   async updateQuantityBy(productId: number, amount: number): Promise<boolean> {
-    const productInInventory = await this.find(productId);
-    if (!productInInventory || amount < 0) {
-      return false;
-    }
-
-    productInInventory.quantity += amount;
-    this.inventory.set(productId, productInInventory);
     return true;
   }
 
-  async list(): Promise<ProductAndQuantity[]> {
-    let productsList: ProductAndQuantity[] = [];
+  async list(): Promise<Product[]> {
+    let productsList: Product[] = [];
 
     this.inventory.forEach((product) => {
       productsList.push(product);

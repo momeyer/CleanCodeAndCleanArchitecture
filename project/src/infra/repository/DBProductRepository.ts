@@ -1,6 +1,6 @@
 import { PhysicalAttributes } from "../../domain/entity/PhysicalAttributes";
 import { Product } from "../../domain/entity/Product";
-import { ProductAndQuantity, ProductRepository } from "../../domain/repository/ProductRepository";
+import { ProductRepository } from "../../domain/repository/ProductRepository";
 import Connection from "../database/Connection";
 
 export class DBProductRepository implements ProductRepository {
@@ -17,39 +17,25 @@ export class DBProductRepository implements ProductRepository {
     );
   }
 
-  async add(product: Product, quantity: number): Promise<boolean> {
+  async add(product: Product): Promise<boolean> {
     const isValidProduct = await this.isValidProduct(product.id);
     if (!isValidProduct) {
       await this.registerProduct(product);
     }
-    const [productInStock] = await this.connection.query(`select * from stock where productID = ${product.id};`);
-    if (productInStock) {
-      const quantityToAdd: number = productInStock.quantity + quantity;
-      await this.connection.query(`update stock set quantity = ${quantityToAdd} where productID = ${product.id};`);
-    } else {
-      await this.connection.query(`insert into stock (productID, quantity) values (${product.id}, ${quantity});`);
-    }
     return true;
   }
 
-  async find(productId: number): Promise<ProductAndQuantity | undefined> {
-    const [product] = await this.connection.query(`select * from stock where productID = ${productId};`);
-    if (!product) {
-      return undefined;
-    }
-    const [item] = await this.connection.query(`select * from product where id = ${product.productID};`);
+  async find(productId: number): Promise<Product | undefined> {
+    const [item] = await this.connection.query(`select * from product where id = ${productId};`);
     if (!item) {
       return undefined;
     }
-    let output = {
-      product: new Product(
-        item.id,
-        item.description,
-        new PhysicalAttributes(item.height, item.width, item.depth, item.weight),
-        item.price
-      ),
-      quantity: product.quantity,
-    };
+    let output = new Product(
+      item.id,
+      item.description,
+      new PhysicalAttributes(item.height, item.width, item.depth, item.weight),
+      item.price
+    );
 
     return output;
   }
@@ -63,14 +49,8 @@ export class DBProductRepository implements ProductRepository {
     }
   }
 
-  async remove(productId: number, quantity: number): Promise<boolean> {
-    const [item] = await this.connection.query(`select * from stock where productID = ${productId};`);
-    if (!item || item.quantity < quantity) {
-      return false;
-    }
-    await this.connection.query(
-      `update stock set quantity = ${item.quantity - quantity} where productID = ${productId};`
-    );
+  async remove(productId: number): Promise<boolean> {
+    await this.connection.query(`delete * from product where id = ${productId};`);
     return true;
   }
 
@@ -85,22 +65,21 @@ export class DBProductRepository implements ProductRepository {
     return false;
   }
 
-  async list(): Promise<ProductAndQuantity[]> {
+  async list(): Promise<Product[]> {
     const products: Array<any> = await this.connection.query("select * from stock");
 
-    let list: ProductAndQuantity[] = [];
+    let list: Product[] = [];
     try {
       for (let product of products) {
         const [item] = await this.connection.query(`select * from product where id = ${product.productID};`);
-        list.push({
-          product: new Product(
+        list.push(
+          new Product(
             item.id,
             item.description,
             new PhysicalAttributes(item.height, item.width, item.depth, item.weight),
             item.price
-          ),
-          quantity: product.quantity,
-        });
+          )
+        );
       }
     } catch (error) {}
     return list;

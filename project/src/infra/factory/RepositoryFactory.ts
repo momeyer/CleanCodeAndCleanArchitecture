@@ -3,14 +3,19 @@ import { DiscountCodeRepository } from "../../domain/repository/DiscountCodeRepo
 import { OrdersRepository } from "../../domain/repository/OrdersRepository";
 import { ProductRepository } from "../../domain/repository/ProductRepository";
 import { ShoppingCartRepository } from "../../domain/repository/ShoppingCartRepository";
+import StockEntryRepository from "../../domain/repository/StockEntryRepository";
 import Connection from "../database/Connection";
 import { DBDiscountCodeRepository } from "../repository/DBDiscountCodeRepository";
 import DBOrdersRepository from "../repository/DBOrdersRepository";
 import { DBProductRepository } from "../repository/DBProductRepository";
+import DBStockEntryRepository from "../repository/DBStockEntryRepository";
 import { NonPersistentShoppingCartRepository } from "../repository/NonPersistentShoppingCartRepository";
 
 export default class DBRepositoryFactory implements RepositoryFactory {
   constructor(readonly connection: Connection) {}
+  createStockEntryRepository(): StockEntryRepository {
+    return new DBStockEntryRepository(this.connection);
+  }
 
   createProductRepository(): ProductRepository {
     return new DBProductRepository(this.connection);
@@ -24,7 +29,6 @@ export default class DBRepositoryFactory implements RepositoryFactory {
     return new DBDiscountCodeRepository(this.connection);
   }
 
-  // TODO replace with real DB repos
   createShoppingCartRepository(): ShoppingCartRepository {
     return new NonPersistentShoppingCartRepository();
   }

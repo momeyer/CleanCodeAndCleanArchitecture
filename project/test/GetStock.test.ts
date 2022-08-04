@@ -1,7 +1,7 @@
 import StockEntry from "../src/domain/entity/StockEntry";
 import MySqlPromiseConnectionAdapter from "../src/infra/database/MySqlPromiseConnectionAdapter";
 import DBStockEntryRepository from "../src/infra/repository/DBStockEntryRepository";
-import GetStock from "../src/useCases/GetStock";
+import { GetStock } from "../src/useCases/Stock";
 
 test("Should get number of items in stock", async () => {
   const connection = new MySqlPromiseConnectionAdapter();

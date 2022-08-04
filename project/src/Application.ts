@@ -12,7 +12,7 @@ import ShoppingCartController from "./infra/controller/ShoppingCartController";
 import MySqlPromiseConnectionAdapter from "./infra/database/MySqlPromiseConnectionAdapter";
 import RepositoryFactory from "./infra/factory/RepositoryFactory";
 import Http from "./infra/http/Http";
-import DBStockEntryRepository from "./infra/repository/DBStockEntryRepository";
+import { AddToStock } from "./useCases/Stock";
 
 export class Application {
   http: Http;
@@ -34,7 +34,7 @@ export class Application {
     this.connection = new MySqlPromiseConnectionAdapter(); // DB
     this.repositoryFactoryDB = new RepositoryFactory(this.connection); // DB
     this.productRepository = this.repositoryFactoryDB.createProductRepository();
-    this.stockRepository = new DBStockEntryRepository(this.connection); // DB
+    this.stockRepository = this.repositoryFactoryDB.createStockEntryRepository();
     this.orderRepository = this.repositoryFactoryDB.createOrdersRepository();
     this.discountCodeRepository = this.repositoryFactoryDB.createDiscountCodeRepository();
     this.shoppingCartRepository = this.repositoryFactoryDB.createShoppingCartRepository();
@@ -55,6 +55,7 @@ export class Application {
       this.http,
       this.orderRepository,
       this.productRepository,
+      this.stockRepository,
       this.orderIdGenerator,
       this.shoppingCartRepository
     );
@@ -64,6 +65,11 @@ export class Application {
 
   async start(): Promise<void> {
     await this.connection.connect();
+    const addStock = new AddToStock(this.stockRepository);
+    await addStock.execute(1, 100);
+    await addStock.execute(2, 100);
+    await addStock.execute(3, 100);
+    await addStock.execute(4, 100);
   }
   async stop(): Promise<void> {
     await this.connection.close();

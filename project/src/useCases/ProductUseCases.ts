@@ -9,7 +9,7 @@ export class ProductUseCases {
       const id = await this.productRepository.nextId();
       const attributes = new PhysicalAttributes(input.height, input.weight, input.depth, input.weight);
       let product = new Product(id, input.description, attributes, input.price);
-      return await this.productRepository.add(product, input.quantity);
+      return await this.productRepository.add(product);
     } catch (error) {
       return false;
     }
@@ -22,9 +22,9 @@ export class ProductUseCases {
     };
     listOfProducts.forEach((info): void => {
       const productInfo = {
-        id: info.product.id,
-        description: info.product.description,
-        price: info.product.price,
+        id: info.id,
+        description: info.description,
+        price: info.price,
       };
       output.list.push(productInfo);
     });
@@ -32,19 +32,18 @@ export class ProductUseCases {
   }
 
   async search(id: number): Promise<SearchOutput | undefined> {
-    const productAndQuantity = await this.productRepository.find(id);
-    if (!productAndQuantity) {
+    const product = await this.productRepository.find(id);
+    if (!product) {
       return undefined;
     }
     return {
-      description: productAndQuantity.product.description,
-      price: productAndQuantity.product.price,
-      inStock: productAndQuantity.quantity,
+      description: product.description,
+      price: product.price,
     };
   }
 
   async remove(input: RemoveInput): Promise<boolean> {
-    return this.productRepository.remove(input.id, input.quantity);
+    return this.productRepository.remove(input.id);
   }
 }
 
@@ -65,7 +64,6 @@ type OutputList = {
 type SearchOutput = {
   description: string;
   price: number;
-  inStock: number;
 };
 
 type RemoveInput = {

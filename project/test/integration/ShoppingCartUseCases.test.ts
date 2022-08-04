@@ -27,9 +27,9 @@ describe("ShoppingCart Use Cases", (): void => {
 
   beforeEach(async (): Promise<void> => {
     productRepository = new NonPersistentProductRepository();
-    await productRepository.add(camera, 10);
-    await productRepository.add(guitar, 10);
-    await productRepository.add(rubberDuck, 10);
+    await productRepository.add(camera);
+    await productRepository.add(guitar);
+    await productRepository.add(rubberDuck);
     await stockRepository.clear();
     await stockRepository.save(new StockEntry(1, "in", 10));
     await stockRepository.save(new StockEntry(2, "in", 10));

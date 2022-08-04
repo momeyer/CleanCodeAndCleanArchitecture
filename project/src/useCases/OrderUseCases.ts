@@ -1,13 +1,16 @@
 import { Order, OrderStatus } from "../domain/entity/Order";
 import { OrderIdGenerator } from "../domain/entity/OrderIdGenerator";
+import StockEntry from "../domain/entity/StockEntry";
 import { OrdersRepository } from "../domain/repository/OrdersRepository";
 import { ProductRepository } from "../domain/repository/ProductRepository";
 import { ShoppingCartRepository } from "../domain/repository/ShoppingCartRepository";
+import StockEntryRepository from "../domain/repository/StockEntryRepository";
 
 export class OrderUseCases {
   constructor(
     readonly ordersRepository: OrdersRepository,
     readonly productRepository: ProductRepository,
+    readonly stockRepository: StockEntryRepository,
     readonly orderIdGenerator: OrderIdGenerator,
     readonly shoppingCartRepository: ShoppingCartRepository
   ) {}
@@ -22,14 +25,17 @@ export class OrderUseCases {
 
     try {
       order = new Order(input.cpf, this.orderIdGenerator.generate(input.date), cart.discount, input.date);
-      orderItems.forEach((item) => {
+      // will check stock and sent entry event
+      for (const orderItem of orderItems) {
+        await this.stockRepository.save(new StockEntry(orderItem.productId, "out", orderItem.quantity));
+
         order.addItem({
-          productId: item.productId,
-          productDetails: item.productDetails,
-          quantity: item.quantity,
-          price: item.price,
+          productId: orderItem.productId,
+          productDetails: orderItem.productDetails,
+          quantity: orderItem.quantity,
+          price: orderItem.price,
         });
-      });
+      }
     } catch (error: any) {
       return this.generateInvalidOrderSummary(error.message, input.date);
     }
