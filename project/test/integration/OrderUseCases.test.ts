@@ -2,8 +2,7 @@ import { Order, OrderStatus } from "../../src/domain/entity/Order";
 import { OrderIdGenerator } from "../../src/domain/entity/OrderIdGenerator";
 import ShoppingCart from "../../src/domain/entity/ShoppingCart";
 import { ShoppingCartIdGenerator } from "../../src/domain/entity/ShoppingCartIdGenerator";
-import StockEntry from "../../src/domain/entity/StockEntry";
-import OrderPlaced from "../../src/domain/event/OrderPlaces";
+import StockController from "../../src/infra/controller/StockController";
 import MySqlPromiseConnectionAdapter from "../../src/infra/database/MySqlPromiseConnectionAdapter";
 import NonPersistentQueueAdapter from "../../src/infra/queue/NonPersistentQueueAdapter";
 import Queue from "../../src/infra/queue/Queue";
@@ -81,11 +80,8 @@ describe("Order Use Cases", (): void => {
     });
 
     test("should decrese items quantity in repository", async (): Promise<void> => {
-      queue.consume("orderPlaced", async function (orderPlaced: OrderPlaced) {
-        for (const item of orderPlaced.order.items) {
-          await stockRepository.save(new StockEntry(item.productId, "out", item.quantity));
-        }
-      });
+      const stockController = new StockController(queue, stockRepository);
+
       shoppingCart.addItem(camera, 5);
       shoppingCart.addItem(guitar, 10);
       shoppingCartRepository.add(shoppingCart);
@@ -133,6 +129,8 @@ describe("Order Use Cases", (): void => {
     });
 
     test("should cancel pending order and return items to repository", async (): Promise<void> => {
+      const stockController = new StockController(queue, stockRepository);
+
       shoppingCart.addItem(camera, 5);
       shoppingCart.addItem(guitar, 10);
       shoppingCartRepository.add(shoppingCart);
@@ -143,8 +141,12 @@ describe("Order Use Cases", (): void => {
       expect(order?.status).toBe(OrderStatus.CANCELLED);
       const updatedCamera = await productRepository.find(camera.id);
       const updatedGuitar = await productRepository.find(guitar.id);
-      // expect(updatedCamera?.quantity).toBe(100); TODO send EVENT
-      // expect(updatedGuitar?.quantity).toBe(100); TODO send EVENT
+
+      const getStock = new GetStock(stockRepository);
+      const cameraStock = await getStock.execute(camera.id);
+      const guitarStock = await getStock.execute(guitar.id);
+      expect(cameraStock.total).toBe(0);
+      expect(guitarStock.total).toBe(0);
     });
   });
 
