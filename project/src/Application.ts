@@ -9,9 +9,11 @@ import StockEntryRepository from "./domain/repository/StockEntryRepository";
 import OrderController from "./infra/controller/OrderController";
 import ProductController from "./infra/controller/ProductController";
 import ShoppingCartController from "./infra/controller/ShoppingCartController";
+import StockController from "./infra/controller/StockController";
 import MySqlPromiseConnectionAdapter from "./infra/database/MySqlPromiseConnectionAdapter";
 import RepositoryFactory from "./infra/factory/RepositoryFactory";
 import Http from "./infra/http/Http";
+import NonPersistentQueueAdapter from "./infra/queue/NonPersistentQueueAdapter";
 import Queue from "./infra/queue/Queue";
 import { AddToStock } from "./useCases/Stock";
 
@@ -29,6 +31,7 @@ export class Application {
   productController: ProductController;
   shoppingCartController: ShoppingCartController;
   orderController: OrderController;
+  stockController: StockController;
   queue: Queue;
 
   constructor(http: Http) {
@@ -42,7 +45,7 @@ export class Application {
     this.shoppingCartRepository = this.repositoryFactoryDB.createShoppingCartRepository();
     this.shoppingCartIdGenerator = new ShoppingCartIdGenerator(0);
     this.orderIdGenerator = new OrderIdGenerator(0);
-    this.queue = {} as Queue;
+    this.queue = new NonPersistentQueueAdapter();
     this.productController = new ProductController(http, this.repositoryFactoryDB);
     this.shoppingCartController = new ShoppingCartController(
       this.http,
@@ -62,6 +65,7 @@ export class Application {
       this.shoppingCartRepository,
       this.queue
     );
+    this.stockController = new StockController(this.queue, this.stockRepository);
 
     this.shoppingCartRepository.add(new ShoppingCart(this.shoppingCartIdGenerator.generate()));
   }
