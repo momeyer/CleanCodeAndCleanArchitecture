@@ -1,10 +1,11 @@
 import { Order, OrderStatus } from "../domain/entity/Order";
 import { OrderIdGenerator } from "../domain/entity/OrderIdGenerator";
-import StockEntry from "../domain/entity/StockEntry";
+import OrderPlaced from "../domain/event/OrderPlaces";
 import { OrdersRepository } from "../domain/repository/OrdersRepository";
 import { ProductRepository } from "../domain/repository/ProductRepository";
 import { ShoppingCartRepository } from "../domain/repository/ShoppingCartRepository";
 import StockEntryRepository from "../domain/repository/StockEntryRepository";
+import Queue from "../infra/queue/Queue";
 
 export class OrderUseCases {
   constructor(
@@ -12,7 +13,8 @@ export class OrderUseCases {
     readonly productRepository: ProductRepository,
     readonly stockRepository: StockEntryRepository,
     readonly orderIdGenerator: OrderIdGenerator,
-    readonly shoppingCartRepository: ShoppingCartRepository
+    readonly shoppingCartRepository: ShoppingCartRepository,
+    readonly queue: Queue
   ) {}
 
   async place(input: PlaceOrderInput): Promise<OutputOrderSummary> {
@@ -25,10 +27,7 @@ export class OrderUseCases {
 
     try {
       order = new Order(input.cpf, this.orderIdGenerator.generate(input.date), cart.discount, input.date);
-      // will check stock and sent entry event
       for (const orderItem of orderItems) {
-        await this.stockRepository.save(new StockEntry(orderItem.productId, "out", orderItem.quantity));
-
         order.addItem({
           productId: orderItem.productId,
           productDetails: orderItem.productDetails,
@@ -40,6 +39,7 @@ export class OrderUseCases {
       return this.generateInvalidOrderSummary(error.message, input.date);
     }
     await this.ordersRepository.add(order);
+    await this.queue.publish(new OrderPlaced(order));
     return this.generateOrderSummary(order);
   }
 

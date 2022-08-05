@@ -2,7 +2,11 @@ import { Order, OrderStatus } from "../../src/domain/entity/Order";
 import { OrderIdGenerator } from "../../src/domain/entity/OrderIdGenerator";
 import ShoppingCart from "../../src/domain/entity/ShoppingCart";
 import { ShoppingCartIdGenerator } from "../../src/domain/entity/ShoppingCartIdGenerator";
+import StockEntry from "../../src/domain/entity/StockEntry";
+import OrderPlaced from "../../src/domain/event/OrderPlaces";
 import MySqlPromiseConnectionAdapter from "../../src/infra/database/MySqlPromiseConnectionAdapter";
+import NonPersistentQueueAdapter from "../../src/infra/queue/NonPersistentQueueAdapter";
+import Queue from "../../src/infra/queue/Queue";
 import DBOrdersRepository from "../../src/infra/repository/DBOrdersRepository";
 import { DBProductRepository } from "../../src/infra/repository/DBProductRepository";
 import DBStockEntryRepository from "../../src/infra/repository/DBStockEntryRepository";
@@ -24,12 +28,14 @@ describe("Order Use Cases", (): void => {
   let orderIdGenerator = new OrderIdGenerator(0);
   let shoppingCartRepository = new NonPersistentShoppingCartRepository();
   let shoppinCartIdGenerator = new ShoppingCartIdGenerator(0);
+  let queue = new NonPersistentQueueAdapter();
   let orderUseCases = new OrderUseCases(
     ordersRepository,
     productRepository,
     stockRepository,
     orderIdGenerator,
-    shoppingCartRepository
+    shoppingCartRepository,
+    queue
   );
   let shoppingCart = new ShoppingCart(shoppinCartIdGenerator.generate());
 
@@ -48,7 +54,8 @@ describe("Order Use Cases", (): void => {
       productRepository,
       stockRepository,
       orderIdGenerator,
-      shoppingCartRepository
+      shoppingCartRepository,
+      queue
     );
     shoppingCart = new ShoppingCart(shoppinCartIdGenerator.generate());
     await stockRepository.clear();
@@ -74,6 +81,11 @@ describe("Order Use Cases", (): void => {
     });
 
     test("should decrese items quantity in repository", async (): Promise<void> => {
+      queue.consume("orderPlaced", async function (orderPlaced: OrderPlaced) {
+        for (const item of orderPlaced.order.items) {
+          await stockRepository.save(new StockEntry(item.productId, "out", item.quantity));
+        }
+      });
       shoppingCart.addItem(camera, 5);
       shoppingCart.addItem(guitar, 10);
       shoppingCartRepository.add(shoppingCart);
@@ -162,12 +174,14 @@ describe.skip("DB Order Use Cases", (): void => {
   let orderIdGenerator = new OrderIdGenerator(1);
   let shoppingCartRepository = new NonPersistentShoppingCartRepository();
   let shoppinCartIdGenerator = new ShoppingCartIdGenerator(0);
+  let queue = {} as Queue;
   let orderUseCases = new OrderUseCases(
     ordersRepository,
     productRepository,
     stockRepository,
     orderIdGenerator,
-    shoppingCartRepository
+    shoppingCartRepository,
+    queue
   );
   let shoppingCart = new ShoppingCart(shoppinCartIdGenerator.generate());
 
@@ -180,7 +194,8 @@ describe.skip("DB Order Use Cases", (): void => {
     productRepository,
     stockRepository,
     orderIdGenerator,
-    shoppingCartRepository
+    shoppingCartRepository,
+    queue
   );
   shoppingCart = new ShoppingCart(shoppinCartIdGenerator.generate());
   describe("place order", (): void => {

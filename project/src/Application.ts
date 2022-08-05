@@ -12,6 +12,7 @@ import ShoppingCartController from "./infra/controller/ShoppingCartController";
 import MySqlPromiseConnectionAdapter from "./infra/database/MySqlPromiseConnectionAdapter";
 import RepositoryFactory from "./infra/factory/RepositoryFactory";
 import Http from "./infra/http/Http";
+import Queue from "./infra/queue/Queue";
 import { AddToStock } from "./useCases/Stock";
 
 export class Application {
@@ -28,6 +29,7 @@ export class Application {
   productController: ProductController;
   shoppingCartController: ShoppingCartController;
   orderController: OrderController;
+  queue: Queue;
 
   constructor(http: Http) {
     this.http = http;
@@ -40,7 +42,7 @@ export class Application {
     this.shoppingCartRepository = this.repositoryFactoryDB.createShoppingCartRepository();
     this.shoppingCartIdGenerator = new ShoppingCartIdGenerator(0);
     this.orderIdGenerator = new OrderIdGenerator(0);
-
+    this.queue = {} as Queue;
     this.productController = new ProductController(http, this.repositoryFactoryDB);
     this.shoppingCartController = new ShoppingCartController(
       this.http,
@@ -57,7 +59,8 @@ export class Application {
       this.productRepository,
       this.stockRepository,
       this.orderIdGenerator,
-      this.shoppingCartRepository
+      this.shoppingCartRepository,
+      this.queue
     );
 
     this.shoppingCartRepository.add(new ShoppingCart(this.shoppingCartIdGenerator.generate()));
