@@ -9,7 +9,7 @@ export default class MySqlPromiseConnectionAdapter implements Connection {
   async connect(): Promise<void> {
     this.connection = await mysql.createConnection({
       user: "root",
-      password: "101086",
+      password: "password",
       database: "test",
     });
   }
