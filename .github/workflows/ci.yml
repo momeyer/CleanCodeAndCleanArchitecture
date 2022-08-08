@@ -29,7 +29,6 @@ jobs:
         mysql --host 127.0.0.1 --port 3306 -uroot -ppassword -e "SHOW DATABASES"
 
       - uses: actions/checkout@v3
-
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
         with:
