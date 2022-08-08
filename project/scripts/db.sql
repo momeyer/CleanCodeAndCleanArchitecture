@@ -36,7 +36,7 @@ CREATE TABLE
         total int,
         status VARCHAR(255),
         time DATETIME,
-        items mediumtext(16777215)
+        items TEXT
     );
 
 SELECT *
