@@ -241,7 +241,7 @@ describe.skip("API E2E tests", () => {
     describe.skip("POST /internal/order/:orderId", () => {
       test("Should fail to place order", async function (): Promise<void> {
         let response = await axios({
-          url: "http://localhost:3000/internal/order/202200000001",
+          url: "http://localhost:3000/internal/Forder/202200000001",
           method: "post",
           data: {
             status: "COMPLETE",
@@ -254,7 +254,7 @@ describe.skip("API E2E tests", () => {
   });
 });
 
-describe.skip("API router tests", () => {
+describe("API router tests", () => {
   const request = require("supertest");
   const http = new ExpressAdapter();
   const application = new Application(http);
