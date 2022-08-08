@@ -7,11 +7,15 @@ export default class MySqlPromiseConnectionAdapter implements Connection {
   connection: any;
 
   async connect(): Promise<void> {
-    this.connection = await mysql.createConnection({
-      user: "root",
-      password: "password",
-      database: "test",
-    });
+    try {
+      this.connection = await mysql.createConnection({
+        user: "root",
+        password: "password",
+        database: "test",
+      });
+    } catch (error) {
+      console.log("NO CONNECTION ", error);
+    }
   }
 
   async query(statement: string): Promise<any> {
