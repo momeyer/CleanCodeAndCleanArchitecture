@@ -15,7 +15,7 @@ jobs:
         node-version: [17.x]
 
     services:
-      mysql:
+      test:
         image: mysql:5.7
         env:
           MYSQL_ROOT_PASSWORD: password
