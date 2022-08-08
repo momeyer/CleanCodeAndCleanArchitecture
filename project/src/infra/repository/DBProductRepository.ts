@@ -66,12 +66,12 @@ export class DBProductRepository implements ProductRepository {
   }
 
   async list(): Promise<Product[]> {
-    const products: Array<any> = await this.connection.query("select * from stock");
+    const products: Array<any> = await this.connection.query("select * from stock_entries group by productId");
 
     let list: Product[] = [];
     try {
       for (let product of products) {
-        const [item] = await this.connection.query(`select * from product where id = ${product.productID};`);
+        const [item] = await this.connection.query(`select * from product where id = ${product.productId};`);
         list.push(
           new Product(
             item.id,
@@ -91,7 +91,7 @@ export class DBProductRepository implements ProductRepository {
   }
 
   async clear(): Promise<void> {
-    await this.connection.query(`delete from stock`);
+    await this.connection.query(`delete from stock_entries`);
     await this.connection.query(`delete from product`);
   }
 }
