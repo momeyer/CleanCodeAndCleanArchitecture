@@ -254,7 +254,7 @@ describe.skip("API E2E tests", () => {
   });
 });
 
-describe("API router tests", () => {
+describe.skip("API router tests", () => {
   const request = require("supertest");
   const http = new ExpressAdapter();
   const application = new Application(http);
