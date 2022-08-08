@@ -26,8 +26,7 @@ CREATE TABLE
         id int NOT NULL PRIMARY KEY AUTO_INCREMENT,
         productId INT,
         operation VARCHAR(3),
-        quantity int,
-        items mediumtext(16777215)
+        quantity int
     );
 
 CREATE TABLE
@@ -37,7 +36,7 @@ CREATE TABLE
         total int,
         status VARCHAR(255),
         time DATETIME,
-        items
+        items mediumtext(16777215)
     );
 
 SELECT *
