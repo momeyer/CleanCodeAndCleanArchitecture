@@ -38,7 +38,7 @@ jobs:
       - name: Build Project
         run: |
           cd project
-          mysql -u root -ppassword < scripts/db.sql
+          mysql --host 127.0.0.1 --port 3306 -uroot -ppassword < scripts/db.sql
           mysql --host 127.0.0.1 --port 3306 -uroot -ppassword -e "SHOW DATABASES"
           npm install
       - name: Run test
