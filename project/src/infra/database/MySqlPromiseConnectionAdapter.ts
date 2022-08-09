@@ -11,7 +11,7 @@ export default class MySqlPromiseConnectionAdapter implements Connection {
       this.connection = await mysql.createConnection({
         user: "root",
         password: "password",
-        database: "test",
+        database: "ABC",
       });
     } catch (error) {
       console.log("NO CONNECTION ", error);
