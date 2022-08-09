@@ -39,6 +39,8 @@ CREATE TABLE
         items TEXT
     );
 
+SET sql_mode = '';
+
 insert into
     product (
         id,
