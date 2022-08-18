@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from "vue-router";
-import PlaceOrderView from "../../views/PlaceOrderView.vue";
+import ShoppingCartView from "../../views/ShoppingCartView.vue";
 import ShopView from "../../views/ShopView.vue";
 
 export default class Router {
@@ -8,7 +8,7 @@ export default class Router {
       history: createWebHistory(),
       routes: [
         { path: "/", component: ShopView },
-        { path: "/placeOrder", component: PlaceOrderView },
+        { path: "/shoppingCart/:shoppingCartId", component: ShoppingCartView },
       ],
     });
     return router;
