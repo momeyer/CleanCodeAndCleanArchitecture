@@ -108,6 +108,7 @@ export class ShoppingCartUseCases {
 
   async generateSummary(shoppingCartId: string): Promise<Summary> {
     let summary: Summary = {
+      id: shoppingCartId,
       items: [],
       subtotal: 0,
       total: 0,
@@ -164,6 +165,7 @@ type SummaryItem = {
 };
 
 type Summary = {
+  id: string;
   items: SummaryItem[];
   discount?: number;
   subtotal: number;

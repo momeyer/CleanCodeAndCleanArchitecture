@@ -308,7 +308,7 @@ describe("API router tests", () => {
     test("Should get shopping cart by ID", async function (): Promise<void> {
       const response = await request(app).get("/ShoppingCart/SC1");
       expect(response.status).toBe(200);
-      expect(response.body).toStrictEqual({ items: [], subtotal: 0, total: 0, shippingCost: 0 });
+      expect(response.body).toStrictEqual({ id: "SC1", items: [], subtotal: 0, total: 0, shippingCost: 0 });
     });
   });
 
@@ -325,7 +325,7 @@ describe("API router tests", () => {
         quantity: 2,
       });
       expect(response.status).toBe(200);
-      expect(response.body).toStrictEqual({ items: [], subtotal: 0, total: 0, shippingCost: 0 });
+      expect(response.body).toStrictEqual({ id: "SC1", items: [], subtotal: 0, total: 0, shippingCost: 0 });
     });
 
     test("Should add product to shopping cart", async function (): Promise<void> {
@@ -335,6 +335,7 @@ describe("API router tests", () => {
       });
       expect(response.status).toBe(200);
       expect(response.body).toStrictEqual({
+        id: "SC1",
         items: [{ id: 1, price: 10, quantity: 2 }],
         subtotal: 21,
         total: 41,
@@ -345,6 +346,7 @@ describe("API router tests", () => {
         quantity: 4,
       });
       expect(response.body).toStrictEqual({
+        id: "SC1",
         items: [
           {
             id: 1,
@@ -377,6 +379,7 @@ describe("API router tests", () => {
 
       response = await request(app).post("/ShoppingCart/SC1/clear");
       expect(response.body).toStrictEqual({
+        id: "SC1",
         items: [],
         subtotal: 0,
         total: 0,
