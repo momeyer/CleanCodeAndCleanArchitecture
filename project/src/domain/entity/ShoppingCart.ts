@@ -18,7 +18,14 @@ export default class ShoppingCart {
   addItem(product: Product, quantity: number): boolean {
     const existingProduct = this.orderItems.get(product.id);
     if (existingProduct) {
-      return false;
+      const orderItem: OrderItem = {
+        productId: product.id,
+        productDetails: product.physicalAttributes,
+        quantity: existingProduct.quantity + quantity,
+        price: product.price,
+      };
+      this.orderItems.set(product.id, orderItem);
+      return true;
     }
     const orderItem: OrderItem = {
       productId: product.id,

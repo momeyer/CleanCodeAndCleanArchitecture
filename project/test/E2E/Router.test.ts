@@ -1,5 +1,6 @@
 import axios from "axios";
 import { Application } from "../../src/Application";
+import ShoppingCart from "../../src/domain/entity/ShoppingCart";
 import ExpressAdapter from "../../src/infra/http/ExpressAdapter";
 
 describe.skip("API E2E tests", () => {
@@ -432,6 +433,7 @@ describe("API router tests", () => {
   describe("POST /order/place", () => {
     beforeEach(async () => {
       await application.orderRepository.clear();
+      await application.shoppingCartRepository.clear();
     });
     beforeAll(async () => {
       await application.start();
@@ -439,6 +441,7 @@ describe("API router tests", () => {
     afterAll(async () => {
       await application.stop();
     });
+
     test("Should fail to place order with invalid shopping cart Id", async function (): Promise<void> {
       let response = await request(app)
         .post("/order/place")
@@ -456,6 +459,7 @@ describe("API router tests", () => {
     });
 
     test("Should place order", async function (): Promise<void> {
+      await application.shoppingCartRepository.add(new ShoppingCart("SC1"));
       let response = await request(app).post("/ShoppingCart/SC1").send({
         productId: 1,
         quantity: 2,
@@ -487,6 +491,7 @@ describe("API router tests", () => {
       await application.stop();
     });
     test("Should fail to update place order", async function (): Promise<void> {
+      application.shoppingCartRepository.add(new ShoppingCart("SC1"));
       await request(app).post("/ShoppingCart/SC1").send({
         productId: 1,
         quantity: 2,

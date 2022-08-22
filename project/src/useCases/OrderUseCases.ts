@@ -36,6 +36,7 @@ export class OrderUseCases {
           price: orderItem.price,
         });
       }
+      this.shoppingCartRepository.remove(cart.id);
     } catch (error: any) {
       return this.generateInvalidOrderSummary(error.message, input.date);
     }
