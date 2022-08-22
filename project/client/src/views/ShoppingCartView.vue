@@ -3,13 +3,11 @@ import axios from "axios";
 import { reactive, ref } from "vue";
 import { removeItemFromShoppingCart } from "../components/RemoveItemFromShoppingCart";
 import { placeOrder } from "../components/PlaceOrder";
+import { updateShoppingCartState } from "../components/UpdateShoppingCartState";
 
 let state = reactive<any>({ shoppingCart: {} });
 
-axios({ method: "get", url: "http://localhost:3000/shoppingCart/SC1" }).then(function (response) {
-  console.log("shopping cart: ", response.data);
-  state.shoppingCart = response.data;
-});
+updateShoppingCartState(state);
 </script>
 <template>
   <div class="main">

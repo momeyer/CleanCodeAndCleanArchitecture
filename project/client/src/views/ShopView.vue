@@ -5,7 +5,10 @@ import { addItemToShoppingCart } from "../components/AddItemToShoppingCart";
 import { listProducts } from "../components/ListProducts";
 
 let state = reactive<any>({ items: [], quantity: 0 });
-listProducts(state);
+
+listProducts().then((response) => {
+  state.items = response;
+});
 </script>
 <template>
   <div class="main">

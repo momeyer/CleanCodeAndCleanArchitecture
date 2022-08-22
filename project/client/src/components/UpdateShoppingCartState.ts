@@ -1,8 +1,9 @@
-import axios from "axios";
+import AxiosAdapter from "../infra/router/http/AxiosAdapter";
 
-export function updateShoppingCartState(state: any): void {
-  axios({ method: "get", url: "http://localhost:3000/shoppingCart/SC1" }).then(function (response) {
-    console.log("shopping cart: ", response.data);
-    state.shoppingCart = response.data;
-  });
+export async function updateShoppingCartState(state: any): Promise<void> {
+  const httpClient = new AxiosAdapter();
+
+  const response = await httpClient.get("http://localhost:3000/shoppingCart/SC1");
+  console.log("shopping cart: ", response.data);
+  state.shoppingCart = response.data;
 }

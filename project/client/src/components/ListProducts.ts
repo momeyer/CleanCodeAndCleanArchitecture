@@ -1,7 +1,8 @@
-import axios from "axios";
+import AxiosAdapter from "../infra/router/http/AxiosAdapter";
 
-export function listProducts(state: any) {
-  axios({ method: "get", url: "http://localhost:3000/products" }).then(function (response) {
-    state.items = response.data;
-  });
+export async function listProducts() {
+  const httpClient = new AxiosAdapter();
+
+  const response = await httpClient.get("http://localhost:3000/products");
+  return response.data;
 }
