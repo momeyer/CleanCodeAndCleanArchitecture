@@ -1,14 +1,16 @@
 <script setup lang="ts">
 import axios from "axios";
-import { reactive, ref } from "vue";
+import { reactive, onMounted } from "vue";
 import { addItemToShoppingCart } from "../components/AddItemToShoppingCart";
 import { listProducts } from "../components/ListProducts";
 
 let state = reactive<any>({ items: [], quantity: 0 });
 
-listProducts().then((response) => {
-  state.items = response;
+onMounted(async () => {
+  const products = await listProducts();
+  state.items = products;
 });
+
 </script>
 <template>
   <div class="main">

@@ -1,13 +1,15 @@
 <script setup lang="ts">
 import axios from "axios";
-import { reactive, ref } from "vue";
+import { reactive, onMounted } from "vue";
 import { removeItemFromShoppingCart } from "../components/RemoveItemFromShoppingCart";
 import { placeOrder } from "../components/PlaceOrder";
 import { updateShoppingCartState } from "../components/UpdateShoppingCartState";
 
 let state = reactive<any>({ shoppingCart: {} });
 
-updateShoppingCartState(state);
+onMounted(async () => {
+  updateShoppingCartState(state);
+});
 </script>
 <template>
   <div class="main">
