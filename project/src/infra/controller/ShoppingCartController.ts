@@ -83,5 +83,17 @@ export default class ShoppingCartController {
       }
       return { ErrorType: `Failed to apply discount code ${body.discountCode}` };
     });
+
+    http.on("post", "/shoppingCart/:shoppingCartId/remove", async function (params: any, body: any): Promise<any> {
+      const shoppingCartUseCases = new ShoppingCartUseCases(
+        productRepository,
+        stockRepository,
+        discountRepository,
+        shoppingCartRepository,
+        shoppingCartIdGenerator
+      );
+
+      const removeItem = await shoppingCartUseCases.removeItem(params.shoppingCartId, body.productId);
+    });
   }
 }
