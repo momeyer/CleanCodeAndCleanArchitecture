@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import axios from "axios";
 import { reactive, onMounted } from "vue";
-import { addItemToShoppingCart } from "../components/AddItemToShoppingCart";
-import { listProducts } from "../components/ListProducts";
+import { addItemToShoppingCart } from "../infra/controllers/AddItemToShoppingCart";
+import { listProducts } from "../infra/controllers/ListProducts";
+import ItemComponent from "../components/ItemComponent.vue";
 
 let state = reactive<any>({ items: [], quantity: 0 });
 
@@ -10,7 +11,6 @@ onMounted(async () => {
   const products = await listProducts();
   state.items = products;
 });
-
 </script>
 <template>
   <div class="main">
@@ -18,8 +18,7 @@ onMounted(async () => {
       <h3>Items</h3>
       <hr />
       <div class="item" v-for="item in state.items.list">
-        {{ item.description }} €{{ item.price }}.00
-        <button class="addItemToShoppingCart" @click="addItemToShoppingCart(item)">Add</button>
+        <ItemComponent :item="item"></ItemComponent>
       </div>
     </div>
   </div>
@@ -36,19 +35,5 @@ onMounted(async () => {
   text-align: left;
   margin-left: 1%;
   margin-right: 1%;
-}
-
-.item {
-  background-color: rgb(0, 170, 170);
-  width: 50%;
-  height: 15%;
-  text-align: left;
-  margin-top: 2%;
-  padding: 1%;
-  text-align: center;
-}
-
-.addItemToShoppingCart {
-  width: 100%;
 }
 </style>

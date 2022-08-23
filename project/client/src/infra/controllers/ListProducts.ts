@@ -1,8 +1,7 @@
-import { inject } from "vue";
-import HttpClient from "../infra/http/httpClient";
+import AxiosAdapter from "../http/AxiosAdapter";
 
 export async function listProducts() {
-  const httpClient = inject("httpClient") as HttpClient;
+  const httpClient = new AxiosAdapter();
 
   const response = await httpClient.get("http://localhost:3000/products");
   return response.data;

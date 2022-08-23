@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import axios from "axios";
 import { reactive, onMounted } from "vue";
-import { removeItemFromShoppingCart } from "../components/RemoveItemFromShoppingCart";
-import { placeOrder } from "../components/PlaceOrder";
-import { updateShoppingCartState } from "../components/UpdateShoppingCartState";
-
+import { removeItemFromShoppingCart } from "../infra/controllers/RemoveItemFromShoppingCart";
+import { placeOrder } from "../infra/controllers/PlaceOrder";
+import { updateShoppingCartState } from "../infra/controllers/UpdateShoppingCartState";
+import { clearShoppingCart } from "../infra/controllers/ClearShoppingCart";
+import ShoppingCartItemComponent from "../components/ShoppingCartItemComponent.vue";
 let state = reactive<any>({ shoppingCart: {} });
 
 onMounted(async () => {
@@ -14,15 +15,20 @@ onMounted(async () => {
 <template>
   <div class="main">
     <div class="shoppingCart">
-      <h3>Shopping Cart - Total: €{{ state.shoppingCart.total }}</h3>
+      <h3>
+        Shopping Cart - <span class="shoppingCartTotal">Total: €{{ state.shoppingCart.total }}</span>
+      </h3>
       <hr />
 
-      <div class="shoppingCartItem" v-for="item in state.shoppingCart.items">
-        <button class="removeItemFromShoppingCart" @click="removeItemFromShoppingCart(item, state)">🗑</button>
-        {{ item.id }} €{{ item.price }}.00 .................... quantity: {{ item.quantity }}
+      <div class="shoppingCartItems" v-for="item in state.shoppingCart.items">
+        <ShoppingCartItemComponent
+          :item="item"
+          @removeItemFromShoppingCart="removeItemFromShoppingCart(item, state)"
+        ></ShoppingCartItemComponent>
       </div>
       <div>
         <button class="placeOrderButton" @click="placeOrder(state)">Place Order</button>
+        <button class="clearShoppingCart" @click="clearShoppingCart(state)">Clear Shopping Cart</button>
       </div>
     </div>
   </div>
@@ -43,18 +49,17 @@ onMounted(async () => {
 .placeOrderButton {
   margin-top: 15%;
   padding: 2%;
-  width: 100%;
+  width: 50%;
 }
 
-.shoppingCartItem {
+.clearShoppingCart {
+  margin-top: 15%;
+  padding: 2%;
+  width: 50%;
+}
+
+.shoppingCartItems {
   height: 15%;
   width: 100%;
-}
-
-.removeItemFromShoppingCart {
-  margin: 2%;
-  width: 10%;
-  height: 80%;
-  font-size: 20px;
 }
 </style>

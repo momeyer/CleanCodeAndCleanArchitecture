@@ -1,8 +1,7 @@
-import { inject } from "vue";
-import HttpClient from "../infra/http/httpClient";
+import AxiosAdapter from "../http/AxiosAdapter";
 
 export async function addItemToShoppingCart(item: any): Promise<void> {
-  const httpClient = inject("httpClient") as HttpClient;
+  const httpClient = new AxiosAdapter();
 
   await httpClient.post("http://localhost:3000/ShoppingCart/SC1/", {
     productId: item.id,
