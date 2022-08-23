@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { addItemToShoppingCart } from "../infra/controllers/AddItemToShoppingCart";
 
-defineProps(["item"]);
+defineProps(["item", "shoppingCartId"]);
 </script>
 <template>
   {{ item.description }} €{{ item.price }}.00
-  <button class="addItemToShoppingCart" @click="addItemToShoppingCart(item)">Add</button>
+  <button class="addItemToShoppingCart" @click="addItemToShoppingCart(item, shoppingCartId)">Add</button>
 </template>
 
 <style>

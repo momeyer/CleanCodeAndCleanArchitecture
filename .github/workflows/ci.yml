@@ -35,12 +35,18 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
 
-      - name: Build Project
+      - name: Create and populate database
         run: |
           cd project
           mysql --host 127.0.0.1 --port 3306 -uroot -ppassword < scripts/create_db.sql
           mysql --host 127.0.0.1 --port 3306 -uroot -ppassword < scripts/populate_db.sql
           mysql --host 127.0.0.1 --port 3306 -uroot -ppassword -e "SHOW DATABASES"
+
+      - name: Build Project
+        run: |
+          cd project
           npm install
+          npm run build
+
       - name: Run test
         run: cd project && npm run test

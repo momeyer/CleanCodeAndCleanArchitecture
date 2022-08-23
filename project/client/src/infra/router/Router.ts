@@ -8,7 +8,7 @@ export default class Router {
       history: createWebHistory(),
       routes: [
         { path: "/", component: ShopView },
-        { path: "/shoppingCart/:shoppingCartId", component: ShoppingCartView },
+        { path: "/shoppingCart/:shoppingCartId", name: "ShoppingCart", component: ShoppingCartView },
       ],
     });
     return router;
