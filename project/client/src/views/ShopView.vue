@@ -14,14 +14,13 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="main">
+  <div class="ShopMain">
     <div class="items">
-      <button class="goToShoppingCart" @click="$router.push(`/ShoppingCart/${state.shoppingCartId}`)">🛒</button>
-      <div><h3>Items</h3></div>
+      <h3 class="header">
+        Items
+        <button class="goToShoppingCart" @click="$router.push(`/ShoppingCart/${state.shoppingCartId}`)">🛒</button>
+      </h3>
       <hr />
-      <router-link :to="{ name: 'ShoppingCart', params: { shoppingCartId: state.shoppingCartId } }"
-        >Navigate to Page2</router-link
-      >
       <div class="item" v-for="item in state.items.list">
         <ItemComponent :item="item" :shoppingCartId="state.shoppingCartId"></ItemComponent>
       </div>
@@ -30,13 +29,17 @@ onMounted(async () => {
 </template>
 
 <style>
-.main {
+.ShopMain {
   display: flex;
   fex-direction: row;
 }
 
+.header {
+  width: 100%;
+}
+
 .goToShoppingCart {
-  margin: 2%;
+  margin-left: 77%;
   width: 10%;
   height: 10%;
   font-size: 20px;

@@ -9,7 +9,7 @@ import ShoppingCartItemComponent from "../components/ShoppingCartItemComponent.v
 import { useRoute } from "vue-router";
 const route = useRoute();
 
-let state = reactive<any>({ shoppingCart: {} });
+let state = reactive<any>({ shoppingCart: {}, placedOrderId: "" });
 state.shoppingCart.id = route.params.shoppingCartId;
 
 onMounted(async () => {
@@ -17,12 +17,11 @@ onMounted(async () => {
 });
 </script>
 <template>
-  <!-- {{ shoppingCartId }} -->
-  <!-- {{ (state.shoppingCart.id = $route.params.shoppingCartId) }} -->
   <div class="main">
     <div class="shoppingCart">
       <h3>
-        Shopping Cart - <span class="shoppingCartTotal">Total: €{{ state.shoppingCart.total }}</span>
+        Shopping Cart [{{ state.shoppingCart.id }}] -
+        <span class="shoppingCartTotal">Total: €{{ state.shoppingCart.total }}</span>
       </h3>
       <hr />
 
@@ -33,11 +32,16 @@ onMounted(async () => {
         ></ShoppingCartItemComponent>
       </div>
       <div>
-        <button class="placeOrderButton" @click="placeOrder(state)">Place Order</button>
+        <button
+          class="placeOrderButton"
+          @click="placeOrder(state), this.$router.push({ name: 'PlacedOrder', params: { orderId: '202200000001' } })"
+        >
+          Place Order
+        </button>
         <button class="clearShoppingCart" @click="clearShoppingCart(state)">Clear Shopping Cart</button>
       </div>
       <div>
-        <button class="backTpShopView" @click="$router.push('/')">Back to shop</button>
+        <button class="backToShopView" @click="$router.push('/')">Back to shop</button>
       </div>
     </div>
   </div>
@@ -47,12 +51,15 @@ onMounted(async () => {
 .main {
   display: flex;
   fex-direction: row;
+  width: 50%;
+  height: 100%;
+  background-color: rgb(120, 170, 170);
 }
 
 .shoppingCart {
   margin-left: 1%;
   margin-right: 1%;
-  width: 50%;
+  width: 100%;
 }
 
 .placeOrderButton {
@@ -68,7 +75,7 @@ onMounted(async () => {
   width: 49%;
 }
 
-.backTpShopView {
+.backToShopView {
   margin-top: 1%;
   padding: 2%;
   width: 100%;

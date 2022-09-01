@@ -9,6 +9,7 @@ export async function placeOrder(state: any): Promise<void> {
     shoppingCartId: state.shoppingCart.id,
     date: new Date(),
   });
-
+  state.placedOrderId = response.data.id;
+  console.log("--> ", state.placedOrderId);
   await updateShoppingCartState(state);
 }

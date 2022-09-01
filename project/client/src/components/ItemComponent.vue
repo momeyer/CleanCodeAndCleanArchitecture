@@ -14,8 +14,8 @@ defineProps(["item", "shoppingCartId"]);
 }
 
 .item {
-  background-color: rgb(0, 170, 170);
-  width: 50%;
+  background-color: rgb(120, 170, 170);
+  width: 98%;
   height: 15%;
   text-align: left;
   margin-top: 2%;

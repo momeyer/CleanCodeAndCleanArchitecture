@@ -26,6 +26,7 @@ export default class OrderController {
         shoppingCartRepository,
         queue
       );
+      console.log("receiving get request: ", params.orderId);
       const output = await orderUseCases.search(params.orderId);
       if (!output) {
         return { error: "Not Found" };
@@ -42,10 +43,12 @@ export default class OrderController {
         shoppingCartRepository,
         queue
       );
+
       const output = await orderUseCases.place({ cpf: body.cpf, id: body.shoppingCartId, date: body.date });
       if (!output) {
         return { error: "failed" };
       }
+      console.log("receiving post request: ", output.id);
       return output;
     });
 
