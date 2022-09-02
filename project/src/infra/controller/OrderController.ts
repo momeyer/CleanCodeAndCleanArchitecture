@@ -48,7 +48,6 @@ export default class OrderController {
       if (!output) {
         return { error: "failed" };
       }
-      console.log("receiving post request: ", output.id);
       return output;
     });
 

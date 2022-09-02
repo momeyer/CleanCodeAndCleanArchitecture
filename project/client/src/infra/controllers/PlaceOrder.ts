@@ -10,6 +10,7 @@ export async function placeOrder(state: any): Promise<void> {
     date: new Date(),
   });
   state.placedOrderId = response.data.id;
+  state.isPlaced = true;
   console.log("--> ", state.placedOrderId);
   await updateShoppingCartState(state);
 }

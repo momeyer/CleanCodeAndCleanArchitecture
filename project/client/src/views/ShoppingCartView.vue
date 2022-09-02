@@ -9,7 +9,7 @@ import ShoppingCartItemComponent from "../components/ShoppingCartItemComponent.v
 import { useRoute } from "vue-router";
 const route = useRoute();
 
-let state = reactive<any>({ shoppingCart: {}, placedOrderId: "" });
+let state = reactive<any>({ shoppingCart: {}, placedOrderId: "", isPlaced: false });
 state.shoppingCart.id = route.params.shoppingCartId;
 
 onMounted(async () => {
@@ -17,14 +17,13 @@ onMounted(async () => {
 });
 </script>
 <template>
-  <div class="main">
-    <div class="shoppingCart">
+  <div class="shoppingCart">
+    <div v-show="!state.isPlaced">
       <h3>
-        Shopping Cart [{{ state.shoppingCart.id }}] -
+        Shopping Cart [{{ state.shoppingCart.id }}] - {{ state.isPlaced }} {{ state.placedOrderId }}
         <span class="shoppingCartTotal">Total: €{{ state.shoppingCart.total }}</span>
       </h3>
       <hr />
-
       <div class="shoppingCartItems" v-for="item in state.shoppingCart.items">
         <ShoppingCartItemComponent
           :item="item"
@@ -32,17 +31,18 @@ onMounted(async () => {
         ></ShoppingCartItemComponent>
       </div>
       <div>
-        <button
-          class="placeOrderButton"
-          @click="placeOrder(state), this.$router.push({ name: 'PlacedOrder', params: { orderId: '202200000001' } })"
-        >
-          Place Order
-        </button>
+        <button class="placeOrderButton" @click="placeOrder(state)">Place Order</button>
         <button class="clearShoppingCart" @click="clearShoppingCart(state)">Clear Shopping Cart</button>
-      </div>
-      <div>
         <button class="backToShopView" @click="$router.push('/')">Back to shop</button>
       </div>
+    </div>
+    <div v-show="state.isPlaced === true">
+      <button
+        class="viewOrder"
+        @click="this.$router.push({ name: 'PlacedOrder', params: { orderId: state.placedOrderId } })"
+      >
+        View Order {{ state.placedOrderId }}
+      </button>
     </div>
   </div>
 </template>
@@ -52,14 +52,14 @@ onMounted(async () => {
   display: flex;
   fex-direction: row;
   width: 50%;
-  height: 100%;
-  background-color: rgb(120, 170, 170);
+  height: ;
 }
 
 .shoppingCart {
-  margin-left: 1%;
-  margin-right: 1%;
+  padding: 4%;
   width: 100%;
+  height: 100%;
+  background-color: rgb(120, 170, 170);
 }
 
 .placeOrderButton {
@@ -69,13 +69,18 @@ onMounted(async () => {
 }
 
 .clearShoppingCart {
-  margin-top: 15%;
+  margin-top: 2%;
   margin-left: 2%;
   padding: 2%;
   width: 49%;
 }
 
 .backToShopView {
+  margin-top: 1%;
+  padding: 2%;
+  width: 100%;
+}
+.viewOrder {
   margin-top: 1%;
   padding: 2%;
   width: 100%;
