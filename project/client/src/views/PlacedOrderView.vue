@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import axios from "axios";
-import { reactive, onMounted, methods } from "vue";
+import { reactive, onMounted } from "vue";
 import { updatePlacedOrderState } from "../infra/controllers/UpdatePlacedOrder";
 import { useRoute } from "vue-router";
 const route = useRoute();

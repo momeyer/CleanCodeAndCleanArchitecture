@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import axios from "axios";
-import { reactive, onMounted, methods } from "vue";
+import { reactive, onMounted } from "vue";
 import { removeItemFromShoppingCart } from "../infra/controllers/RemoveItemFromShoppingCart";
 import { placeOrder } from "../infra/controllers/PlaceOrder";
 import { updateShoppingCartState } from "../infra/controllers/UpdateShoppingCartState";
