@@ -39,7 +39,7 @@ onMounted(async () => {
     <div v-show="state.isPlaced === true">
       <button
         class="viewOrder"
-        @click="this.$router.push({ name: 'PlacedOrder', params: { orderId: state!.placedOrderId! } })"
+        @click="this!.$router!.push({ name: 'PlacedOrder', params: { orderId: state!.placedOrderId! } })"
       >
         View Order {{ state.placedOrderId }}
       </button>
